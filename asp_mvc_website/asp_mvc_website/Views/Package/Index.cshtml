@@ -1,0 +1,71 @@
+﻿@* @model IEnumerable<ArtworkModel> *@
+
+@model IEnumerable<PackageModel>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<style>
+    .package-container {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center
+    }
+
+    .package-border {
+        padding: 20px;
+        text-align: center;
+        width: 300px;
+        margin: 10px; /* Add margin for spacing between elements */
+        transition: box-shadow 0.3s ease;
+    }
+
+        .package-border:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.7);
+        }
+
+        .package-border h2 {
+            color: #FF0033;
+        }
+
+        .package-border h3 {
+            margin-top: 10px;
+        }
+
+        .package-border .upper-alpha {
+            text-transform: uppercase;
+        }
+
+        .package-border p {
+            margin: 15px 0;
+        }
+
+    /* Additional styles for different classes */
+    .package-border-odd {
+        border: 2px solid #FF0033;
+        border-radius: 10px;
+    }
+
+    .package-border-even {
+        border: 2px solid #00FF33;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="package-container">
+    @{
+        var counter = 0;
+    }
+
+    @foreach (var item in Model)
+    {
+        var className = counter % 2 == 0 ? "package-border-even" : "package-border-odd";
+        <div class="package-border @className">
+            <h2>@item.Name</h2>
+            <h3><span class="upper-alpha">Price: $@item.Price</span></h3>
+            <p>Number of posts: @item.Quantity</p>
+            <a href="" class="button submit">Sign Up</a>
+        </div>
+        counter++;
+    }
+</div>
+
