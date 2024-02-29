@@ -5,11 +5,11 @@ using System.Diagnostics;
 
 namespace asp_mvc_website.Controllers
 {
-    public class HomeController : Controller
+    public class PackageController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly HttpClient _client;
-        public HomeController(ILogger<HomeController> logger)
+        public PackageController(ILogger<HomeController> logger)
         {
             _logger = logger;
             _client = new HttpClient();
@@ -18,7 +18,7 @@ namespace asp_mvc_website.Controllers
 
         [HttpGet]
         public IActionResult Index()
-        { 
+        {
             //get list artwork
             //List<ArtworkModel> artworkList = new List<ArtworkModel>();
             //HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/Artwork/GetAll").Result;
@@ -30,16 +30,15 @@ namespace asp_mvc_website.Controllers
             //return View(artworkList);
 
             //get a artwork
-            ArtworkModel artwork = new ArtworkModel();
-            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetById/1").Result;
+            List<PackageModel> artwork = new List<PackageModel>();
+            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Package").Result;
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
-                artwork = JsonConvert.DeserializeObject<ArtworkModel>(data);
+                artwork = JsonConvert.DeserializeObject<List<PackageModel>>(data);
             }
             return View(artwork);
         }
-
         public IActionResult Privacy()
         {
             return View();
