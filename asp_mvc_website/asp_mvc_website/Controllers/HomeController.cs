@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace asp_mvc_website.Controllers
 {
@@ -13,34 +14,40 @@ namespace asp_mvc_website.Controllers
         {
             _logger = logger;
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("https://localhost:7021/api/");
+            //_client.BaseAddress = new Uri("https://localhost:7021/api/");
+            _client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
         }
 
         [HttpGet]
         public IActionResult Index()
-        { 
+        {
             //get list artwork
-            //List<ArtworkModel> artworkList = new List<ArtworkModel>();
-            //HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/Artwork/GetAll").Result;
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    string data = response.Content.ReadAsStringAsync().Result;
-            //    artworkList = JsonConvert.DeserializeObject<List<ArtworkModel>>(data);
-            //}
-            //return View(artworkList);
-
-            //get a artwork
-            ArtworkModel artwork = new ArtworkModel();
-            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetById/1").Result;
+            List<ArtworkModel> artworkList = new List<ArtworkModel>();
+            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetAll").Result;
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
-                artwork = JsonConvert.DeserializeObject<ArtworkModel>(data);
+                artworkList = JsonConvert.DeserializeObject<List<ArtworkModel>>(data);
+
+                //get 12 first artwork
+                artworkList = artworkList.Take(5).ToList();
             }
-            return View(artwork);
+
+            //List<CategoryModel> categoryList = new List<CategoryModel>();
+            //HttpResponseMessage responseCategory = _client.GetAsync(_client.BaseAddress + "Catalogy").Result;
+            //if (responseCategory.IsSuccessStatusCode)
+            //{
+            //    string data = responseCategory.Content.ReadAsStringAsync().Result;
+            //    categoryList = JsonConvert.DeserializeObject<List<CategoryModel>>(data);
+            //}
+            //HomeModel homeModel = new HomeModel();
+            //homeModel.ArtworkList = artworkList;
+            //homeModel.CategoryList = categoryList;
+
+            return View(artworkList);
         }
 
-        public IActionResult Privacy()
+            public IActionResult Privacy()
         {
             return View();
         }
