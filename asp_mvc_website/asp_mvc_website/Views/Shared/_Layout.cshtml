@@ -23,6 +23,12 @@
 
 </head>
 <body>
+    @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+    @{
+        var userName = HttpContextAccessor.HttpContext.Session.GetString("UserEmail");
+    }
+
+
     <div class="loader-wrapper">
         <div id="large-header" class="large-header">
             <h1 class="loader-title"><span>Red</span> Art</h1>
@@ -86,6 +92,20 @@
                             </ul>
                             <a class="dt-menu-expand">+</a>
                         </li>
+                        @if(userName != null)
+                        {
+                            <li class="menu-item-simple-parent">
+                                <p>Hello @userName!</p>
+                            </li>
+                        } else
+                        {
+                            <li class="menu-item-simple-parent">
+                                <a href="/User/Login">Login<span class="fa fa-map-marker"></span></a>
+                            </li>
+                            <li class="menu-item-simple-parent">
+                                <a href="/User/Register">Register<span class="fa fa-map-marker"></span></a>
+                            </li>
+                        }
                         <li class="menu-item-simple-parent">
                             <a href="contact.html">contact<span class="fa fa-map-marker"></span></a>
                         </li>
