@@ -1,4 +1,4 @@
-﻿@model asp_mvc_website.Models.LoginModel
+﻿@model LoginModel
 
 @{
     ViewData["Title"] = "Login";
@@ -52,7 +52,12 @@
             </p>
         </div>
     </form> *@
-
+    @if (ViewData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @ViewData["ErrorMessage"]
+        </div>
+    }
 
     <form asp-action="Login" method="post">
         <div class="form-group">
