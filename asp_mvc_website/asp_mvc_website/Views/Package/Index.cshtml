@@ -1,0 +1,43 @@
+﻿@* @model IEnumerable<ArtworkModel> *@
+
+@model IEnumerable<PackageModel>
+@{
+    ViewData["Title"] = "Home Page";
+}
+<style>
+    .column.first {
+        margin-left: 0;
+        padding: 10px;
+    }
+</style>
+<div class="dt-sc-pricing-table">
+    @foreach (var item in Model)
+    {
+        <div class="column dt-sc-one-fourth first">
+            <div class="dt-sc-pr-tb-col type1">
+                <div class="dt-sc-tb-header">
+                    <div class="dt-sc-price">
+                        <div class="dt-sc-price-content">
+                            <h2> $ @item.Price </h2>
+                            <span>/ @item.Quantity Post</span>
+                        </div>
+                    </div>
+                    <div class="dt-sc-tb-title">
+                        <h5> @item.Name </h5>
+                    </div>
+                </div>
+                <ul class="dt-sc-tb-content">
+                    <li> Sketches </li>
+                    <li> Water Painting </li>
+                    <li> Crayon painting </li>
+                    <li> Dropper Art </li>
+                    <li> Canvas Print </li>
+                </ul>
+                <div class="dt-sc-buy-now">
+                    <a class="dt-sc-button medium type3 with-icon" target="_blank" href="#"><i class="fa fa-sign-in"></i><span>Frame It</span></a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
