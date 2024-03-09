@@ -5,4 +5,8 @@
         public int? PackageId { get; set; }
         public int? QuantityPost { get; set; }
     }
+    public class PosterModelAdd
+    {
+        public int? PackageId { get; set; }
+    }
 }

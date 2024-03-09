@@ -13,3 +13,5 @@ window.onclick = function (event) {
         modal.style.display = "none";
     }
 }
+var qrCodeImage = document.querySelector('.qr-code-container');
+
