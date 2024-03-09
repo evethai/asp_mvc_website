@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ArtworkModel>
+﻿@model HomeModel
 
 @{
     ViewData["Title"] = "Shop Page";
@@ -16,12 +16,12 @@
                 <div class="categories">
                     <h5>Categories</h5>
                     <div class="selection-box">
-                        <select class="shop-dropdown">
+                        <select class="shop-dropdown" id="_selectCategory" onchange="selectCategory()">
                             <option value="-1" selected>Choose your category</option>
-                            <option value="1" class="fa fa-fire-extinguisher">Canvas Print</option>
-                            <option value="1" class="fa fa-camera-retro">Photogenic Art</option>
-                            <option value="3" class="fa fa-pencil">Sketches</option>
-                            <option value="4" class="fa fa-eyedropper">Dropper Painting</option>
+                            @foreach (var item in Model.CategoryList)
+                            {
+                                <option value="@item.Id" class="fa fa-fire-extinguisher">@item.Name</option>
+                            }
                         </select>
                     </div>
                 </div>
@@ -29,13 +29,12 @@
             <div class="dt-sc-one-fifth column">
                 <div class="categories">
                     <h5>Sort By</h5>
-                    <div class="selection-box">
-                        <select class="shop-dropdown">
+                    <div  class="selection-box">
+                        <select class="shop-dropdown" id="_sortBy" onchange="sortBy()">
                             <option value="-1" selected>Sort by</option>
                             <option value="1" class="fa fa-mortar-board">Popular Artist</option>
-                            <option value="2" class="fa fa-money">Best Seller</option>
-                            <option value="3" class="fa fa-thumb-tack">Featured Art</option>
-                            <option value="4" class="fa fa-child">New Artist</option>
+                            <option value="2" class="fa fa-thumb-tack">Price</option>
+                            <option value="3" class="fa fa-child">New Artist</option>
                         </select>
                     </div>
                 </div>
@@ -43,43 +42,169 @@
             <div class="dt-sc-three-fifth column">
                 <div class="Search">
                     <h5>Search</h5>
-                    <form method="post" novalidate="novalidate" id="searchform" action="@Url.Action("Filter", "Shop")">
+                    <div novalidate="novalidate" id="searchform">
                         <p class="input-text">
-                            <input class="input-field" name="txtSearch" style="height:52px" />
+                            <input id="txtSearch" class="input-field" style="height:52px; color: white" />
                             <label class="input-label">
                                 <i class="fa fa-search icon"></i>
                             </label>
-                            <input type="submit" name="submit" class="submit" value="Submit" style="height:52px" />
+                            <input type="button" id="myButton" class="submit" value="Search" style="height:52px" />
                         </p>
-                    </form>
+                    </div>
                 </div>
             </div>
+
             
         </div>
-        <ul class="products isotope">
-            @foreach (var item in Model)
-            {
-                <li class="product-wrapper dt-sc-one-fifth">
-                    <div class="product-container">
-                        <a href="shop-detail.html"><div class="product-thumb"> <img src="@item.Image"  style=" height:300px" /> </div> </a>
-                        <div class="product-title">
-                            <a href="shop-cart.html" class="type1 dt-sc-button"> <span class="fa fa-shopping-cart"></span> Add to Cart </a>
-                            <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a>
-                            <p>@item.Description</p>
+
+        <div id="listIndex">
+            <ul class="products isotope">
+                @foreach (var item in Model.ArtworkList)
+                {
+                    <li class="product-wrapper dt-sc-one-fifth">
+                        <div class="product-container">
+                            <a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})"><div class="product-thumb"> <img src="@item.Image" style=" height:300px" /> </div> </a>
+                            <div class="product-title">
+                                <a href="shop-cart.html" class="type1 dt-sc-button"> <span class="fa fa-shopping-cart"></span> Add to Cart </a>
+                                <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a>
+                                <p>@item.Description</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="product-details">
-                        <h5> <a href="shop-detail.html"> @item.Title </a> </h5>
-                        <span class="amount"> $@item.Price </span>
-                    </div>
-                </li>
-            }
-        </ul>
+                        <div class="product-details">
+                            <h5> <a href="shop-detail.html"> @item.Title </a> </h5>
+                            <span class="amount"> $@item.Price </span>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div id="artworkList"></div>
+
         <div class="container">
             <div class="dt-sc-post-pagination">
-                <a class="dt-sc-button small type3 with-icon prev-post" href="#"> <span> Previous </span> <i class="fa fa-hand-o-left"> </i> </a>
-                <a class="dt-sc-button small type3 with-icon next-post" href="#"><i class="fa fa-hand-o-right"> </i> <span> Next </span> </a>
+                <a class="dt-sc-button small type3 with-icon prev-post" id="btnPre"> <span> Previous </span> <i class="fa fa-hand-o-left"> </i> </a>
+                <a class="dt-sc-button small type3 with-icon next-post" id="btnNext"><i class="fa fa-hand-o-right"> </i> <span> Next </span> </a>
             </div>
         </div>
+        <input type="hidden" id="currentPage" value="@ViewBag.CurrentPage" />
+        <input type="hidden" id="totalPages" value="@ViewBag.TotalPages" />
     </div>
 </section>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    var button = document.getElementById("myButton");
+    button.addEventListener("click", function () {
+        $.ajax({
+            url: '@Url.Action("_searchArtwork", "Shop")',
+            type: 'GET',
+            data: { txtSearch: $("#txtSearch").val(), idCategory: $("#_selectCategory").val() },
+            success: function (data) {
+
+
+
+
+                // // Xóa tất cả các liên kết CSS
+                // $('head link[rel="stylesheet"]').remove();
+
+                // // Tạo lại từng liên kết CSS
+                // createCssLink("/style.css");
+                // createCssLink("/css/animations.css");
+                // createCssLink("/css/shortcodes.css");
+                // createCssLink("/skins/red/style.css");
+                // createCssLink("/css/isotope.css");
+                // createCssLink("/css/prettyPhoto.css");
+                // createCssLink("/css/responsive.css");
+                // createCssLink("/dark/dark.css");
+                // createCssLink("/css/font-awesome.min.css");
+
+
+                $('#listIndex').empty();
+                $('#artworkList').empty();
+                $("#artworkList").html(data);
+            }
+        });
+    });
+    // // Hàm để tạo lại một liên kết CSS
+    // function createCssLink(href) {
+    //     var link = document.createElement("link");
+    //     link.rel = "stylesheet";
+    //     link.href = href;
+    //     document.head.appendChild(link);
+    // }
+
+    //function selectCategory() {
+    function selectCategory() {
+        var selectValue = $("#_selectCategory").val();
+        $.ajax({
+            url: '@Url.Action("_searchArtwork", "Shop")',
+            type: 'GET',
+            data: { txtSearch: $("#txtSearch").val(), idCategory: $("#_selectCategory").val() },
+            success: function (data) {
+                $('#listIndex').empty();
+                $('#artworkList').empty();
+                $("#artworkList").html(data);
+            }
+        });
+    }
+    function sortBy() {
+        var selectValue = $("#_sortBy").val();
+        $.ajax({
+            url: '@Url.Action("_searchArtwork", "Shop")',
+            type: 'GET',
+            data: { txtSearch: $("#txtSearch").val(), idCategory: $("#_selectCategory").val(), sortBy: $("#_sortBy").val() },
+            success: function (data) {
+                $('#listIndex').empty();
+                $('#artworkList').empty();
+                $("#artworkList").html(data);
+            }
+        });
+    }
+    var btnPre = document.getElementById("btnPre");
+    btnPre.addEventListener("click", function () {
+        var currentPage = parseInt($('#currentPage').val());
+        if (currentPage > 1) {
+            $.ajax({
+                url: '@Url.Action("_searchArtwork", "Shop")',
+                type: 'GET',
+                data: {
+                    txtSearch: $("#txtSearch").val(),
+                    idCategory: $("#_selectCategory").val(),
+                    sortBy: $("#_sortBy").val(),
+                    page: currentPage - 1
+                },
+                success: function (data) {
+                    $('#listIndex').empty();
+                    $('#artworkList').empty();
+                    $('#artworkList').html(data);
+                    $('#currentPage').val(page);
+                }
+            });
+        }
+    });
+    var btnNext = document.getElementById("btnNext");
+    btnNext.addEventListener("click", function () {
+        var currentPage = parseInt($('#currentPage').val());
+        var totalPages = parseInt($('#totalPages').val());
+        if (currentPage < totalPages) {
+            $.ajax({
+                url: '@Url.Action("_searchArtwork", "Shop")',
+                type: 'GET',
+                data: {
+                    txtSearch: $("#txtSearch").val(),
+                    idCategory: $("#_selectCategory").val(),
+                    sortBy: $("#_sortBy").val(),
+                    page: currentPage + 1
+                },
+                success: function (data) {
+                    $('#listIndex').empty();
+                    $('#artworkList').empty();
+                    $('#artworkList').html(data);
+                    $('#currentPage').val(currentPage + 1);
+                }
+            });
+        }
+    });
+    
+</script>

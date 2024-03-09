@@ -1,0 +1,26 @@
+﻿@model IEnumerable<ArtworkModel>
+
+@{
+    Layout = null;
+}
+
+<ul class="products isotope">
+    @foreach (var item in Model)
+    {
+        <li class="product-wrapper dt-sc-one-fifth" style="translate3d(284px, 0px, 0px);">
+            <div class="product-container">
+                <a href="shop-detail.html"><div class="product-thumb"> <img src="@item.Image" style=" height:300px" /> </div> </a>
+                <div class="product-title">
+                    <a href="shop-cart.html" class="type1 dt-sc-button"> <span class="fa fa-shopping-cart"></span> Add to Cart </a>
+                    <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a>
+                    <p>@item.Description</p>
+                </div>
+            </div>
+            <div class="product-details">
+                <h5> <a href="shop-detail.html"> @item.Title </a> </h5>
+                <span class="amount"> $@item.Price </span>
+            </div>
+        </li>
+    }
+    @ViewBag.Message
+</ul>

@@ -21,28 +21,15 @@ namespace asp_mvc_website.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            //get list artwork
             List<ArtworkModel> artworkList = new List<ArtworkModel>();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetAll").Result;
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
                 artworkList = JsonConvert.DeserializeObject<List<ArtworkModel>>(data);
-
-                //get 12 first artwork
                 artworkList = artworkList.Take(5).ToList();
             }
 
-            //List<CategoryModel> categoryList = new List<CategoryModel>();
-            //HttpResponseMessage responseCategory = _client.GetAsync(_client.BaseAddress + "Catalogy").Result;
-            //if (responseCategory.IsSuccessStatusCode)
-            //{
-            //    string data = responseCategory.Content.ReadAsStringAsync().Result;
-            //    categoryList = JsonConvert.DeserializeObject<List<CategoryModel>>(data);
-            //}
-            //HomeModel homeModel = new HomeModel();
-            //homeModel.ArtworkList = artworkList;
-            //homeModel.CategoryList = categoryList;
 
             return View(artworkList);
         }
