@@ -1,0 +1,129 @@
+﻿@model List<CartItemModel>
+
+<div class="breadcrumb">
+	<div class="container">
+		<h2>Shop <span>Cart</span></h2>
+		<div class="user-summary">
+			<div class="account-links">
+				<a href="#">My Account</a>
+				<a href="#">Checkout</a>
+			</div>
+			<div class="cart-count">
+				<a href="#">Shopping Bag: 0 items</a>
+				<a href="#">($0.00)</a>
+			</div>
+		</div>
+	</div>
+</div>
+<section id="primary" class="content-full-width">
+	<div class="container" id="cartContainer">
+		<div class="woocommerce">
+			@if(Model.Count == 0)
+			{
+				<h2>No item in cart!</h2>
+			} else
+			{
+				<form asp-controller="Shop" asp-action="Index" method="get">
+					<table class="shop_table cart" >
+						<thead>
+							<tr>
+								<th class="product-thumbnail">Image</th>
+								<th class="product-name">Name</th>
+								<th class="product-price">Price</th>
+								<th class="product-subtotal">Status</th>
+								<th class="product-remove">Remove</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (var item in Model)
+							{
+								<tr class="cart_table_item" id="artwork_@item.artworkId">
+
+									<td class="product-thumbnail">
+										<a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})"><img src="@item.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+									</td>
+
+									<td class="product-name">
+										<h6><a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})">@item.Title</a></h6>
+									</td>
+
+									<td class="product-subtotal">
+										<span class="amount"><i class="fa fa-gbp"></i> @item.Price</span>
+									</td>
+
+									<td class="product-status">
+										<span class="">150</span>
+									</td>
+
+									<td class="product-remove">
+										<a href="#" class="remove" title="Remove this item" onclick="deleteProduct(@item.artworkId)">&times;</a>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+					<input type="submit" class="button" name="continue" value="Continue Shopping">
+				</form>
+			}
+			
+			<div class="cart-collaterals">
+				<div class="coupon">
+					<h3>Coupon</h3>
+					<form action="#" method="post">
+						<label for="coupon_code">Enter Coupon Code</label>
+						<input name="coupon_code" class="input-text" id="coupon_code" value placeholder="Enter Code" />
+						<input type="submit" value="Apply Coupon" name="apply_coupon" class="button">
+					</form>
+				</div>
+				<div class="cart_totals">
+					<h3>Cart Totals</h3>
+					<table>
+						<tbody>
+							<tr class="shipping">
+								<th>Shipping</th>
+								<td>Free Shipping<input type="hidden" name="shipping_method" id="shipping_method" value="free_shipping" /></td>
+							</tr>
+							<tr class="total">
+								<th>Order Price Total</th>
+								<td><strong><span class="amount"><i class="fa fa-gbp"></i>@ViewBag.TotalPrice</span></span></strong></td>
+							</tr>
+						</tbody>
+					</table>
+					<a class="dt-sc-button medium type2 with-icon" href="shop-checkout.html"><i class="fa fa-shopping-cart"></i> <span> Proceed to Checkout </span> </a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="dt-sc-hr-invisible-small"></div>
+</section>
+
+<script>
+	function deleteProduct(artworkId) {
+		console.log(artworkId)
+		// Send an AJAX request to delete the product from the cart
+		fetch('/Cart/DeleteArtwork/' + artworkId, {
+			method: 'DELETE'
+		})
+			.then(response => {
+				// Check if the request was successful
+				if (response.ok) {
+					// Remove the product from the cart display
+					var productElement = document.getElementById('artwork_' + artworkId);
+					if (productElement) {
+						productElement.remove();
+					}
+
+					// Set focus to the cart container element
+					var cartContainer = document.getElementById('cartContainer');
+					if (cartContainer) {
+						cartContainer.focus();
+					}
+				} else {
+					console.error('Failed to delete product');
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+	}
+</script>
