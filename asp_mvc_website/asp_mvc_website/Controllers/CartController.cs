@@ -1,4 +1,5 @@
 ﻿using asp_mvc_website.Models;
+using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
@@ -10,6 +11,7 @@ namespace asp_mvc_website.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly HttpClient _client;
+		private CartService cartService;
         public CartController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -30,10 +32,13 @@ namespace asp_mvc_website.Controllers
                 ? JsonConvert.DeserializeObject<List<CartItemModel>>(cartItemsJson)
                 : new List<CartItemModel>();
 
-            return View(cartItems);
+			cartService = new CartService(cartItems);
+			ViewBag.TotalPrice =  cartService.CalculateTotalPrice();
+
+            return View(cartItems);	
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult AddToCart(string id)
         {
             ArtworkModel artworkModel = new ArtworkModel();
@@ -43,12 +48,16 @@ namespace asp_mvc_website.Controllers
                 string data = response.Content.ReadAsStringAsync().Result;
                 artworkModel = JsonConvert.DeserializeObject<ArtworkModel>(data);
 
-				AddArtworkToCart(artworkModel);
-			}
-            return View();
+				var IsExisted = AddArtworkToCart(artworkModel);
+                if (IsExisted)
+                {
+                    TempData["DupplicateId"] = "The artwork is already in the cart";
+                }
+            }
+            return Redirect("/Shop");
         }
 
-        private void AddArtworkToCart(ArtworkModel artworkModel)
+        private bool AddArtworkToCart(ArtworkModel artworkModel)
         {
 			//// Retrieve existing cart items from session
 			//var cartItemsJson = HttpContext.Session.GetString("CartItems");
@@ -76,6 +85,13 @@ namespace asp_mvc_website.Controllers
 				? JsonConvert.DeserializeObject<List<CartItemModel>>(cartItemsJson)
 				: new List<CartItemModel>();
 
+            cartService = new CartService(cartItems);
+
+			bool IsExisted = cartService.IsDuplicateArtworkId(cartItems, artworkModel.artworkId);
+			if (IsExisted)
+			{
+                return true;
+			}
 			// Add the new item to the cart
 			cartItems.Add(new CartItemModel
 			{
@@ -91,8 +107,45 @@ namespace asp_mvc_website.Controllers
 				Expires = System.DateTimeOffset.Now.AddDays(1)
 			};
 			HttpContext.Response.Cookies.Append("CartItems", JsonConvert.SerializeObject(cartItems), options);
+			return false;
+		}
 
+		[Route("Cart/DeleteArtwork/{artworkId}")]
+		[HttpDelete]
+		public IActionResult DeleteArtwork(int artworkId)
+		{
+			// Deserialize the cart items from the cookie
+			var cartItemsJson = HttpContext.Request.Cookies["CartItems"];
+			var cartItems = cartItemsJson != null
+				? JsonConvert.DeserializeObject<List<CartItemModel>>(cartItemsJson)
+				: new List<CartItemModel>();
 
+			// Find the index of the item to delete based on its artworkId
+			int indexToDelete = -1;
+			for (int i = 0; i < cartItems.Count; i++)
+			{
+				if (cartItems[i].artworkId == artworkId)
+				{
+					indexToDelete = i;
+					break;
+				}
+			}
+
+			// If the item exists in the cart, remove it
+			if (indexToDelete != -1)
+			{
+				cartItems.RemoveAt(indexToDelete);
+
+				// Save the updated cart items back to the cookie
+				var options = new Microsoft.AspNetCore.Http.CookieOptions
+				{
+					Expires = System.DateTimeOffset.Now.AddDays(1)
+				};
+				HttpContext.Response.Cookies.Append("CartItems", JsonConvert.SerializeObject(cartItems), options);
+			}
+
+			// Return true to indicate success or failure
+			return Ok();
 		}
 
 

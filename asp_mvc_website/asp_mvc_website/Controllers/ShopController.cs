@@ -54,6 +54,12 @@ namespace asp_mvc_website.Controllers
             HomeModel homeModel = new HomeModel();
             homeModel.ArtworkList = artworkList;
             homeModel.CategoryList = categoryList;
+
+            if (TempData["DupplicateId"] != null)
+            {
+                ViewBag.DupplicateId = TempData["DupplicateId"];
+            }
+
             return View(homeModel);
         }
 

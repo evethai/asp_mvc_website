@@ -7,8 +7,9 @@ namespace asp_mvc_website.Models
     {
         public int artworkId { get; set; }
         public string Title { get; set; } = string.Empty;
-        public double? Price { get; set; }
+        public double Price { get; set; }
         public string Image { get; set; } = string.Empty;
+        public string Status {  get; set; } 
 
         [JsonProperty("ImageUrl")]
         private List<string> ImageUrl { get; set; } = new List<string>();
