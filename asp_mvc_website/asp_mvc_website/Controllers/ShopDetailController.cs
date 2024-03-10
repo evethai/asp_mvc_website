@@ -10,8 +10,8 @@ namespace asp_mvc_website.Controllers
         public ShopDetailController()
         {
             _client = new HttpClient();
-            //_client.BaseAddress = new Uri("http://localhost:5012/api/");
-            _client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client.BaseAddress = new Uri("http://localhost:5012/api/");
+            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
         }
         [HttpGet]
         public IActionResult Index(int id)
