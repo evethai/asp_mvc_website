@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+    
+}
+<!DOCTYPE html>
 <html lang="en" class="no-js">
 <head>
     <meta charset="utf-8" />
@@ -19,6 +22,7 @@
     <link rel="stylesheet" href="~/css/responsive.css" type="text/css" media="all" />
     <link id="light-dark-css" href="~/dark/dark.css" rel="stylesheet" media="all" />
     <link rel="stylesheet" href="~/css/font-awesome.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/header.css" type="text/css" />
     <script src="~/js/modernizr.js"></script>
 
 </head>
@@ -27,7 +31,6 @@
     @{
         var userName = HttpContextAccessor.HttpContext.Session.GetString("UserEmail");
     }
-
 
     <div class="loader-wrapper">
         <div id="large-header" class="large-header">
@@ -41,6 +44,45 @@
                 <div id="header" class="header">
                     <div class="container menu-container">
                         <a class="logo" href="~/index.html"><img alt="Logo" src="~/images/logo.png"></a>
+                        <div class="notification">
+                            <a href="#">
+                                <div class="notBtn" href="# @Url.Action("Index", "UserNotifcation", new { id = "1932234f-af4a-45e5-b8d9-b613d2dfbb5d" })">
+                                    <!--Number supports double digets and automaticly hides itself when there is nothing between divs -->
+                                    <div class="number">2</div>
+                                    <i class="fas fa-bell"></i>
+                                    <div class="box">
+                                        <div class="display">
+                                            <div class="nothing">
+                                                <i class="fas fa-child stick"></i>
+                                                <div class="cent">Looks Like your all caught up!</div>
+                                            </div>
+                                            <div class="cont">
+                                                <!-- Fold this div and try deleting evrything inbetween -->
+
+                                                    <div class="sec new">
+                                                    <a href="">
+                                                        <div class="profCont">
+                                                            <img class="profile" src="https://c1.staticflickr.com/5/4007/4626436851_5629a97f30_b.jpg">
+                                                        </div>
+                                                        <div class="txt">James liked your post: "Pure css notification box"</div>
+                                                        <div class="txt sub">11/7 - 2:30 pm</div>
+                                                    </a>
+                                                    </div>                                           
+                                                     <div class="sec">
+                                                    <a href="https://codepen.io/Golez/">
+                                                        <div class="profCont">
+                                                            <img class="profile" src="https://c1.staticflickr.com/4/3725/10214643804_75c0b6eeab_b.jpg">
+                                                        </div>
+                                                        <div class="txt">Madison liked your post: "Pure css notification box"</div>
+                                                        <div class="txt sub">11/6 - 4:04 pm</div>
+                                                    </a>
+                                                    </div>
+                                                
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div> 
                         <a href="#" class="menu-trigger">
                             <span></span>
                         </a>
@@ -88,7 +130,7 @@
                             <ul class="sub-menu">
                                 <li><a href="blog-detail.html">Blog detail</a></li>
                                 <li><a href="blog-detail-with-lhs.html">Blog-detail-left-sidebar</a></li>
-                                <li><a href="blog-detail-with-rhs.html">Blog-detail-right-sidebar</a></li>
+                                <li><a href="@Url.Action("Index", "UserNotifcation", new { id = "1932234f-af4a-45e5-b8d9-b613d2dfbb5d"})">Notification</a></li>
                             </ul>
                             <a class="dt-menu-expand">+</a>
                         </li>
@@ -176,3 +218,6 @@
 
 </body>
 </html>
+
+   
+
