@@ -20,9 +20,9 @@
     <link id="light-dark-css" href="~/dark/dark.css" rel="stylesheet" media="all" />
 
     <link rel="stylesheet" href="~/css/font-awesome.min.css" type="text/css" />
-
     <script src="~/js/modernizr.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="~/js/payment.js"></script>
 
 </head>
 <body>
@@ -128,14 +128,14 @@
                 <div class="slider fullwidth-section parallax"></div>
             </div>
             <div id="main">
-@*                 <div class="container full">
+                <div class="container full">
                     <main role="main" class="">
                         @RenderBody()
                         @RenderSection("Scripts", required: false)
                     </main>
-                </div> *@
-                @RenderSection("Scripts", required: false)
-                @RenderBody()
+                </div>
+@*                 @RenderSection("Scripts", required: false)
+                @RenderBody() *@
                 <footer id="footer" class="animate" data-animation="fadeIn" data-delay="100">
                     <div class="container">
                         <div class="copyright">
