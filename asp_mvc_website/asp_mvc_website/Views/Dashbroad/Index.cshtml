@@ -1,34 +1,35 @@
 ﻿@model AdminModel
 @{
     Layout = "/Views/Shared/_LayoutAd.cshtml";
+    var Total = @Model.artModelStatus1.ToList().Count() + @Model.artModelStatus2.ToList().Count() + @Model.artModelStatus3.ToList().Count();
 }
 <head>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-        var model = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        var modelst1 = @Model.artModelStatus1.ToList().Count(); 
+        var modelst2 = @Model.artModelStatus2.ToList().Count();
+        var modelst3 = @Model.artModelStatus3.ToList().Count();
         google.charts.load('current', { 'packages': ['corechart'] });
         google.charts.setOnLoadCallback(drawChart);
         function drawChart() {
             var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Category');
+            data.addColumn('string', 'Status Artworks');
             data.addColumn('number', 'Value');
             data.addRows([
-                ['Category 1', 20],
-                ['Category 2', 40],
-                ['Category 3', 60],
-                ['Category 4', 80],
-                ['Category 5', 100]
+                ['Đang Bán', modelst1 ],
+                ['Đã Bán', modelst2],
+                ['Chờ Xác Nhận', modelst3],
             ]);
             var options = {
-                title: 'Column Chart Example',
-                width: 600,
-                height: 400,
+                title: 'Chart Quantity Number Artwork Status',
+                width: 900,
+                height: 500,
                 bars: 'vertical',
                 legend: 'none',
             };
             var chart = new google.visualization.ColumnChart(document.getElementById('column_chart'));
             chart.draw(data, options);
-        }
+        }       
     </script>
 </head>
 <div id="page-inner">
@@ -42,7 +43,7 @@
         <div class="col-md-3 col-sm-6 col-xs-6">
             <div class="panel panel-back noti-box">
                 <span class="icon-box bg-color-red set-icon">
-                    <i class="fa fa-envelope-o"></i>
+                    <i class="fa fa-user"></i>
                 </span>
                 <div class="text-box">
                     <p class="main-text">@Model.userModels.ToList().Count()</p>
@@ -89,7 +90,7 @@
         <div class="col-md-9 col-sm-12 col-xs-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    Bar Chart Example
+                    Chart Follow Artwork
                 </div>
                 <div id="column_chart"></div>
             </div>
@@ -98,20 +99,19 @@
             <div class="panel panel-primary text-center no-boder bg-color-green">
                 <div class="panel-body">
                     <i class="fa fa-bar-chart-o fa-5x"></i>
-                    <h3>120 GB </h3>
+                    <h3> @Total Artworks</h3>
                 </div>
                 <div class="panel-footer back-footer-green">
-                    Disk Space Available
-
+                   Số lượng artwork
                 </div>
             </div>
             <div class="panel panel-primary text-center no-boder bg-color-red">
                 <div class="panel-body">
                     <i class="fa fa-edit fa-5x"></i>
-                    <h3>20,000 </h3>
+                    <h3>@Model.posterModels.ToList().Count() Poster </h3>
                 </div>
                 <div class="panel-footer back-footer-red">
-                    Articles Pending
+                    Số lượng người có thể đang bài
                 </div>
             </div>
         </div>
