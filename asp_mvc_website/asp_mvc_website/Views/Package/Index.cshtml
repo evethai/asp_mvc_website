@@ -51,7 +51,7 @@
                 <div class="dt-sc-tb-header">
                     <div class="dt-sc-price">
                         <div class="dt-sc-price-content">
-                            <h2> $ @item.Price </h2>
+                            <h2>@item.Price VND</h2>
                             <span>/ @item.Quantity Post</span>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                     <li> Dropper Art </li>
                     <li> Canvas Print </li>
                 </ul>
-                <a class="showModalBtn dt-sc-button medium type1" data-item-name="@item.Name" data-item-price="@item.Price" data-item-package="@item.Id">Buy</a>
+                <button class="showModalBtn dt-sc-button medium type1" data-item-name="@item.Name" data-item-price="@item.Price" data-item-package="@item.Id">Buy</button>
                 <div class="clear"></div>               
             </div>
         </div>
@@ -143,6 +143,7 @@
                         autoSubmitForm(itemPackage);
                     } else {
                         $("#popupNoti").text("Không Thành Công");
+                        closePopup();
                     }
                 } catch (error) {
                     console.log("Lỗi: ", error);

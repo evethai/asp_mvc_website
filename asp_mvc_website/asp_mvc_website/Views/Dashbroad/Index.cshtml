@@ -1,7 +1,36 @@
-﻿@model List<OrderModel>
+﻿@model AdminModel
 @{
     Layout = "/Views/Shared/_LayoutAd.cshtml";
 }
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        var model = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Category');
+            data.addColumn('number', 'Value');
+            data.addRows([
+                ['Category 1', 20],
+                ['Category 2', 40],
+                ['Category 3', 60],
+                ['Category 4', 80],
+                ['Category 5', 100]
+            ]);
+            var options = {
+                title: 'Column Chart Example',
+                width: 600,
+                height: 400,
+                bars: 'vertical',
+                legend: 'none',
+            };
+            var chart = new google.visualization.ColumnChart(document.getElementById('column_chart'));
+            chart.draw(data, options);
+        }
+    </script>
+</head>
 <div id="page-inner">
     <div class="row">
         <div class="col-md-12">
@@ -16,8 +45,8 @@
                     <i class="fa fa-envelope-o"></i>
                 </span>
                 <div class="text-box">
-                    <p class="main-text">@Model.ToList().Count()</p>
-                    <p class="text-muted">Số lượng Order</p>
+                    <p class="main-text">@Model.userModels.ToList().Count()</p>
+                    <p class="text-muted">Số lượng Users</p>
                 </div>
             </div>
         </div>
@@ -38,7 +67,7 @@
                     <i class="fa fa-bell-o"></i>
                 </span>
                 <div class="text-box">
-                    <p class="main-text">240 New</p>
+                    <p class="main-text">@Model.notificationUserModels.ToList().Count() New</p>
                     <p class="text-muted">Notifications</p>
                 </div>
             </div>
@@ -49,21 +78,20 @@
                     <i class="fa fa-rocket"></i>
                 </span>
                 <div class="text-box">
-                    <p class="main-text">3 Orders</p>
-                    <p class="text-muted">Pending</p>
+                    <p class="main-text">@Model.orderModel.ToList().Count()</p>
+                    <p class="text-muted">Số lượng Order</p>
                 </div>
             </div>
         </div>
     </div>
+    <!-- ------------------------------------------------------------------------------------------------- -->
     <div class="row">
         <div class="col-md-9 col-sm-12 col-xs-12">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Bar Chart Example
                 </div>
-                <div class="panel-body">
-                    <div id="morris-bar-chart"></div>
-                </div>
+                <div id="column_chart"></div>
             </div>
         </div>
         <div class="col-md-3 col-sm-12 col-xs-12">
@@ -117,7 +145,6 @@
                     );
                     const data = await response.json();
                     let totalRevenue = 0;
-                    // Check if data is not empty
                     if (data.data && data.data.length > 0) {
                         var dataList = data.data;                
                         for (const item of dataList) {
@@ -136,16 +163,12 @@
                 }
             }
         }
-
-        // Function to calculate total revenue from a list of JSON objects
         function calculateTotalRevenueForList(dataList, targetMonth) {
             let totalRevenue = 0;
 
             for (const item of dataList) {
                 const itemMonth = item["Ngày diễn ra"];
                 const itemRevenue = item["Giá trị"];
-
-                // Check if the item's month matches the target month
                 if (itemMonth === targetMonth) {
                     totalRevenue += itemRevenue;
                 }
@@ -153,11 +176,8 @@
             return totalRevenue;
         }
         function layThangFromDate(dateString) {
-            // Chuyển đổi chuỗi thành đối tượng Date
             var dateObject = new Date(dateString);
-
-            // Lấy tháng từ đối tượng Date
-            var thang = dateObject.getMonth() + 1; // Tháng bắt đầu từ 0, nên cần cộng thêm 1
+            var thang = dateObject.getMonth() + 1;
             return thang;
         }
     </script>

@@ -14,8 +14,8 @@ namespace asp_mvc_website.Controllers
         {
             _logger = logger;
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("https://localhost:7021/api/");
-            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            //_client.BaseAddress = new Uri("https://localhost:7021/api/");
+            _client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
         }
 
         [HttpGet]

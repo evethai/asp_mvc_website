@@ -40,6 +40,7 @@ namespace asp_mvc_website.Controllers
         {
             try
             {
+                post.UserId = "ea5140a3-284d-4d07-95c7-ca31de42ae9b";
                 string data = JsonConvert.SerializeObject(post);
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "Poster/AddPoster", content);
