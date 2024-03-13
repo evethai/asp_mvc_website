@@ -21,9 +21,11 @@
     <link href="~/css/prettyPhoto.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="~/css/responsive.css" type="text/css" media="all" />
     <link id="light-dark-css" href="~/dark/dark.css" rel="stylesheet" media="all" />
+
     <link rel="stylesheet" href="~/css/font-awesome.min.css" type="text/css" />
     <link rel="stylesheet" href="~/css/header.css" type="text/css" />
     <script src="~/js/modernizr.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 </head>
 <body>
@@ -33,9 +35,7 @@
     }
 
     <div class="loader-wrapper">
-        <div id="large-header" class="large-header">
-            <h1 class="loader-title"><span>Red</span> Art</h1>
-        </div>
+
     </div>
 
     <div class="wrapper">
@@ -95,7 +95,7 @@
                     </div>
                     <ul class="menu type1">
                         <li class="current_page_item menu-item-simple-parent">
-                            <a href="index.html">Home <span class="fa fa-home"></span></a>
+                            <a href="/Home/Index">Home <span class="fa fa-home"></span></a>
                             <ul class="sub-menu">
                                 <li class="current_page_item"><a href="http://www.wedesignthemes.com/html/redart/default">Default</a></li>
                                 <li><a href="http://www.wedesignthemes.com/html/redart/menu-overlay">Menu Overlay</a></li>
@@ -117,10 +117,10 @@
                             <a class="dt-menu-expand">+</a>
                         </li>
                         <li class="menu-item-simple-parent">
-                            <a href="shop.html">Shop <span class="fa fa-cart-plus"></span></a>
+                            <a href="/Shop/Index">Shop <span class="fa fa-cart-plus"></span></a>
                             <ul class="sub-menu">
                                 <li><a href="shop-detail.html">Shop Detail</a></li>
-                                <li><a href="shop-cart.html">Cart Page</a></li>
+                                <li><a href="/Cart">Cart Page</a></li>
                                 <li><a href="shop-checkout.html">Checkout Page</a></li>
                             </ul>
                             <a class="dt-menu-expand">+</a>
@@ -165,18 +165,18 @@
                     </ul>
                 </nav>
             </div>
-            <div class="slider-container">
+            <div class="slider-container" id="slider-container">
                 <div class="slider fullwidth-section parallax"></div>
             </div>
-
-
             <div id="main">
-                <!-- body o day ne -->
-                <div class="container">
-                    <main role="main" class="pb-3">
+@*                 <div class="container full">
+                    <main role="main" class="">
                         @RenderBody()
+                        @RenderSection("Scripts", required: false)
                     </main>
-                </div>
+                </div> *@
+                @RenderSection("Scripts", required: false)
+                @RenderBody()
                 <footer id="footer" class="animate" data-animation="fadeIn" data-delay="100">
                     <div class="container">
                         <div class="copyright">
@@ -208,14 +208,10 @@
     <script src="~/js/custom.js"></script>
     <script src="~/js/jsplugins.js" type="text/javascript"></script>
 
-
     <script src="~/js/jquery.inview.js" type="text/javascript"></script>
     <script src="~/js/jquery.viewport.js" type="text/javascript"></script>
     <script src="~/js/jquery.validate.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="~/js/jquery.bxslider.min.js"></script>
-
-
-
 </body>
 </html>
 

@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\UserNotifcation\" />
+    <Folder Include="Views\Order\" />
   </ItemGroup>
 
 </Project>
