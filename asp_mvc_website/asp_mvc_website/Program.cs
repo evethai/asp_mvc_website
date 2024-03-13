@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Http.Features;
 
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<FormOptions>(options =>
@@ -16,6 +18,25 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
+
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+	options.CheckConsentNeeded = context => true;
+	options.MinimumSameSitePolicy = SameSiteMode.None;
+});
+
+builder.Services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+	options.Cookie.HttpOnly = true;
+	options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Set to Always in production
+	options.Cookie.SameSite = SameSiteMode.None; // Set to None in production
+	options.Cookie.IsEssential = true;
+
+	options.SlidingExpiration = true;
+	options.ExpireTimeSpan = TimeSpan.FromDays(1); // Adjust expiration time as needed
+});
 
 var app = builder.Build();
 

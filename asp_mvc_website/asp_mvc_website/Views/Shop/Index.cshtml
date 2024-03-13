@@ -117,6 +117,25 @@
 
             
         </div>
+        @if (ViewBag.DupplicateId != null) {
+        <div id="popupMessage" onclick="hidePopup()">
+            <div class="popup-content">
+                <div class="column dt-sc-one-half space animate" >
+                    <div class="dt-sc-info-box aligncenter">
+                        <span></span>
+                        <h4> Info </h4>
+                        <b>
+                            @{
+                                string duplicationArtwork = ViewBag.DupplicateId as string;
+                            }
+                            <p>@duplicationArtwork</p>
+                        </b>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+        
 
         <div id="listIndex">
             <ul class="products isotope">
@@ -126,7 +145,12 @@
                         <div class="product-container">
                             <a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})"><div class="product-thumb"> <img src="@item.Image" style=" height:300px" /> </div> </a>
                             <div class="product-title">
-                                <a href="shop-cart.html" class="type1 dt-sc-button"> <span class="fa fa-shopping-cart"></span> Add to Cart </a>
+                                @* <a href="#" class="type1 dt-sc-button addToCartLink" data-artwork-id="@item.artworkId">
+                                    <span class="fa fa-shopping-cart"></span> Add to Cart
+                                </a> *@
+                                <a href="/Cart/AddToCart?id=@item.artworkId" class="type1 dt-sc-button ">
+                                    <span class="fa fa-shopping-cart"></span> Add to Cart
+                                </a>
                                 <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a>
                                 <p>@item.Description</p>
                             </div>
@@ -268,4 +292,40 @@
         }
     });
 
+    document.querySelectorAll(".addToCartLink").forEach(function (link) {
+        link.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent the default behavior of the anchor tag
+
+            // Retrieve the artworkId from the data attribute of the clicked anchor tag
+            var artworkId = this.getAttribute("data-artwork-id");
+
+            // Create a form element
+            var form = document.createElement("form");
+            form.setAttribute("method", "post");
+            form.setAttribute("action", "/Cart/AddToCart"); // Set the action to the URL of your Razor Page and the name of the action method
+
+            // Create a hidden input field to pass the 'id' parameter
+            var idInput = document.createElement("input");
+            idInput.setAttribute("type", "hidden");
+            idInput.setAttribute("name", "id");
+            idInput.setAttribute("value", artworkId); // Set the value of the 'id' parameter to the retrieved artworkId
+            form.appendChild(idInput);
+
+            // Append the form to the document body and submit it
+            document.body.appendChild(form);
+            form.submit();
+        });
+    });
+
+    setTimeout(function () {
+        var popupMessage = document.getElementById('popupMessage');
+        popupMessage.parentNode.removeChild(popupMessage);
+    }, 10000); // 3000 milliseconds = 3 seconds
+
+    function hidePopup() {
+        var popupMessage = document.getElementById('popupMessage');
+        popupMessage.parentNode.removeChild(popupMessage);
+    }
+
 </script>
+

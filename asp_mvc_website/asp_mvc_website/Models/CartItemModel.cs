@@ -3,20 +3,13 @@ using System.Runtime.Serialization;
 
 namespace asp_mvc_website.Models
 {
-    public class ArtworkModel
+    public class CartItemModel
     {
         public int artworkId { get; set; }
         public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public string UserId { get; set; }
         public double Price { get; set; }
-        public DateTime? CreateOn { get; set; }
         public string Image { get; set; } = string.Empty;
-        public ArtWorkStatus Status { get; set; }
-
-        [JsonProperty("categories")]
-        public List<int> categories { get; set; } = new List<int>();
-
+        public string Status {  get; set; } 
 
         [JsonProperty("ImageUrl")]
         private List<string> ImageUrl { get; set; } = new List<string>();
@@ -30,11 +23,4 @@ namespace asp_mvc_website.Models
             }
         }
     }
-    public enum ArtWorkStatus
-    {
-        PendingConfirmation = 1,
-        InProgress = 2,
-        Sold = 3
-    }
-    
 }

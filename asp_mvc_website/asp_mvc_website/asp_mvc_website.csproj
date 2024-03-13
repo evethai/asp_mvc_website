@@ -17,4 +17,8 @@
     <Folder Include="Views\Profile\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Order\" />
+  </ItemGroup>
+
 </Project>

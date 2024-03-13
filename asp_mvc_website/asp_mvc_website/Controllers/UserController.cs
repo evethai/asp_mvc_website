@@ -86,7 +86,8 @@ namespace asp_mvc_website.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Invalid username or password");
+                ViewData["ErrorMessage"] = "Invalid username or password";
+                //ModelState.AddModelError(string.Empty, "Invalid username or password");
                 return View(model);
             }
         }

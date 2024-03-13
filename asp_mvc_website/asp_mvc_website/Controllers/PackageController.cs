@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Text;
 
 namespace asp_mvc_website.Controllers
 {
@@ -14,34 +15,46 @@ namespace asp_mvc_website.Controllers
             _logger = logger;
             _client = new HttpClient();
             _client.BaseAddress = new Uri("http://localhost:5012/api/");
+            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
         }
-
         [HttpGet]
         public IActionResult Index()
         {
-            //get list artwork
-            //List<ArtworkModel> artworkList = new List<ArtworkModel>();
-            //HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "/Artwork/GetAll").Result;
-            //if (response.IsSuccessStatusCode)
-            //{
-            //    string data = response.Content.ReadAsStringAsync().Result;
-            //    artworkList = JsonConvert.DeserializeObject<List<ArtworkModel>>(data);
-            //}
-            //return View(artworkList);
-
-            //get a artwork
-            List<PackageModel> artwork = new List<PackageModel>();
+            List<PackageModel> package = new List<PackageModel>();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Package").Result;
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
-                artwork = JsonConvert.DeserializeObject<List<PackageModel>>(data);
+                package = JsonConvert.DeserializeObject<List<PackageModel>>(data);
             }
-            return View(artwork);
+            return View(package);
         }
-        public IActionResult Privacy()
+
+        public IActionResult CreatePoster()
         {
-            return View();
+            PosterModelAdd posterModelAdd = new PosterModelAdd();
+            return View(posterModelAdd);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreatePoster(PosterModelAdd post)
+        {
+            try
+            {
+                post.UserId = "ea5140a3-284d-4d07-95c7-ca31de42ae9b";
+                string data = JsonConvert.SerializeObject(post);
+                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "Poster/AddPoster", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                Error();
+            }
+            return View("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
