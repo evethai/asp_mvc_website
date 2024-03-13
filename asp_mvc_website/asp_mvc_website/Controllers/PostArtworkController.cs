@@ -16,8 +16,8 @@ namespace asp_mvc_website.Controllers
         public PostArtworkController()
         {
             _client = new HttpClient();
-            //_client.BaseAddress = new Uri("http://localhost:5012/api/");
-            _client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client.BaseAddress = new Uri("https://localhost:7021/api/");
+            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
         }
 
         private static string ApiKey = "AIzaSyB8sC0Z0tEfdI-1z-KHp7N25OJYBw8d1XU";
@@ -91,6 +91,8 @@ namespace asp_mvc_website.Controllers
                         Title = model.Title,
                         Description = model.Description,
                         Price = (double)model.Price,
+                        UserId = HttpContext.Session.GetString("UserId"),
+                        ReOrderQuantity = 0,
                         ImagesUrl = new List<string> { imageUrl },
                         CategoryIds = new List<int> { int.Parse(model.Category) },
                     };
@@ -102,7 +104,7 @@ namespace asp_mvc_website.Controllers
                         "application/json"));
                     if (postArtwork.IsSuccessStatusCode)
                     {
-                        //true
+                        
                     }else
                     {
                         return (StatusCode(500));

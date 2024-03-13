@@ -1,5 +1,4 @@
 ﻿@model HomeModel
-
 @{
     ViewData["Title"] = "Shop Page";
 }
@@ -9,8 +8,17 @@
             <h3> Shop </h3>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</p>
         </div>
-        <!-- Button -->
-        <a class="dt-sc-button small type2" id="openModalBtn">Post Artwork</a><div class="clear"> </div>
+        @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+        @{
+            var user = HttpContextAccessor.HttpContext.Session.GetString("UserId");
+        }
+        @if (user != null)
+        {
+            <!-- Button -->
+            <a class="dt-sc-button small type2" id="openModalBtn">Post Artwork</a>
+            <div class="clear"> </div>
+        }
+
         <!-- Modal -->
         <div class="modal" tabindex="-1" id="PostModal">
             <div class="modal-dialog modal-lg modal-dialog-scrollable">

@@ -20,11 +20,13 @@ namespace asp_mvc_website.Models
     }
     public class PostArtworkDTO
     {
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         public string Description { get; set; }
 
-        public double? Price { get; set; }
+        public double Price { get; set; }
+        public string UserId { get; set; }
+        public int ReOrderQuantity { get; set; }
 
         public List<string> ImagesUrl { get; set; }
 
