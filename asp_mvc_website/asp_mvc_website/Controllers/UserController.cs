@@ -3,6 +3,7 @@ using asp_mvc_website.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace asp_mvc_website.Controllers
@@ -17,7 +18,9 @@ namespace asp_mvc_website.Controllers
             _logger = logger;
             _client = new HttpClient();
             //_client = httpClientFactory.CreateClient();
-            _client.BaseAddress = new Uri("http://localhost:5012/api/");
+            //_client.BaseAddress = new Uri("http://localhost:5012/api/");
+            _client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+
         }
         public IActionResult Index()
         {
@@ -66,6 +69,19 @@ namespace asp_mvc_website.Controllers
                 HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
                 HttpContext.Session.SetString("UserEmail", model.Email);
                 // Redirect user to the home page or another appropriate page
+                
+
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
+                var userResponse = await _client.GetAsync(_client.BaseAddress + "User/currentUser");
+                if (userResponse.IsSuccessStatusCode)
+                {
+                    var userContent = await userResponse.Content.ReadAsStringAsync();
+                    var user = JsonConvert.DeserializeObject<UserModel>(userContent);
+                    
+                    HttpContext.Session.SetString("UserId",user.userId);
+
+                }
+
                 return RedirectToAction("Index", "Home");
             }
             else

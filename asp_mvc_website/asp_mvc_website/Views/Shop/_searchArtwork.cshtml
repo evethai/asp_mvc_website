@@ -3,13 +3,35 @@
 @{
     Layout = null;
 }
+<style>
+     .product-wrapper {
+        width: calc(20% - 10px); /* 100% divided by 5 columns, minus margin */
+        float: left; /* Float the columns left to create a horizontal layout */
+        box-sizing: border-box; /* Include padding and border in the element's total width */
+        padding: 10px; /* Add some padding for spacing */
+        margin: 5px; /* Add margin around each item */
+     }
+
+     /* Optional: Adjust styles as needed */
+     .product-wrapper {
+         /* Add margin to create space between columns */
+         margin-right: 2%; /* Adjust as needed */
+     }
+
+     /* Clear floats to prevent container collapse */
+     .products:after {
+         content: "";
+         display: table;
+         clear: both;
+     }
+</style>
 
 <ul class="products isotope">
     @foreach (var item in Model)
     {
-        <li class="product-wrapper dt-sc-one-fifth" style="translate3d(284px, 0px, 0px);">
+        <li class="product-wrapper dt-sc-one-fifth" style="margin:5px">
             <div class="product-container">
-                <a href="shop-detail.html"><div class="product-thumb"> <img src="@item.Image" style=" height:300px" /> </div> </a>
+                <a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})"><div class="product-thumb"> <img src="@item.Image" style=" height:300px" /> </div> </a>
                 <div class="product-title">
                     <a href="shop-cart.html" class="type1 dt-sc-button"> <span class="fa fa-shopping-cart"></span> Add to Cart </a>
                     <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a>
@@ -22,5 +44,4 @@
             </div>
         </li>
     }
-    @ViewBag.Message
 </ul>
