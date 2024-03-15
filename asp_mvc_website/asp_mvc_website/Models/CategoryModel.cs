@@ -6,4 +6,9 @@
         public string Name { get; set; }
         public bool Status { get; set; }
     }
+    public class CategoryAddDTO
+    {
+        public string Name { get; set; }
+        public bool Status { get; set; }
+    }
 }

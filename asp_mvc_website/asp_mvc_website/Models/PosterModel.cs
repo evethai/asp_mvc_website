@@ -8,5 +8,6 @@
     public class PosterModelAdd
     {
         public int? PackageId { get; set; }
+        public string UserId { get; set; }
     }
 }

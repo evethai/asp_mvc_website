@@ -72,6 +72,19 @@ namespace asp_mvc_website.Controllers
                 HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
                 HttpContext.Session.SetString("UserEmail", model.Email);
                 // Redirect user to the home page or another appropriate page
+                
+
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
+                var userResponse = await _client.GetAsync(_client.BaseAddress + "User/currentUser");
+                if (userResponse.IsSuccessStatusCode)
+                {
+                    var userContent = await userResponse.Content.ReadAsStringAsync();
+                    var user = JsonConvert.DeserializeObject<UserModel>(userContent);
+                    
+                    HttpContext.Session.SetString("UserId",user.userId);
+
+                }
+
                 return RedirectToAction("Index", "Home");
             }
             else
