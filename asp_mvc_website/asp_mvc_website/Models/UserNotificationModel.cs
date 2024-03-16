@@ -1,4 +1,6 @@
-﻿namespace asp_mvc_website.Models
+﻿using asp_mvc_website.Enums;
+
+namespace asp_mvc_website.Models
 {
     public class UserNotificationModel
     {
@@ -20,5 +22,9 @@
         public string? notificationTitle { get; set; }
         public  string? notificationDescription {  get; set; }
         public bool isRead {  get; set; }
+        public DateTime dateTime { get; set; }
+        public NotiStatus notiStatus { get; set; }
+        public string? nameUser { get; set; }
+        public string artwordUrl { get; set; }
     }
 }

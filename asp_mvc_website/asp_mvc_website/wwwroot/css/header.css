@@ -55,8 +55,6 @@ body {
 }
 
 .number {
-    height: 22px;
-    width: 22px;
     background-color: #d63031;
     border-radius: 20px;
     color: white;
@@ -166,9 +164,6 @@ body {
     transition: 0.5s;
 }
 
-.profCont {
-    padding-left: 15px;
-}
 
 .profile {
     -webkit-clip-path: circle(50% at 50% 50%);
@@ -188,10 +183,6 @@ body {
     color: grey;
 }
 
-.new {
-    border-style: none none solid none;
-    border-color: red;
-}
 
 .sec:hover {
     background-color: #BFBFBF;

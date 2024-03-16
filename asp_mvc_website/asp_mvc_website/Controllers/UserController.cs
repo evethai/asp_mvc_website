@@ -82,7 +82,20 @@ namespace asp_mvc_website.Controllers
         {
             return View();
         }
+        public IActionResult _IndexCha(string id)
+        {
+            id = "1932234f-af4a-45e5-b8d9-b613d2dfbb5d";
+            List<GetUsetNotification> userNoti = new List<GetUsetNotification>();
+            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "UserNotifcation/" + id).Result;
+            if (response.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                userNoti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(data);
+                HttpContext.Session.SetString("MyListSessionKey", JsonConvert.SerializeObject(userNoti));
+            }
 
+            return View(userNoti.ToList());
+        }
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel model)
         {

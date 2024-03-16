@@ -1,6 +1,7 @@
 ﻿using asp_mvc_website.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace asp_mvc_website.Controllers
 {
@@ -14,7 +15,7 @@ namespace asp_mvc_website.Controllers
             _client = new HttpClient();
             _client.BaseAddress = new Uri("https://localhost:44357/api/");
         }
-        public IActionResult _IndexCha(string id)
+        public string GetNotify(string id)
         {
             List<GetUsetNotification> userNoti = new List<GetUsetNotification>();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "UserNotifcation/"+ id).Result;
@@ -22,9 +23,12 @@ namespace asp_mvc_website.Controllers
             {
                 string data = response.Content.ReadAsStringAsync().Result;
                 userNoti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(data);
-            }
+                return data;
 
-            return View(userNoti.ToList());
+                //    HttpContext.Session.SetString("MyListSessionKey", JsonConvert.SerializeObject(userNoti));
+            }
+            else return null;
         }
+
     }
 }
