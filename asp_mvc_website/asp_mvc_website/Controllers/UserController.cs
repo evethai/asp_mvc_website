@@ -1,5 +1,6 @@
 ﻿using asp_mvc_website.DTO;
 using asp_mvc_website.Models;
+using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -16,8 +17,11 @@ namespace asp_mvc_website.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly HttpClient _client;
         private readonly IHttpClientFactory _httpClientFactory;
-        public UserController(ILogger<UserController> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        private readonly ICurrentUserService _currentUserService;
+        public UserController(ILogger<UserController> logger, IHttpClientFactory httpClientFactory,
+            IConfiguration configuration, ICurrentUserService currentUserService)
         {
+            _currentUserService = currentUserService;
             _logger = logger;
             _client = new HttpClient();
             _client = httpClientFactory.CreateClient();
@@ -73,19 +77,14 @@ namespace asp_mvc_website.Controllers
                 HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
                 HttpContext.Session.SetString("UserEmail", model.Email);
                 // Redirect user to the home page or another appropriate page
-                
+
 
                 _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
-                var userResponse = await _client.GetAsync(_client.BaseAddress + "User/currentUser");
-                if (userResponse.IsSuccessStatusCode)
+                var user = await _currentUserService.User();
+                if (user != null)
                 {
-                    var userContent = await userResponse.Content.ReadAsStringAsync();
-                    var user = JsonConvert.DeserializeObject<UserModel>(userContent);
-                    
-                    HttpContext.Session.SetString("UserId",user.Id.ToString());
-
+                    HttpContext.Session.SetString("UserId", user.Id.ToString());
                 }
-
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -101,17 +100,6 @@ namespace asp_mvc_website.Controllers
         {
             return View();
         }
-        public IActionResult _IndexCha(string id)
-        {
-            id = "1932234f-af4a-45e5-b8d9-b613d2dfbb5d";
-            List<GetUsetNotification> userNoti = new List<GetUsetNotification>();
-            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "UserNotifcation/" + id).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                string data = response.Content.ReadAsStringAsync().Result;
-                userNoti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(data);
-                HttpContext.Session.SetString("MyListSessionKey", JsonConvert.SerializeObject(userNoti));
-            }
 
 
 
