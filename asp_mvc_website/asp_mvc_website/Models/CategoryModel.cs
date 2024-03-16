@@ -2,7 +2,7 @@
 {
     public class CategoryModel
     {
-        public int Id { get; set; }
+        public int id { get; set; }
         public string Name { get; set; }
         public bool Status { get; set; }
     }
@@ -11,4 +11,12 @@
         public string Name { get; set; }
         public bool Status { get; set; }
     }
+    public class ResponseDTO
+    {
+        public string Message { get; set; } = string.Empty;
+        public bool IsSuccess { get; set; }
+        public CategoryModel Data { get; set; } = null;
+
+    }
+
 }

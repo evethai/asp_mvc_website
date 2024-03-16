@@ -22,7 +22,7 @@ namespace asp_mvc_website.Controllers
         public IActionResult Index()
         {
             List<ArtworkModel> artworkList = new List<ArtworkModel>();
-            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetAll").Result;
+            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetAllArtworkByStatus/2").Result;
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;

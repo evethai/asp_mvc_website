@@ -12,7 +12,10 @@
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</p>
             </div>
         </div>
-        <article style="margin:50px">
+        @{
+            var i = 0;
+        }
+        <article style="margin:100px">
             <div class="dt-sc-one-column column first">
                 <div class="recent-gallery-container">
                     <ul class="recent-gallery">
@@ -22,10 +25,12 @@
                         }
                     </ul>
                     <div id="bx-pager">
-
                         @foreach (var item in Model)
                         {
-                            <a href="#" data-slide-index="0"><img src="@item.Image" alt="image" style="height: 100px"/></a>
+                            <a href="#" data-slide-index="@i"><img src="@item.Image" alt="image" style="height: 100px"/></a>
+                            {
+                                i++;
+                            }
                         }
                     </div>
                 </div>
