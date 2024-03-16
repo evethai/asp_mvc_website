@@ -2,40 +2,81 @@
 @{
 	ViewData["Title"] = "Profile Page";
 }
+<style>
+	.product-container {
+		padding: 10px;
+		display: inline-block;
+		border : solid;
+		margin-top : 20px;
+		margin-right : 10px;
+	}
+
+	.product-actions {
+		display: flex;
+		margin-top: 10px;
+	}
+
+	.product-actions button {
+		width: 100%;
+		padding: 10px;
+		border: none;
+		cursor: pointer;
+	}
+	.product-actions button:first-child {
+		border-right: 1px solid #fff;
+	}
+	.product-details {
+		text-align: center;
+	}
+	.product-like{
+		float : left;
+	}
+	.product-comment{
+		float : right;
+	}
+
+	.product-thumb img{ 
+		width : 350px;
+		height : 300px;
+	}
+</style>
 <section id="primary" class="content-full-width">
 	<div class="container">
 		<div class="profile">
 			<div class="profile-header">
 				<img src="https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg" alt="Background Image" class="background-image">
 				<img src="https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg" alt="Avatar" class="avatar">
-				<h1 class="name">@Model.user.FirstName @Model.user.LastName</h1>
-				<
+				<h1 class="name">@Model.user.FirstName @Model.user.LastName</h1>				
 				<div class="profile-details">
 					<div class="additional-info">
 						<p>Birthday: @Model.user.Birthday</p> <p>Email: john@example.com</p>
 					</div>
 				</div>
-			</div>
-			<div class="dt-sc-one-column column">
+			</div>			
 				@foreach (var item in Model.artworks)
 				{
-					<div class="product-container">
-						<a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})"><div class="product-thumb"> <img src="@item.Image" style=" height:300px" /> </div> </a>
-						<div class="product-details">
-							<h3 class="product-title">@item.Title</h3>
-							<p class="product-price">$@item.Price</p>
-							<div class="product-actions">
-								<span class="like-icon"><i class="fas fa-heart"></i></span>
+				<div class="product-container">
+					<a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})">
+						<div class="product-thumb"> <img src="@item.Image"/> </div>
+					</a>
+					<div class="product-details">
+						<h3 class="product-title">@item.Title</h3>
+						<p class="product-price">$@item.Price</p>
+						<div class="product-actions">
+							<button class="product-like">
+								<img src="~/images/like.png" width="15px"/>
 								<span class="like-text">Like</span>
 								<span class="like-count">10</span> <!-- Example for displaying like count -->
-								<span class="comment-icon"><i class="fas fa-comment"></i></span>
+							</button>
+							<button class="product-comment">
+								<img src="~/images/comment.png" width="15px" />
 								<span class="comment-text">Comment</span>
 								<span class="comment-count">5</span> <!-- Example for displaying comment count -->
-							</div>
+							</button>
 						</div>
 					</div>
-				}
-			</div>
+				</div>
+				}			
 		</div>
 	</div>
 </section>

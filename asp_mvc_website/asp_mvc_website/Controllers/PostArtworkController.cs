@@ -1,5 +1,6 @@
 ﻿using asp_mvc_website.DTO;
 using asp_mvc_website.Models;
+using asp_mvc_website.Services;
 using Firebase.Auth;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +13,22 @@ namespace asp_mvc_website.Controllers
 {
     public class PostArtworkController : Controller
     {
+        private readonly ILogger<PostArtworkController> _logger;
+        private readonly IHttpClientFactory _factory;
         private readonly HttpClient _client;
-        public PostArtworkController()
+        private readonly ICurrentUserService _currentUserService;
+
+        public PostArtworkController(ILogger<PostArtworkController> logger, IConfiguration configuration,
+            IHttpClientFactory httpClientFactory, ICurrentUserService currentUserService)
         {
+            _factory = httpClientFactory;
+            _logger = logger;
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("https://localhost:7021/api/");
+            _currentUserService = currentUserService;
+            //_client.BaseAddress = new Uri("https://localhost:7021/api/");
             //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client = _factory.CreateClient("ServerApi");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
 
         private static string ApiKey = "AIzaSyB8sC0Z0tEfdI-1z-KHp7N25OJYBw8d1XU";

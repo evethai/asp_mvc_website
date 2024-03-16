@@ -19,7 +19,7 @@
     <form class="form-custom mt-3" asp-action="Login" method="post">
         <div class="mb-3" asp-action="Login">
             <label for="inputEmail">Email</label>
-            <input type="email" class="form-control" id="inputEmail" name="Email" value="@Model.Email">
+            <input type="email" class="form-control" id="inputEmail" name="Email" value="@Model.Email" placeholder="Enter Email">
             <span asp-validation-for="@Model.Email" class="text-danger"></span>
         </div>
 
@@ -73,7 +73,7 @@
         <button type="submit" class="btn btn-primary">Login</button>
     </form> *@
     <!-- end -->
-    <div class="row justify-content-center align-items-center mt-4 mt-md-5 ">
+    @* <div class="row justify-content-center align-items-center mt-4 mt-md-5 ">
         <div class="col-4">
             <div class="client-images my-3 my-md-0">
                 <img src="~/images/user-img/img-1.png" class="mx-auto d-block img-fluid"
@@ -95,5 +95,5 @@
             </div>
         </div>
         <!-- end col -->
-    </div><!-- end row -->
+    </div><!-- end row --> *@
 </div><!-- auth content -->
