@@ -21,7 +21,7 @@ namespace asp_mvc_website.Controllers
             _logger = logger;
             _client = new HttpClient();
             _currentUserService = currentUserService;
-            //_client.BaseAddress = new Uri("https://localhost:7021/api/");
+            //_client.BaseAddress = new Uri("https://localhost:44357/");
             //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
             _client = _factory.CreateClient("ServerApi");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
@@ -45,7 +45,7 @@ namespace asp_mvc_website.Controllers
 
         [HttpGet]
         public IActionResult Index()
-        {
+        {           
             List<ArtworkModel> artworkList = new List<ArtworkModel>();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetAll").Result;
             if (response.IsSuccessStatusCode)
