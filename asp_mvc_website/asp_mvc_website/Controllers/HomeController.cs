@@ -20,21 +20,21 @@ namespace asp_mvc_website.Controllers
             _factory = httpClientFactory;
             _logger = logger;
             _client = new HttpClient();
+            _currentUserService = currentUserService;
             //_client.BaseAddress = new Uri("https://localhost:7021/api/");
             //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client = _factory.CreateClient("ServerApi");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
-            _client = httpClientFactory.CreateClient("ServerApi");
-            _currentUserService = currentUserService;
         }
 
 
         [HttpGet]
         public async Task<IActionResult> GetResourceWithToken()
         {
-            var response = await _factory.CreateClient("ServerApi").GetAsync(_client.BaseAddress + "User/GetValue");
+            var response = await _client.GetAsync(_client.BaseAddress + "User/GetValue");
             if (response.IsSuccessStatusCode)
             {
-                var user = _currentUserService.User();
+                var user = await _currentUserService.User();
                 return Ok(response);
             }
             else

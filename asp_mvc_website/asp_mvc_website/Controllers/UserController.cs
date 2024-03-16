@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 
@@ -81,7 +82,7 @@ namespace asp_mvc_website.Controllers
                     var userContent = await userResponse.Content.ReadAsStringAsync();
                     var user = JsonConvert.DeserializeObject<UserModel>(userContent);
                     
-                    HttpContext.Session.SetString("UserId",user.userId);
+                    HttpContext.Session.SetString("UserId",user.Id.ToString());
 
                 }
 
