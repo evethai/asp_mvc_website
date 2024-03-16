@@ -2,8 +2,8 @@
 {
     public class UserModel
     {
-        public string userId { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
+        public Guid Id { get; set; }
+        public string Email { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public DateTime Birthday { get; set; }
