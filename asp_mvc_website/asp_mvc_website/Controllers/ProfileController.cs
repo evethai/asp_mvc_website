@@ -1,4 +1,5 @@
 ﻿using asp_mvc_website.Models;
+using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -6,14 +7,24 @@ namespace asp_mvc_website.Controllers
 {
 	public class ProfileController : Controller
 	{
-		private readonly HttpClient _client;
-		public ProfileController()
-		{
-			_client = new HttpClient();
-			//_client.BaseAddress = new Uri("http://localhost:5012/api/");
-			_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
-		}
-		public IActionResult Index(string id)
+        private readonly ILogger<ProfileController> _logger;
+        private readonly IHttpClientFactory _factory;
+        private readonly HttpClient _client;
+        private readonly ICurrentUserService _currentUserService;
+
+        public ProfileController(ILogger<ProfileController> logger, IConfiguration configuration,
+            IHttpClientFactory httpClientFactory, ICurrentUserService currentUserService)
+        {
+            _factory = httpClientFactory;
+            _logger = logger;
+            _client = new HttpClient();
+            _currentUserService = currentUserService;
+            //_client.BaseAddress = new Uri("https://localhost:7021/api/");
+            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client = _factory.CreateClient("ServerApi");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
+        }
+        public IActionResult Index(string id)
 		{
 			UserModel userModel = new UserModel();
 			HttpResponseMessage responseUser = _client.GetAsync(_client.BaseAddress + "User/GetUserById/" + id).Result;

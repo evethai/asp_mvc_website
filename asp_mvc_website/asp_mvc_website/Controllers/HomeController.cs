@@ -54,8 +54,6 @@ namespace asp_mvc_website.Controllers
                 artworkList = JsonConvert.DeserializeObject<List<ArtworkModel>>(data);
                 artworkList = artworkList.Take(5).ToList();
             }
-
-
             return View(artworkList);
         }
 
