@@ -18,8 +18,8 @@ namespace asp_mvc_website.Controllers
             _logger = logger;
             _client = new HttpClient();
             //_client = httpClientFactory.CreateClient();
-            //_client.BaseAddress = new Uri("http://localhost:5012/api/");
-            _client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client.BaseAddress = new Uri("https://localhost:44357/api/");
+            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
 
         }
         public IActionResult Index()
