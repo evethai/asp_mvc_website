@@ -1,4 +1,4 @@
-
+﻿
 .file-uploader {
     opacity: 0;
     height: 100%;
@@ -21,7 +21,6 @@
     -webkit-text-stroke-width: 2px;
     -webkit-text-stroke-color: #bbb;
   }
-
 .profile-picture {
     opacity: 0.75;
     height: 500px;
@@ -35,7 +34,6 @@
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-
     -webkit-box-shadow: 0 8px 6px -6px black;
     -moz-box-shadow: 0 8px 6px -6px black;
     box-shadow: 0 8px 6px -6px black;
@@ -100,7 +98,45 @@
     height: 200px;
     border-radius: 10px;
 }
+.product-container {
+    padding: 10px;
+    display: inline-block;
+    border: solid;
+    margin-top: 20px;
+    margin-right: 10px;
+}
 
 .product-actions {
+    display: flex;
     margin-top: 10px;
 }
+
+    .product-actions button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .product-actions button:first-child {
+            border-right: 1px solid #fff;
+        }
+
+.product-details {
+    text-align: center;
+}
+
+.product-like {
+    float: left;
+}
+
+.product-comment {
+    float: right;
+}
+
+.product-thumb img {
+    width: 350px;
+    height: 300px;
+}
+
+

@@ -7,16 +7,22 @@ namespace asp_mvc_website.Controllers
 {
     public class NotificationController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<NotificationController> _logger;
+        private readonly IHttpClientFactory _factory;
         private readonly HttpClient _client;
-		private readonly ICurrentUserService _currentUserService;
-		public NotificationController(ILogger<HomeController> logger, ICurrentUserService currentUserService)
+        private readonly ICurrentUserService _currentUserService;
+
+        public NotificationController(ILogger<NotificationController> logger, IConfiguration configuration,
+            IHttpClientFactory httpClientFactory, ICurrentUserService currentUserService)
         {
+            _factory = httpClientFactory;
             _logger = logger;
             _client = new HttpClient();
-			_currentUserService = currentUserService;
-			_client.BaseAddress = new Uri("https://localhost:44357/api/");
+            _currentUserService = currentUserService;
+            //_client.BaseAddress = new Uri("https://localhost:7021/api/");
             //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client = _factory.CreateClient("ServerApi");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
         public IActionResult Index(string id)
         {

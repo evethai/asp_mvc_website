@@ -1,4 +1,5 @@
 ﻿using asp_mvc_website.Models;
+using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -6,13 +7,22 @@ namespace asp_mvc_website.Controllers
 {
     public class DashbroadController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILogger<DashbroadController> _logger;
+        private readonly IHttpClientFactory _factory;
         private readonly HttpClient _client;
-        public DashbroadController(ILogger<HomeController> logger)
+        private readonly ICurrentUserService _currentUserService;
+
+        public DashbroadController(ILogger<DashbroadController> logger, IConfiguration configuration,
+            IHttpClientFactory httpClientFactory, ICurrentUserService currentUserService)
         {
+            _factory = httpClientFactory;
             _logger = logger;
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("https://localhost:44357/api");
+            _currentUserService = currentUserService;
+            //_client.BaseAddress = new Uri("https://localhost:7021/api/");
+            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client = _factory.CreateClient("ServerApi");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
 
         [HttpGet]

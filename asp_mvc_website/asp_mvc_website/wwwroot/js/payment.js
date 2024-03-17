@@ -1,5 +1,4 @@
-﻿
-var modal = document.getElementById("myModal");
+﻿var modal = document.getElementById("myModal");
 var showModalBtn = document.getElementById("showModalBtn");
 var closeModalBtn = document.getElementById("closeModalBtn");
 showModalBtn.onclick = function () {
