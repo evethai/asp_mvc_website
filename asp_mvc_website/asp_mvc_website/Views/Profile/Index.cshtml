@@ -1,0 +1,53 @@
+﻿@model ProfileModel
+@{
+	ViewData["Title"] = "Profile Page";
+}
+<section id="primary" class="content-full-width">
+	<div class="container">
+		<div class="profile">
+			<div class="profile-header">
+				<img src="https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg" alt="Background Image" class="background-image">
+				<img src="https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg" alt="Avatar" class="avatar">
+				<h1 class="name">@Model.user.FirstName @Model.user.LastName</h1>				
+				<div class="profile-details">
+					<div class="additional-info">
+						<p>Birthday: @Model.user.Birthday</p> <p>Email: john@example.com</p>
+					</div>
+				</div>
+			</div>			
+				@foreach (var item in Model.artworks)
+				{
+				<div class="product-container">
+					<a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})">
+						<div class="product-thumb"> <img src="@item.Image"/> </div>
+					</a>
+					<div class="product-details">
+						<h3 class="product-title">@item.Title</h3>
+						<p class="product-price">$@item.Price</p>
+						<div class="product-actions">
+							<button class="product-like">
+								<img src="~/images/like.png" width="15px"/>
+								<span class="like-text">Like</span>
+								<span class="like-count">@Model.like.Count()</span> <!-- Example for displaying like count -->
+							</button>
+							<button class="product-comment">
+								<img src="~/images/comment.png" width="15px" />
+								<span class="comment-text">Comment</span>
+								<span class="comment-count">5</span> <!-- Example for displaying comment count -->
+							</button>
+						</div>
+					</div>
+				</div>
+				}			
+		</div>
+	</div>
+</section>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		var sliderContainer = document.getElementById("slider-container");
+		if (sliderContainer) {
+			sliderContainer.parentNode.removeChild(sliderContainer);
+		}
+	});
+</script>
+

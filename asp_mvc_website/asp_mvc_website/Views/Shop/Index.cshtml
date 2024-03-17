@@ -1,5 +1,4 @@
 ﻿@model HomeModel
-
 @{
     ViewData["Title"] = "Shop Page";
 }
@@ -7,7 +6,76 @@
     <div class="container">
         <div class="main-title animate" data-animation="pullDown" data-delay="100">
             <h3> Shop </h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</p>
+            <p>Explore unique art, purchase originals or prints, and support artists directly on our Shop page</p>
+        </div>
+        @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+        @{
+            var user = HttpContextAccessor.HttpContext.Session.GetString("UserId");
+        }
+        @if (user != null)
+        {
+            <!-- Button -->
+            <a class="dt-sc-button small type2" id="openModalBtn">Post Artwork</a>
+            <div class="clear"> </div>
+        }
+
+        <!-- Modal -->
+        <div class="modal" tabindex="-1" id="PostModal">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content" style="background: #333">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel" style="color: white; font: bold">Modal title</h5>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/PostArtwork/_Post" method="post">
+                            <div class="mb-3">
+                                <label for="title" class="col-form-label" style="color: white; font: bold">Title:</label>
+                                <input type="text" style="background: #252525; color:white" class="form-control" name="title" id="title">
+                            </div>
+                            <div class="mb-3">
+                                <label for="description" class="col-form-label" style="color: white; font: bold">Description:</label>
+                                <textarea name="description" id="description" class="form-control" style="height:150px;background:#252525;color:white"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="price" class="col-form-label" style="color: white; font: bold">Price:</label>
+                                <input type="text" style="background: #252525;color:white" class="form-control" name="price" id="price">
+                                <div id="priceValidationMessage" style="color: red; display: none;">Please enter a valid number.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="category" class="col-form-label" style="color: white; font: bold">Select Item:</label>
+                                <select class="form-select" style="background: #252525; color: white;" id="category" name="category">
+                                    @foreach(var item in Model.CategoryList)
+                                    {
+                                        <option value="@item.Id" style="background: #252525; color: white;">@item.Name</option>
+                                    })
+                                    <option value="other" style="background: #252525; color: white;">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3" id="customItemDiv" style="display: none;">
+                                <label for="categoryCustom" class="col-form-label" style="color: white; font: bold">Custom Item:</label>
+                                <input type="text" class="form-control" style="background: #252525;color:white" id="categoryCustom" name="categoryCustom" placeholder="Enter custom item">
+                            </div>
+                            <div class="mb-3">
+                                <label for="image" class="col-form-label" style="color: white; font: bold">Image:</label>
+                                <div class="profile-picture" id="image" style="margin:auto;background:#252525; background-size:cover;">
+                                    <h1 class="upload-icon">
+                                        <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
+                                    </h1>
+                                    <input class="file-uploader"
+                                           type="file"
+                                           name="image"
+                                           onchange="upload()"
+                                           accept="image/*" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="closeModalBtn" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="postBtn">Post</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div class="fullwidth-section shop-grid">

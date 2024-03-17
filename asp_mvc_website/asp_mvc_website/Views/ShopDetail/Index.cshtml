@@ -3,11 +3,11 @@
     ViewBag.Title = "Shop Detail";
 }
 
-    <div class="breadcrumb">
-        <div class="container">
-            <h2>Product <span>Detail</span></h2>
-        </div>
+<div class="breadcrumb">
+    <div class="container">
+        <h2>Artwork <span>Detail</span></h2>
     </div>
+</div>
 <section id="primary" class="content-full-width">
     <div class="container">
         <div class="main-title animate" data-animation="pullDown" data-delay="100">
@@ -18,19 +18,19 @@
             <div class="dt-sc-three-fifth column first">
                 <div class="cart-thumb">
                     <a href="#">
-                        <img src="@Model.artworkModel.Image" alt title="Acrylic">
+                        <img src="@Model.artworkModel.Image" alt="" title="Acrylic">
                     </a>
                 </div>
                 <div class="commententries">
                     <div><a class="dt-sc-button small type2">Buy</a> <a class="dt-sc-button small type2">Add to cart</a></div>
 
-                    <h4> Comments ( 3 ) </h4>
+                   @*  <h4> Comments ( 3 ) </h4>
                     <h6><a href="#"><i class="fa fa-comments-o"></i>Add Comments</a></h6>
                     <ul class="commentlist">
                         <li>
                             <div class="comment">
                                 <header class="comment-author">
-                                    <img title alt="image" src="images/post-img1.jpg">
+                                    <img title="" alt="image" src="images/post-img1.jpg">
                                 </header>
                                 <div class="comment-details">
                                     <div class="author-name">
@@ -54,7 +54,7 @@
                                 <li>
                                     <div class="comment">
                                         <header class="comment-author">
-                                            <img title alt="image" src="images/post-img2.jpg">
+                                            <img title="" alt="image" src="images/post-img2.jpg">
                                         </header>
                                         <div class="comment-details">
                                             <div class="author-name">
@@ -77,25 +77,20 @@
                                 </li>
                             </ul>
                         </li>
-                    </ul>
+                    </ul> *@
                 </div>
             </div>
             <div class="dt-sc-two-fifth column">
 
                 <div class="post-author-details">
                     <div class="entry-author-image">
-                        <img src="images/authour.png" alt title />
+                        <img src="~/images/authour.png" alt="" title="" />
                     </div>
                     <div class="author-title">
-                        <h5><a href="#">@Model.userModel.FirstName @Model.userModel.LastName</a></h5>
-                        <span>Garland, TX - United States</span>
-                        <div class="woocommerce-product-rating">
-                            <div title="Rated 4.40 out of 5" class="star-rating"><span style="width:85%"></span></div>
-                            <a href="#">( 4 customer reviews )</a>
-                        </div>
+                        <h5><a href="@Url.Action("Index","Profile",new{id = Model.artworkModel.UserId})">@Model.userModel.FirstName @Model.userModel.LastName</a></h5>                       
                     </div>
                     <div class="author-desc">
-                        <p>Remaining art are essentially unchanged. It was popularised in the 1960s with a release of Latest sheets containing passages, and more recently with desktop publishing software.</p>
+                        <p>@Model.artworkModel.Description</p>
                     </div>
                 </div>
                 <div class="project-details">
@@ -115,36 +110,70 @@
                         <li>
                             <p><span>Price :</span><i class="fa fa-dollar"></i>@Model.artworkModel.Price</p>
                         </li>
-@*                         <li>
-                            <p><span>Statistics :</span><i class="fa fa-eye"></i>2,318</p>
+                        @*                         <li>
+                        <p><span>Statistics :</span><i class="fa fa-eye"></i>2,318</p>
                         </li>
                         <li>
-                            <p><span>Colors :</span><a href="#" class="yellow"></a><a href="#" class="green"></a><a href="#" class="orange"></a><a href="#" class="red"></a></p>
+                        <p><span>Colors :</span><a href="#" class="yellow"></a><a href="#" class="green"></a><a href="#" class="orange"></a><a href="#" class="red"></a></p>
                         </li>
                         <li>
-                            <p><span>Sales Sheet :</span>PDF</p>
-                        </li> *@
-                        <li>
-                            <p>
-                                <span>Tags :</span>
-                                <div class="tagcloud type3">
-                                    <a href="#">Sketches</a>
-                                    <a href="#">Fashion</a>
-                                    <a href="#">Art</a>
-                                    <a href="#">Rain</a>
-                                    <a href="#">Scupture</a>
-                                    <a href="#">Lonely</a>
-                                    <a href="#">Oil color</a>
-                                    <a href="#">Gallery</a>
-                                    <a href="#">Mordern Art</a>
-                                </div>
-                            </p>
-                        </li>
+                        <p><span>Sales Sheet :</span>PDF</p>
+                        </li> *@                       
                     </ul>
                 </div>
             </div>
         </div>
     </div>
+    @*  <a id="btnAdd" class="dt-sc-button small type3">Small Button</a><div class="clear"> </div>
+    <div class="modal" tabindex="-1" id="PostModal">
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title">Modal title</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+    <input type="hidden" id="artworkId" />
+    <div class="mb-2">
+    <div class="form-group">
+    <label for="title"> <span>Use title case to get a better result</span></label>
+    <input type="text" name="title" id="title" class="form-control" />
+    </div>
+    </div>
+    <div class="mb-2">
+    <div class="form-group" style="height: 200px;">
+    <label for="description">Description</label>
+    <textarea name="description" id="description" class="form-control" style="height: 170px;"></textarea>
+    </div>
+    </div>
+    <div class="mb-2">
+    <div class="form-group">
+    <label for="price">Price</label>
+    <input type="number" name="price" id="price" class="form-control" step="0.01" />
+    </div>
+    </div>
+    <div class="mb-2">
+    <div class="profile-picture">
+    <h1 class="upload-icon">
+    <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
+    </h1>
+    <input class="file-uploader"
+    type="file"
+    name="image"
+    onchange="upload()"
+    accept="image/*" />
+    </div>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary">Save changes</button>
+    </div>
+    </div>
+    </div>
+    </div> *@
+
+
 </section>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -153,4 +182,13 @@
             sliderContainer.parentNode.removeChild(sliderContainer);
         }
     });
+    var btnAdd = document.getElementById("btnAdd");
+
+    // Get the modal element
+    var modal = document.getElementById("PostModal");
+
+    // When the button is clicked, show the modal
+    btnAdd.onclick = function () {
+        modal.style.display = "block";
+    }
 </script>

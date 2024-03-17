@@ -36,4 +36,5 @@ namespace asp_mvc_website.Models
         InProgress = 2,
         Sold = 3
     }
+    
 }

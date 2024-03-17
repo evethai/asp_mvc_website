@@ -5,11 +5,15 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using asp_mvc_website.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Claims;
+using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 
 namespace asp_mvc_website.Controllers
@@ -19,13 +23,18 @@ namespace asp_mvc_website.Controllers
 
         private readonly ILogger<UserController> _logger;
         private readonly HttpClient _client;
-        public UserController(ILogger<UserController> logger, IHttpClientFactory httpClientFactory)
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ICurrentUserService _currentUserService;
+        public UserController(ILogger<UserController> logger, IHttpClientFactory httpClientFactory,
+            IConfiguration configuration, ICurrentUserService currentUserService)
         {
+            _currentUserService = currentUserService;
             _logger = logger;
             _client = new HttpClient();
-			//_client = httpClientFactory.CreateClient();
-			//_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
-			_client.BaseAddress = new Uri("http://localhost:5012/api/");
+            _client = httpClientFactory.CreateClient();
+            //_client = httpClientFactory.CreateClient();
+            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
         public IActionResult Index()
         {
@@ -46,7 +55,7 @@ namespace asp_mvc_website.Controllers
             {
                 return View(model);
             }
-            
+
             var loginDTO = new LoginDTO
             {
                 Email = model.Email,
@@ -55,10 +64,10 @@ namespace asp_mvc_website.Controllers
 
             // Send login request to Web API
             var response = await _client.PostAsync(
-                _client.BaseAddress + "User/SignIn", 
+                _client.BaseAddress + "User/SignIn",
                 new StringContent(
                     JsonConvert.SerializeObject(model),
-                    Encoding.UTF8, 
+                    Encoding.UTF8,
                     "application/json"));
 
             if (response.IsSuccessStatusCode)
@@ -69,8 +78,17 @@ namespace asp_mvc_website.Controllers
 
                 // Store token in session, cookie, or local storage
                 HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
+                HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
                 HttpContext.Session.SetString("UserEmail", model.Email);
                 // Redirect user to the home page or another appropriate page
+
+
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
+                var user = await _currentUserService.User();
+                if (user != null)
+                {
+                    HttpContext.Session.SetString("UserId", user.Id.ToString());
+                }
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -86,6 +104,8 @@ namespace asp_mvc_website.Controllers
         {
             return View();
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel model)
@@ -105,10 +125,10 @@ namespace asp_mvc_website.Controllers
 
             // Send registration request to Web API
             var response = await _client.PostAsync(
-                _client.BaseAddress + "User/SignUp", 
+                _client.BaseAddress + "User/SignUp",
                 new StringContent(
                     JsonConvert.SerializeObject(registerDTO),
-                    Encoding.UTF8, 
+                    Encoding.UTF8,
                     "application/json"));
 
             if (response.IsSuccessStatusCode)
@@ -202,6 +222,28 @@ namespace asp_mvc_website.Controllers
 
 
 	}
+
+        //public async Task<IActionResult> RefeshToken()
+        //{
+        //    var model = new TokenResponse
+        //    {
+        //        Token = HttpContext.Session?.GetString("AccessToken"),
+        //        RefreshToken = HttpContext.Session?.GetString("RefeshToken"),
+        //    };
+        //    var response = await _client.PostAsync(_client.BaseAddress + "User/refresh-token", new StringContent(model.RefreshToken));
+        //    if(!response.IsSuccessStatusCode)
+        //    {
+        //        return RedirectToAction("Logout");
+        //    }
+        //    var responseContent = await response.Content.ReadAsStringAsync();
+        //    var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+        //    HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
+        //    HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
+        //}
+
+    }
+
+
 
     public class TokenResponse
     {

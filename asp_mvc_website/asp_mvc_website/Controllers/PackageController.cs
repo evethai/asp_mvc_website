@@ -1,4 +1,5 @@
 ﻿using asp_mvc_website.Models;
+using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -9,13 +10,21 @@ namespace asp_mvc_website.Controllers
     public class PackageController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IHttpClientFactory _factory;
         private readonly HttpClient _client;
-        public PackageController(ILogger<HomeController> logger)
+        private readonly ICurrentUserService _currentUserService;
+
+        public PackageController(ILogger<HomeController> logger, IConfiguration configuration,
+            IHttpClientFactory httpClientFactory, ICurrentUserService currentUserService)
         {
+            _factory = httpClientFactory;
             _logger = logger;
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("http://localhost:5012/api/");
+            _currentUserService = currentUserService;
+            //_client.BaseAddress = new Uri("https://localhost:7021/api/");
             //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client = _factory.CreateClient("ServerApi");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
         [HttpGet]
         public IActionResult Index()
@@ -40,7 +49,8 @@ namespace asp_mvc_website.Controllers
         {
             try
             {
-                post.UserId = "ea5140a3-284d-4d07-95c7-ca31de42ae9b";
+                var user = await _currentUserService.User();
+                post.UserId = user.Id.ToString();
                 string data = JsonConvert.SerializeObject(post);
                 StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "Poster/AddPoster", content);
