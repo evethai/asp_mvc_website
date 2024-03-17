@@ -15,12 +15,19 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         z-index: 9999;
         text-align: center;
-        color : black;
-        background-color : white;
+        color: black;
+        background-color: white;
     }
+
     .column.first {
-        padding:10px;
+        padding: 10px;
+        margin-left : 30px;
     }
+
+    .dt-sc-one-fourth {
+        width: 22%;
+    }
+
     .close:hover,
     .close:focus {
         color: black;
@@ -43,35 +50,35 @@
             max-height: 100%;
         }
 </style>
-<div class="dt-sc-pricing-table">
-    @foreach (var item in Model)
-    {
-        <div class="column dt-sc-one-fourth first">
-            <div class="dt-sc-pr-tb-col type1">
-                <div class="dt-sc-tb-header">
-                    <div class="dt-sc-price">
-                        <div class="dt-sc-price-content">
-                            <h2>@item.Price VND</h2>
-                            <span>/ @item.Quantity Post</span>
+        <div class="dt-sc-pricing-table">
+            @foreach (var item in Model)
+            {
+                <div class="column dt-sc-one-fourth first">
+                    <div class="dt-sc-pr-tb-col type1">
+                        <div class="dt-sc-tb-header">
+                            <div class="dt-sc-price">
+                                <div class="dt-sc-price-content">
+                                    <h2>@item.Price VND</h2>
+                                    <span>/ @item.Quantity Post</span>
+                                </div>
+                            </div>
+                            <div class="dt-sc-tb-title">
+                                <h5> @item.Name Package </h5>
+                            </div>
                         </div>
-                    </div>
-                    <div class="dt-sc-tb-title">
-                        <h5> @item.Name Package </h5>
+                        <ul class="dt-sc-tb-content">
+                            <li> Sketches @item.Id </li>
+                            <li> Water Painting </li>
+                            <li> Crayon painting </li>
+                            <li> Dropper Art </li>
+                            <li> Canvas Print </li>
+                        </ul>
+                        <button class="showModalBtn dt-sc-button medium type1" data-item-name="@item.Name" data-item-price="@item.Price" data-item-package="@item.Id">Buy</button>
+                        <div class="clear"></div>
                     </div>
                 </div>
-                <ul class="dt-sc-tb-content">
-                    <li> Sketches @item.Id </li>
-                    <li> Water Painting </li>
-                    <li> Crayon painting </li>
-                    <li> Dropper Art </li>
-                    <li> Canvas Print </li>
-                </ul>
-                <button class="showModalBtn dt-sc-button medium type1" data-item-name="@item.Name" data-item-price="@item.Price" data-item-package="@item.Id">Buy</button>
-                <div class="clear"></div>               
-            </div>
+            }
         </div>
-    }
-</div>
 <div class="popup" id="myModal">
     <h2 style="color:black">Mã QR thanh toán tự động</h2>
     <h4 id="popupTitle" style="color:black"></h4>
@@ -80,7 +87,7 @@
     <img class="qr-code-container" src="https://img.vietqr.io/image/MB-113366668888-qr_only.png" alt="QR code">
     <p id="popupNoti"></p>
     <div class="clear"></div>
-    <button type="submit" class="dt-sc-button medium type1" onclick="closePopup()">Close</button>  
+    <button type="submit" class="dt-sc-button medium type1" onclick="closePopup()">Close</button>
     <form id="myForm" asp-action="CreatePoster" method="post" style="display: none;">
         <div class="form-group">
             <input type="number" class="form-control" name="PackageId" id="packageIdInput">
@@ -122,7 +129,7 @@
             form.submit();
         }
         function closePopup() {
-            $("#myModal").hide();        
+            $("#myModal").hide();
         }
         let isSuccess = false;
         async function checkPayment(price, content) {
