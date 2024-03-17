@@ -12,7 +12,7 @@ namespace asp_mvc_website.Models
         public double Price { get; set; }
         public DateTime? CreateOn { get; set; }
         public string Image { get; set; } = string.Empty;
-        public ArtWorkStatus Status { get; set; }
+        public ArtWorkStatus? Status { get; set; }
 
         [JsonProperty("categories")]
         public List<int> categories { get; set; } = new List<int>();
