@@ -98,6 +98,45 @@
     height: 200px;
     border-radius: 10px;
 }
+.product-container {
+    padding: 10px;
+    display: inline-block;
+    border: solid;
+    margin-top: 20px;
+    margin-right: 10px;
+}
 
+.product-actions {
+    display: flex;
+    margin-top: 10px;
+}
+
+    .product-actions button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+
+        .product-actions button:first-child {
+            border-right: 1px solid #fff;
+        }
+
+.product-details {
+    text-align: center;
+}
+
+.product-like {
+    float: left;
+}
+
+.product-comment {
+    float: right;
+}
+
+.product-thumb img {
+    width: 350px;
+    height: 300px;
+}
 
 

@@ -41,10 +41,18 @@ namespace asp_mvc_website.Controllers
 				string data = response.Content.ReadAsStringAsync().Result;
 				artworkModels = JsonConvert.DeserializeObject<List<ArtworkModel>>(data);
 			}
+            List<LikeModel> likeModels = new List<LikeModel>();
+            HttpResponseMessage responseLike = _client.GetAsync(_client.BaseAddress + "Like/GetAllLikeByArtworkId/" + id).Result;
+            if (responseLike.IsSuccessStatusCode)
+            {
+                string data = response.Content.ReadAsStringAsync().Result;
+                likeModels = JsonConvert.DeserializeObject<List<LikeModel>>(data);
+            }
 
-			ProfileModel profileModel = new ProfileModel();
+            ProfileModel profileModel = new ProfileModel();
 			profileModel.user = userModel;
 			profileModel.artworks = artworkModels;
+            profileModel.like = likeModels;
 
 			return View(profileModel);
 		}
