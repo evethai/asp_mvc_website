@@ -190,10 +190,10 @@ namespace asp_mvc_website.Controllers
             }
             else
             {
-                ViewData["ErrorMessage"] = "Invalid username or password";
-                //ModelState.AddModelError(string.Empty, "Invalid username or password");
-                return View();
-            }
+                ViewData["ErrorMessage"] = "not validate";
+				//ModelState.AddModelError(string.Empty, "Invalid username or password");
+				return RedirectToAction("Index", "Home");
+			}
 
 
             //var response = await _client.PostAsync(
@@ -221,7 +221,6 @@ namespace asp_mvc_website.Controllers
         }
 
 
-	}
 
         //public async Task<IActionResult> RefeshToken()
         //{
@@ -242,8 +241,6 @@ namespace asp_mvc_website.Controllers
         //}
 
     }
-
-
 
     public class TokenResponse
     {
