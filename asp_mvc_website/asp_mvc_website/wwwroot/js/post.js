@@ -41,13 +41,29 @@ var txtTitle = document.getElementById("title").value;
 var txtDescription = document.getElementById("description").value;
 var txtPrice = document.getElementById("price").value;
 var urlImage = document.getElementById("image").value;
+var p_modal = document.getElementById("P_Modal");
+
 btnAdd.onclick = function () {
-    modal.style.display = "block";
-    txtTitle = '';
-    txtDescription = '';
-    txtPrice = '';
-    urlImage.style.backgroundImage = '';
+    var isPoster = document.getElementById("_poster").value;
+    if (isPoster === "IsPoster") {
+        modal.style.display = "block";
+        txtTitle = '';
+        txtDescription = '';
+        txtPrice = '';
+        urlImage.style.backgroundImage = '';
+    } else {
+        p_modal.style.display = "block";
+    }
 }
+
+document.getElementById("goPackageBtn").addEventListener("click", function () {
+    
+    window.location.href = '/Package/Index';
+});
+document.getElementById("closePackage").addEventListener("click", function () {
+    p_modal.style.display = "none";
+});
+
 // Get the input element
 const priceInput = document.getElementById('price');
 const priceValidationMessage = document.getElementById('priceValidationMessage');

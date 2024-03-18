@@ -27,7 +27,7 @@ namespace asp_mvc_website.Controllers
 		public IActionResult Index()
         {
 			var user = _currentUserService.User();
-			string userId = user.Id.ToString();
+			string userId = "4cf64858-1564-4bb4-a170-2f477aa7d816";
 
 			List<GetUsetNotification> noti = new List<GetUsetNotification>();
 			HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "UserNotifcation/" + userId).Result;

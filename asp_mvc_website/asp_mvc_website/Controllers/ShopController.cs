@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System.Drawing.Printing;
+using System.Net;
 using System.Text;
 
 
@@ -75,6 +76,17 @@ namespace asp_mvc_website.Controllers
             {
                 ViewBag.DupplicateId = TempData["DupplicateId"];
             }
+
+            var user = _currentUserService.User().Result;
+            if (user != null)
+            {
+                HttpResponseMessage checkPoster = _client.GetAsync(_client.BaseAddress + "Poster/" + user.Id).Result;
+                if (checkPoster.IsSuccessStatusCode)
+                {
+                    homeModel.IsPoster = "IsPoster";
+                }
+            }
+
 
             return View(homeModel);
         }

@@ -83,6 +83,7 @@ namespace asp_mvc_website.Controllers
                 {
                     HttpContext.Session.SetString("UserId", user.Id.ToString());
                 }
+
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -115,6 +116,7 @@ namespace asp_mvc_website.Controllers
                 LastName = model.LastName,
                 Email = model.Email,
                 Password = model.Password,
+                IsAdmin = false
             };
 
             // Send registration request to Web API

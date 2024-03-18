@@ -11,14 +11,33 @@
         @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
         @{
             var user = HttpContextAccessor.HttpContext.Session.GetString("UserId");
-            var IsPost = HttpContextAccessor.HttpContext.Session.GetString("IsPost");
         }
         @if (user != null)
         {
             <!-- Button -->
             <a class="dt-sc-button small type2" id="openModalBtn">Post Artwork</a>
             <div class="clear"> </div>
+            <input type="hidden" id="_poster" value="@Model.IsPoster" />  
         }
+
+
+        <div class="modal" tabindex="-1" id="P_Modal" style="margin-top : 180px">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content" style="background: #333">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel" style="color: white; font: bold">Modal title</h5>
+                    </div>
+                    <div class="modal-body">
+                       <h3>You is not a Artist, You need Buy a Package to Post artwork</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
+                        <button type="button" class="btn btn-primary" id="goPackageBtn">Go Package</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
         <div class="column dt-sc-one-half space first animate" id="SuccessNoti" style="display: none" data-animation="fadeInDown" data-delay="100">
             <div class="dt-sc-success-box aligncenter"> <span></span> <h4> Success </h4> Post new Artwork is <b> success </b> Please wait for moderation and your post will be displayed in the Shop</div>
@@ -327,6 +346,5 @@
             urlImage.style.backgroundImage = 'none';
         }
     });
-
 </script>
 

@@ -189,13 +189,13 @@
 								<p class="text-muted"><small>@item.dateTime</small></p>
 							</div>
 						</div>
-						@if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.Accept)
+						@if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptOrder)
 						{
 							<div class="notification-list_feature-img">
 								<div class="abutton" style="color:black">has been approved</div>
 							</div>
 						}
-						@if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.Deny)
+						@if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.DenyOrder)
 						{
 							<div class="notification-list_feature-img">
 								<div class="dbutton" style="color:black">has been denied</div>
