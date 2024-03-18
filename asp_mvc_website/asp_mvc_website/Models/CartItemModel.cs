@@ -9,9 +9,9 @@ namespace asp_mvc_website.Models
         public string Title { get; set; } = string.Empty;
         public double Price { get; set; }
         public string Image { get; set; } = string.Empty;
-        public string Status {  get; set; } 
+		public ArtWorkStatus Status { get; set; }
 
-        [JsonProperty("ImageUrl")]
+		[JsonProperty("ImageUrl")]
         private List<string> ImageUrl { get; set; } = new List<string>();
 
         [OnDeserialized]
