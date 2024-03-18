@@ -174,7 +174,6 @@ namespace asp_mvc_website.Controllers
 							));
                 if (responseUpdateArtwork.IsSuccessStatusCode)
                 {
-
 					var cartItems = GetCartItem();
 
 					var itemToUpdate = cartItems.FirstOrDefault(item => item.artworkId == artworkId	);
