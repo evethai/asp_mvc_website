@@ -19,8 +19,8 @@ namespace asp_mvc_website.Controllers
         public ShopController()
         {
             _client = new HttpClient();
-            //_client.BaseAddress = new Uri("http://localhost:5012/api/");
-            _client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client.BaseAddress = new Uri("https://localhost:7021//api/");
+            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
         }
 
         private static string ApiKey = "AIzaSyB8sC0Z0tEfdI-1z-KHp7N25OJYBw8d1XU";
