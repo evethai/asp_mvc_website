@@ -1,4 +1,5 @@
 ﻿using asp_mvc_website.DTO;
+using asp_mvc_website.Helpers;
 using asp_mvc_website.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -9,11 +10,14 @@ using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Claims;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 
 namespace asp_mvc_website.Controllers
@@ -82,13 +86,27 @@ namespace asp_mvc_website.Controllers
                 HttpContext.Session.SetString("UserEmail", model.Email);
                 // Redirect user to the home page or another appropriate page
 
-
                 _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
                 var user = await _currentUserService.User();
                 if (user != null)
                 {
                     HttpContext.Session.SetString("UserId", user.Id.ToString());
                 }
+
+                var handler = new JwtSecurityTokenHandler();
+                var token = handler.ReadJwtToken(tokenResponse.Token);
+
+                // Extract role claims
+                var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+                foreach(var role in roleClaims)
+                {
+                    if(role.Equals(AppRole.Admin))
+                    {
+                        // Dashboard
+                        return RedirectToAction("Index", "Dashbroad");
+                    }
+                }
+
                 return RedirectToAction("Index", "Home");
             }
             else
