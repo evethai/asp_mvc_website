@@ -25,8 +25,6 @@ namespace asp_mvc_website.Controllers
             _logger = logger;
             _client = new HttpClient();
             _client = httpClientFactory.CreateClient();
-            //_client = httpClientFactory.CreateClient();
-            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
         public IActionResult Index()

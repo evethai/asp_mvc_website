@@ -13,7 +13,7 @@
             var user = HttpContextAccessor.HttpContext.Session.GetString("UserId");
             var IsPost = HttpContextAccessor.HttpContext.Session.GetString("IsPost");
         }
-        @if (user == null)
+        @if (user != null)
         {
             <!-- Button -->
             <a class="dt-sc-button small type2" id="openModalBtn">Post Artwork</a>

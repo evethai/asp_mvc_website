@@ -1,4 +1,6 @@
-﻿using asp_mvc_website.Models;
+﻿using asp_mvc_website.Enums;
+using asp_mvc_website.Models;
+using asp_mvc_website.Services;
 using Firebase.Auth;
 using Firebase.Storage;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +16,19 @@ namespace asp_mvc_website.Controllers
 {
     public class ShopController : Controller
     {
+        private readonly IHttpClientFactory _factory;
         private readonly HttpClient _client;
-        int pageSize = 10;
-        public ShopController()
+        private readonly ICurrentUserService _currentUserService;
+        private int pageSize = 15;
+
+        public ShopController(IConfiguration configuration,
+            IHttpClientFactory httpClientFactory, ICurrentUserService currentUserService)
         {
+            _factory = httpClientFactory;
             _client = new HttpClient();
-            _client.BaseAddress = new Uri("https://localhost:7021//api/");
-            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _currentUserService = currentUserService;
+            _client = _factory.CreateClient("ServerApi");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
 
         private static string ApiKey = "AIzaSyB8sC0Z0tEfdI-1z-KHp7N25OJYBw8d1XU";
@@ -127,23 +135,29 @@ namespace asp_mvc_website.Controllers
         [HttpPost]
         public  async Task<IActionResult> Post(PostArtworkModel model)
         {
-            //var userId = HttpContext.Session.GetString("UserId");
 
-            //var categoryPostResult = await PostCategoryIfNew(model);
-            //if (!categoryPostResult.IsSuccess)
-            //    return StatusCode(500, "Cannot create new Category");
+            var user = await _currentUserService.User();
+            var userId = user.Id.ToString();
 
-            //var artworkPostResult = await PostArtwork(model, userId, categoryPostResult.CategoryId);
-            //if (!artworkPostResult.IsSuccess)
-            //    return StatusCode(500, "Cannot post new Artwork");
+            var categoryPostResult = await PostCategoryIfNew(model);
+            if (!categoryPostResult.IsSuccess)
+                return StatusCode(500, "Cannot create new Category");
 
-            //var decsResult = await DecsQuantityPoster(userId);
-            //if (!decsResult.IsSuccessStatusCode)
-            //    return StatusCode(500, "Error when decs quantity post of poster");
+            var artworkPostResult = await PostArtwork(model, userId, categoryPostResult.CategoryId);
+            if (!artworkPostResult.IsSuccess)
+                return StatusCode(500, "Cannot post new Artwork");
 
-            //create notification(title,description,0)
+            var decsResult = await DecsQuantityPoster(userId);
+            if (!decsResult.IsSuccessStatusCode)
+                return StatusCode(500, "Error when decs quantity post of poster");
 
-            //create UserNotification()(noti_id, artwork_id)
+            var notiResult = await PostNotification(model);
+            if (!notiResult.IsSuccess)
+                return StatusCode(500, "Error when create new notification");
+
+            var userNotiResult = await PostUserNotification(artworkPostResult.artworkId, notiResult.NotificationID);
+            if (!userNotiResult.IsSuccess)
+                return StatusCode(500, "Error when create new user notification");
 
             ViewBag.PostSuccess = true;
             return Ok(new { success = true });
@@ -171,12 +185,11 @@ namespace asp_mvc_website.Controllers
                 return (false, 0);
 
             var data = response.Content.ReadAsStringAsync().Result;
-            var dto = JsonConvert.DeserializeObject<ResponseDTO>(data);
+            var dto = JsonConvert.DeserializeObject<ResponseCategoryDTO>(data);
 
             return (true, dto.Data.id);
         }
-
-        private async Task<(bool IsSuccess, HttpResponseMessage Response)> PostArtwork(PostArtworkModel model, string userId, int categoryId)
+        private async Task<(bool IsSuccess, int artworkId)> PostArtwork(PostArtworkModel model, string userId, int categoryId)
         {
             var imageUrl = ImageURL(model.File);
 
@@ -198,7 +211,9 @@ namespace asp_mvc_website.Controllers
                     Encoding.UTF8,
                     "application/json"));
 
-            return (postArtwork.IsSuccessStatusCode, postArtwork);
+            var data = postArtwork.Content.ReadAsStringAsync().Result;
+            var dto = JsonConvert.DeserializeObject<ResponseArtworkDTO>(data);
+            return (postArtwork.IsSuccessStatusCode, dto.Data.artworkId);
         }
         private async Task<HttpResponseMessage> DecsQuantityPoster(string userId)
         {
@@ -206,13 +221,49 @@ namespace asp_mvc_website.Controllers
             return await _client.SendAsync(request);
         }
 
-        private async Task<(bool IsSuccess, int NotificationID)> PostNotification()
+        private async Task<(bool IsSuccess, int NotificationID)> PostNotification(PostArtworkModel model)
         {
-            return (true, 0);
+            string title = "New Artwork";
+            if (model.IsNewCategory)
+            {
+                title = "New Artwork with Custom New Categogy";
+            }
+             
+
+            var notiDto = new createNotificationModel
+            {
+                Title = title,
+                Description = "New Artwork has been posted",
+                notiStatus = NotiStatus.ConfirmPost
+            };
+            var response = await _client.PostAsync(
+                _client.BaseAddress + "Notification/CreateNotification",
+                new StringContent(
+                    JsonConvert.SerializeObject(notiDto),
+                    Encoding.UTF8,
+                    "application/json"));
+            if(!response.IsSuccessStatusCode)
+                return (false, 0);
+            var data = response.Content.ReadAsStringAsync().Result;
+            var dto = JsonConvert.DeserializeObject<ResponseNotificationDTO>(data);
+            return (true, dto.Data.Id);
         }
-        private async Task<(bool IsSuccess, HttpResponseMessage Response)> PostUserNotification()
+        private async Task<(bool IsSuccess, HttpResponseMessage Response)> PostUserNotification(int artworkId, int notiId)
         {
-            return (true, null);
+            CreateAdminNotificationDTO dto = new CreateAdminNotificationDTO
+            {
+                ArtworkId = artworkId,
+                NotificationId = notiId
+            };
+            var response = await _client.PostAsync(
+                _client.BaseAddress + "UserNotifcation/AddNotiForadmin",
+                new StringContent(
+                    JsonConvert.SerializeObject(dto),
+                    Encoding.UTF8,
+                    "application/json"));
+            
+            return (response.IsSuccessStatusCode, response);
+
         }
 
         private async Task<string> UploadImageToFirebase(IFormFile file)

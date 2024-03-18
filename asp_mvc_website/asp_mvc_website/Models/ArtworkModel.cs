@@ -36,5 +36,19 @@ namespace asp_mvc_website.Models
         InProgress = 2,
         Sold = 3
     }
-    
+
+    public class ResponseArtworkDTO
+    {
+        public string Message { get; set; } = string.Empty;
+        public bool IsSuccess { get; set; }
+        public ArtworkModel Data { get; set; } = null;
+
+    }
+
+	public class ArtworkUpdateDTO
+	{
+		public int ArtworkId { get; set; }
+		public ArtWorkStatus Status { get; set; }
+	}
+
 }

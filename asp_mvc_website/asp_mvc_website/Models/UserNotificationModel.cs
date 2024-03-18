@@ -26,5 +26,27 @@ namespace asp_mvc_website.Models
         public NotiStatus notiStatus { get; set; }
         public string? nameUser { get; set; }
         public string artwordUrl { get; set; }
-    }
+		public int artworkId { get; set; }
+		public int notificationId { get; set; }
+	}
+	public class NotificationUserModel
+	{
+		public int Id { get; set; }
+		public string Title { get; set; } = string.Empty;
+		public string Description { get; set; } = string.Empty;
+		public DateTime? Date { get; set; }
+		public bool? IsRead { get; set; }
+	}
+	public class CreateAdminNotificationDTO
+	{
+		public int? NotificationId { get; set; }
+		public int? ArtworkId { get; set; }
+	}
+
+	public class CreateUserNotificationDTO
+	{
+		public string? userId { get; set; }
+		public int? NotificationId { get; set; }
+		public int? ArtworkId { get; set; }
+	}
 }

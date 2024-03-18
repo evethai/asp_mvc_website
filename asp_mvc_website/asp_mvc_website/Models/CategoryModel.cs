@@ -11,7 +11,7 @@
         public string Name { get; set; }
         public bool Status { get; set; }
     }
-    public class ResponseDTO
+    public class ResponseCategoryDTO
     {
         public string Message { get; set; } = string.Empty;
         public bool IsSuccess { get; set; }
