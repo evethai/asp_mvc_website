@@ -26,17 +26,17 @@ namespace asp_mvc_website.Controllers
         }
         public IActionResult Index(string id)
         {
-            id = "a88a4533-52da-4b30-b9c5-b259423f14b2";
+            //id = "a88a4533-52da-4b30-b9c5-b259423f14b2";
             List<GetUsetNotification> userNoti = new List<GetUsetNotification>();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "UserNotifcation/" + id).Result;
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
                 userNoti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(data);
+				userNoti = userNoti.OrderByDescending(noti => noti.dateTime).ToList();
 
-
-                //    HttpContext.Session.SetString("MyListSessionKey", JsonConvert.SerializeObject(userNoti));
-            }
+				//    HttpContext.Session.SetString("MyListSessionKey", JsonConvert.SerializeObject(userNoti));
+			}
             return View(userNoti);
         }
 
@@ -50,7 +50,6 @@ namespace asp_mvc_website.Controllers
 
 				if (response.IsSuccessStatusCode)
 				{
-
 					//return RedirectToAction("Index"); // Return Ok if marking as read is successful
 					return Ok();
 				}
