@@ -23,9 +23,10 @@
     <link rel="stylesheet" href="~/css/post.css" type="text/css" />
 
     <script src="~/js/modernizr.js"></script>
+    <script src="~/js/payment.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    @* <script src="~/js/payment.js"></script> *@
-
+    <link rel="stylesheet" href="~/css/noti.css" type="text/css" />
+    <link rel="stylesheet" href="~/css/post.css" type="text/css" />
 </head>
 <body>
     @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
@@ -34,16 +35,34 @@
         var userId = HttpContextAccessor.HttpContext.Session.GetString("UserId");
     }
 
-
     <div class="loader-wrapper">
     </div>
-
     <div class="wrapper">
         <div class="inner-wrapper">
             <div id="header-wrapper" class="dt-sticky-menu">
                 <div id="header" class="header">
                     <div class="container menu-container">
-                        <a class="logo" href="/Home"><img alt="Logo" src="~/images/logo.png"></a>
+                        <a class="logo" href="/Home/Index"><img alt="Logo" src="~/images/logo.png" width="200" height="55"></a>
+                        <div class="notification" style="float:right;">
+                            <a href="/Notification/Index">
+                                <div class="notBtn">
+                                    <div class="number" style="width:35px; height:35px"></div>
+                                    <img src="~/images/notification.png" width="50px" alt="Alternate Text"/>
+                                    <div class="box">
+                                        <div class="display">
+                                            <div class="nothing">
+                                                <i class="fas fa-child stick"></i>
+                                                <div class="cent">Looks Like you're all caught up!</div>
+                                            </div>
+                                            <div class="cont" id="notificationContainer">
+                                                
+                                                <!-- Notifications will be dynamically added here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                         <a href="#" class="menu-trigger">
                             <span></span>
                         </a>
@@ -57,33 +76,34 @@
                     <ul class="menu type1">
                         <li class="current_page_item menu-item-simple-parent">
                             <a href="/Home/Index">Home <span class="fa fa-home"></span></a>
-                            <ul class="sub-menu">
-                                <li class="current_page_item"><a href="http://www.wedesignthemes.com/html/redart/default">Default</a></li>
-                                <li><a href="http://www.wedesignthemes.com/html/redart/menu-overlay">Menu Overlay</a></li>
-                                <li><a href="http://www.wedesignthemes.com/html/redart/slide-bar">Slide Bar</a></li>
-                                <li><a href="http://www.wedesignthemes.com/html/redart/slider-over-menu">Slider Over Menu</a></li>
+                            @* <ul class="sub-menu">
+                            <li class="current_page_item"><a href="http://www.wedesignthemes.com/html/redart/default">Default</a></li>
+                            <li><a href="http://www.wedesignthemes.com/html/redart/menu-overlay">Menu Overlay</a></li>
+                            <li><a href="http://www.wedesignthemes.com/html/redart/slide-bar">Slide Bar</a></li>
+                            <li><a href="http://www.wedesignthemes.com/html/redart/slider-over-menu">Slider Over Menu</a></li>
                             </ul>
-                            <a class="dt-menu-expand">+</a>
+                            <a class="dt-menu-expand">+</a>*@
                         </li>
                         <li class="menu-item-simple-parent">
-                            <a href="/Package/Index">Package <span class="fa fa-user-secret"></span></a>
+                            <a href="/Package/Index">Package<span class="fa fa-user-secret"></span></a>
                         </li>
-                        <li class="menu-item-simple-parent">
-                            <a href="gallery.html">Gallery <span class="fa fa-camera-retro"></span></a>
-                            <ul class="sub-menu">
-                                <li><a href="gallery-detail.html">Gallery detail</a></li>
-                                <li><a href="gallery-detail-with-lhs.html">Gallery-detail-left-sidebar</a></li>
-                                <li><a href="gallery-detail-with-rhs.html">Gallery-detail-right-sidebar</a></li>
-                            </ul>
-                            <a class="dt-menu-expand">+</a>
+                        @*                         <li class="menu-item-simple-parent">
+                        <a href="gallery.html">gallery <span class="fa fa-camera-retro"></span></a>
+                        <ul class="sub-menu">
+                        <li><a href="gallery-detail.html">gallery detail</a></li>
+                        <li><a href="gallery-detail-with-lhs.html">gallery-detail-left-sidebar</a></li>
+                        <li><a href="gallery-detail-with-rhs.html">gallery-detail-right-sidebar</a></li>
+                        </ul>
+                        <a class="dt-menu-expand">+</a>
                         </li>
+                        *@
                         <li class="menu-item-simple-parent">
                             <a href="/Shop/Index">Shop <span class="fa fa-cart-plus"></span></a>
-                            <ul class="sub-menu">
-                                <li><a href="shop-detail.html">Shop Detail</a></li>
-                                <li><a href="/Cart">Cart Page</a></li>
-                                <li><a href="shop-checkout.html">Checkout Page</a></li>
-                            </ul>
+                            @* <ul class="sub-menu">
+                            <li><a href="shop-detail.html">Shop Detail</a></li>
+                            <li><a href="/Cart">Cart Page</a></li>
+                            <li><a href="shop-checkout.html">Checkout Page</a></li>
+                            </ul> *@
                             <a class="dt-menu-expand">+</a>
                         </li>
                         <li class="menu-item-simple-parent">
@@ -97,21 +117,34 @@
                         </li>
                         @if (userName != null)
                         {
-                            <li class="menu-item-simple-parent">
+@*                          <li class="menu-item-simple-parent">
                                 <p>Hello @userName!</p>
                             </li>
                             <li class="menu-item-simple-parent">
                                 <p>User ID @userId!</p>
+                            </li> *@
+                            <li class="menu-item-simple-parent">
+                                <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="#">Hello @userName!</a></li>
+                                    <li><a href="#">User ID @userId!</a></li>
+                                </ul>
                             </li>
-
                         }
                         else
                         {
-                            <li class="menu-item-simple-parent">
-                                <a href="/User/Login">Login<span class="fa fa-map-marker"></span></a>
+@*                          <li class="menu-item-simple-parent">
+                                <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
                             </li>
                             <li class="menu-item-simple-parent">
                                 <a href="/User/Register">Register<span class="fa fa-map-marker"></span></a>
+                            </li> *@
+                            <li class="menu-item-simple-parent">
+                                <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="/User/Login">Login</a></li>
+                                    <li><a href="/User/Register">Register</a></li>
+                                </ul>                              
                             </li>
                         }
                     </ul>
@@ -121,12 +154,16 @@
                 <div class="slider fullwidth-section parallax"></div>
             </div>
             <div id="main">
-                @*                 <div class="container full">
-                <main role="main" class="">
-                @RenderBody()
+                <div class="container full">
+                    <main role="main" class="">
+                        @RenderBody()
+                        @RenderSection("Scripts", required: false)
+                    </main>
+                </div> 
+
+
+
                 @RenderSection("Scripts", required: false)
-                </main>
-                </div> *@
                 @RenderBody()
                 @*                 @RenderSection("Scripts", required: false)
                 @RenderBody() *@
@@ -153,19 +190,29 @@
             </div>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="~/js/jquery-1.11.2.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="~/js/jquery.isotope.min.js"></script>
     <script src="~/js/jquery.prettyPhoto.js" type="text/javascript"></script>
     <script src="~/js/jquery.tipTip.minified.js" type="text/javascript"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/js/jsplugins.js" type="text/javascript"></script>
+    <script src="~/js/post.js"></script>
 
     <script src="~/js/jquery.inview.js" type="text/javascript"></script>
     <script src="~/js/jquery.viewport.js" type="text/javascript"></script>
     <script src="~/js/jquery.validate.min.js" type="text/javascript"></script>
-    <script type="text/javascript" src="~/js/jquery.bxslider.min.js"></script>
-    <script src="~/js/post.js"></script>
+    @*     <script>
+        $.ajax({
+            type: "GET", 
+            url: "/UserNotifcation/GetNotify",
+            data: { id : '9f912cd2-aac1-4c5a-94ca-25017964557e' },
+            success: function (data) {
+                console.log(data);          
+            }
+        });
+    </script> *@
+    </script> *@
 
     <script>
         $.ajax({
@@ -181,7 +228,7 @@
                     var anchor = $("<a>").attr("href", "#");
                     if (!notification.isRead) {
                         unreadCount++;
-                        var profileImage = $("<img>").addClass("profile").attr("src", notification.artwordUrl);
+                        var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artwordUrl);
                         profileImage.css("margin-left", "15px");
                         var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artworkTitle);
                         var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationTitle);
@@ -193,13 +240,12 @@
 
                     $(".number").text(unreadCount);
 
-                    if (unreadCount === 0) {
-                        $(".number").hide();
-                    }
+                    // if (unreadCount === 0) {
+                    //     $(".number").hide();
+                    // }
                 });
             }
         });
-    </script>
 
 </body>
 </html>

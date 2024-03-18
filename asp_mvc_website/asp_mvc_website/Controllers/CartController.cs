@@ -11,13 +11,19 @@ namespace asp_mvc_website.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly HttpClient _client;
-		private CartService cartService;
-        public CartController(ILogger<HomeController> logger)
+        private readonly IHttpClientFactory _factory;
+        private readonly ICurrentUserService _currentUserService;
+        private CartService cartService;
+        public CartController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, ICurrentUserService currentUserService, IConfiguration configuration)
         {
+            _factory = httpClientFactory;
             _logger = logger;
             _client = new HttpClient();
+            _currentUserService = currentUserService;
             //_client.BaseAddress = new Uri("https://localhost:7021/api/");
-            _client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            //_client.BaseAddress = new Uri("https://apiartwork.azurewebsites.net/api/");
+            _client = _factory.CreateClient("ServerApi");
+            _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
 
         [HttpGet]
@@ -27,7 +33,6 @@ namespace asp_mvc_website.Controllers
             var cartItemsJson = HttpContext.Request.Cookies.ContainsKey("CartItems")
                 ? HttpContext.Request.Cookies["CartItems"]
                 : null;
-
             var cartItems = cartItemsJson != null
                 ? JsonConvert.DeserializeObject<List<CartItemModel>>(cartItemsJson)
                 : new List<CartItemModel>();
