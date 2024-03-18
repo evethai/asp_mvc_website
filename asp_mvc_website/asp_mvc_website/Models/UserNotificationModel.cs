@@ -26,5 +26,7 @@ namespace asp_mvc_website.Models
         public NotiStatus notiStatus { get; set; }
         public string? nameUser { get; set; }
         public string artwordUrl { get; set; }
+        public int artworkId { get; set; }
+        public int notificationId { get; set; }
     }
 }
