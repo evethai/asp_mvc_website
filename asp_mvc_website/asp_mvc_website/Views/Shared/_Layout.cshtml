@@ -55,19 +55,26 @@
                             <a href="@Url.Action("Index", "Notification", new { id = userId})">
                                 <div class="notBtn">
                                     <div class="number" style="width:35px; height:35px"></div>
-                                    <img src="~/images/notification.png" width="50px" alt="Alternate Text" />
-                                    <div class="box">
-                                        <div class="display">
-                                            <div class="nothing">
-                                                <i class="fas fa-child stick"></i>
-                                                <div class="cent">Looks Like you're all caught up!</div>
-                                            </div>
-                                            <div class="cont" id="notificationContainer">
+                                    @if (userId != null)
+                                    {
+                                    <img src="~/images/notification.png" width="50px" alt="Alternate Text"/>
+                                        <div class="box">
+                                            <div class="display">
+                                                <div class="nothing">
+                                                    <i class="fas fa-child stick"></i>
+                                                    <div class="cent">Looks Like you're all caught up!</div>
+                                                </div>
+                                                <div class="cont" id="notificationContainer">
 
-                                                <!-- Notifications will be dynamically added here -->
+                                                    <!-- Notifications will be dynamically added here -->
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    }
+                                    else
+                                    {
+                                        <img src="~/images/notification.png" width="50px" alt="Alternate Text" title="You need login!!!!"/>
+                                    }
                                 </div>
                             </a>
                         </div>
@@ -260,9 +267,9 @@
 
                     $(".number").text(unreadCount);
 
-                    // if (unreadCount === 0) {
-                    //     $(".number").hide();
-                    // }
+                    if (unreadCount === 0) {
+                        $(".number").hide();
+                    }
                 });
             }
         });
