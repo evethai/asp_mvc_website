@@ -85,5 +85,12 @@ namespace asp_mvc_website.Controllers
             }
             return View();
         }
+
+        [HttpGet("getRole")]
+        public async Task<IActionResult> getAllRole()
+        {
+            var result = _client.GetAsync(_client.BaseAddress + "admin/GetRole").Result;
+            return Ok(result);
+        }
     }
 }
