@@ -2,6 +2,8 @@ using asp_mvc_website.Handlers;
 using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Http.Features;
 
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +39,18 @@ builder.Services.Configure<CookiePolicyOptions>(options =>
 	options.MinimumSameSitePolicy = SameSiteMode.None;
 });
 
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie()
+.AddGoogle(options =>
+{
+    options.ClientId = "57402755078-3cjl5d90k6rs3evbriav7cg08iapik56.apps.googleusercontent.com";
+    options.ClientSecret = "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";
+});
+
 builder.Services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
 builder.Services.ConfigureApplicationCookie(options =>
@@ -66,7 +80,7 @@ app.UseStaticFiles();
 app.UseSession();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

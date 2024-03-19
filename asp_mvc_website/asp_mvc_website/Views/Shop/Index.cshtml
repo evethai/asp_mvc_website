@@ -17,7 +17,31 @@
             <!-- Button -->
             <a class="dt-sc-button small type2" id="openModalBtn">Post Artwork</a>
             <div class="clear"> </div>
+            <input type="hidden" id="_poster" value="@Model.IsPoster" />  
         }
+
+
+        <div class="modal" tabindex="-1" id="P_Modal" style="margin-top : 180px">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content" style="background: #333">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel" style="color: white; font: bold">Modal title</h5>
+                    </div>
+                    <div class="modal-body">
+                       <h3>You is not a Artist, You need Buy a Package to Post artwork</h3>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
+                        <button type="button" class="btn btn-primary" id="goPackageBtn">Go Package</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="column dt-sc-one-half space first animate" id="SuccessNoti" style="display: none" data-animation="fadeInDown" data-delay="100">
+            <div class="dt-sc-success-box aligncenter"> <span></span> <h4> Success </h4> Post new Artwork is <b> success </b> Please wait for moderation and your post will be displayed in the Shop</div>
+        </div>
 
         <!-- Modal -->
         <div class="modal" tabindex="-1" id="PostModal">
@@ -27,7 +51,7 @@
                         <h5 class="modal-title" id="staticBackdropLabel" style="color: white; font: bold">Modal title</h5>
                     </div>
                     <div class="modal-body">
-                        <form action="/PostArtwork/_Post" method="post">
+                        <form>
                             <div class="mb-3">
                                 <label for="title" class="col-form-label" style="color: white; font: bold">Title:</label>
                                 <input type="text" style="background: #252525; color:white" class="form-control" name="title" id="title">
@@ -46,7 +70,7 @@
                                 <select class="form-select" style="background: #252525; color: white;" id="category" name="category">
                                     @foreach(var item in Model.CategoryList)
                                     {
-                                        <option value="@item.Id" style="background: #252525; color: white;">@item.Name</option>
+                                        <option value="@item.id" style="background: #252525; color: white;">@item.Name</option>
                                     })
                                     <option value="other" style="background: #252525; color: white;">Other</option>
                                 </select>
@@ -88,7 +112,7 @@
                             <option value="-1" selected>Choose your category</option>
                             @foreach (var item in Model.CategoryList)
                             {
-                                <option value="@item.Id" class="fa fa-fire-extinguisher">@item.Name</option>
+                                <option value="@item.id" class="fa fa-fire-extinguisher">@item.Name</option>
                             }
                         </select>
                     </div>
@@ -181,10 +205,14 @@
         <input type="hidden" id="currentPage" value="@ViewBag.CurrentPage" />
         <input type="hidden" id="totalPages" value="@ViewBag.TotalPages" />
     </div>
+
+    @{
+        bool hideModal = ViewBag.HideModal != null && (bool)ViewBag.HideModal;
+    }
 </section>
 
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 <script>
     var button = document.getElementById("myButton");
     button.addEventListener("click", function () {
@@ -193,38 +221,12 @@
             type: 'GET',
             data: { txtSearch: $("#txtSearch").val(), idCategory: $("#_selectCategory").val() },
             success: function (data) {
-
-
-
-
-                // // Xóa tất cả các liên kết CSS
-                // $('head link[rel="stylesheet"]').remove();
-
-                // // Tạo lại từng liên kết CSS
-                // createCssLink("/style.css");
-                // createCssLink("/css/animations.css");
-                // createCssLink("/css/shortcodes.css");
-                // createCssLink("/skins/red/style.css");
-                // createCssLink("/css/isotope.css");
-                // createCssLink("/css/prettyPhoto.css");
-                // createCssLink("/css/responsive.css");
-                // createCssLink("/dark/dark.css");
-                // createCssLink("/css/font-awesome.min.css");
-
-
                 $('#listIndex').empty();
                 $('#artworkList').empty();
                 $("#artworkList").html(data);
             }
         });
     });
-    // // Hàm để tạo lại một liên kết CSS
-    // function createCssLink(href) {
-    //     var link = document.createElement("link");
-    //     link.rel = "stylesheet";
-    //     link.href = href;
-    //     document.head.appendChild(link);
-    // }
 
     //function selectCategory() {
     function selectCategory() {
@@ -298,6 +300,7 @@
             });
         }
     });
+    
 
     document.querySelectorAll(".addToCartLink").forEach(function (link) {
         link.addEventListener("click", function (event) {
@@ -334,5 +337,14 @@
         popupMessage.parentNode.removeChild(popupMessage);
     }
 
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if HideModal flag is set
+        if (@hideModal) {
+            var modal = document.getElementById('PostModal');
+            modal.style.display = 'none';
+            var urlImage = document.getElementById('image');
+            urlImage.style.backgroundImage = 'none';
+        }
+    });
 </script>
 

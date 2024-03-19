@@ -1,5 +1,5 @@
 ﻿@{
-    
+
 }
 <!DOCTYPE html>
 <html lang="en" class="no-js">
@@ -23,8 +23,7 @@
     <link id="light-dark-css" href="~/dark/dark.css" rel="stylesheet" media="all" />
 
     <link rel="stylesheet" href="~/css/font-awesome.min.css" type="text/css" />
-    <script src="~/js/modernizr.js"></script>
-    <script src="~/js/payment.js"></script>
+    @* <script src="~/js/modernizr.js"></script> *@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link rel="stylesheet" href="~/css/noti.css" type="text/css" />
     <link rel="stylesheet" href="~/css/post.css" type="text/css" />
@@ -83,7 +82,7 @@
                             <span></span>
                         </a>
                     </div>
-                </div>        
+                </div>
 
 
                 <nav id="main-menu">
@@ -129,18 +128,18 @@
                             <ul class="sub-menu">
                                 <li><a href="@Url.Action("Index","PostArtwork")">Blog detail</a></li>
                                 <li><a href="blog-detail-with-lhs.html">Blog-detail-left-sidebar</a></li>
-@*                                 <li><a href="@Url.Action("Index", "UserNotifcation", new { id = "1932234f-af4a-45e5-b8d9-b613d2dfbb5d"})">Notification</a></li> *@
+                                @*                                 <li><a href="@Url.Action("Index", "UserNotifcation", new { id = "1932234f-af4a-45e5-b8d9-b613d2dfbb5d"})">Notification</a></li> *@
                             </ul>
                             <a class="dt-menu-expand">+</a>
                         </li>
                         @if (userName != null)
                         {
-@*                          <li class="menu-item-simple-parent">
-                                <p>Hello @userName!</p>
-                            </li>
-                            <li class="menu-item-simple-parent">
-                                <p>User ID @userId!</p>
-                            </li> *@
+                            @*                          <li class="menu-item-simple-parent">
+                        <p>Hello @userName!</p>
+                        </li>
+                        <li class="menu-item-simple-parent">
+                        <p>User ID @userId!</p>
+                        </li> *@
                             <li class="menu-item-simple-parent">
                                 <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
                                 <ul class="sub-menu">
@@ -151,18 +150,18 @@
                         }
                         else
                         {
-@*                          <li class="menu-item-simple-parent">
-                                <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
-                            </li>
-                            <li class="menu-item-simple-parent">
-                                <a href="/User/Register">Register<span class="fa fa-map-marker"></span></a>
-                            </li> *@
+                            @*                          <li class="menu-item-simple-parent">
+                        <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
+                        </li>
+                        <li class="menu-item-simple-parent">
+                        <a href="/User/Register">Register<span class="fa fa-map-marker"></span></a>
+                        </li> *@
                             <li class="menu-item-simple-parent">
                                 <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
                                 <ul class="sub-menu">
                                     <li><a href="/User/Login">Login</a></li>
                                     <li><a href="/User/Register">Register</a></li>
-                                </ul>                              
+                                </ul>
                             </li>
                         }
                         <li class="menu-item-simple-parent">
@@ -186,11 +185,11 @@
                 <div class="slider fullwidth-section parallax"></div>
             </div>
             <div id="main">
-@*                  <div class="container full">
-                    <main role="main" class="">
-                        @RenderBody()
-                        @RenderSection("Scripts", required: false)
-                    </main>
+                @*                  <div class="container full">
+                <main role="main" class="">
+                @RenderBody()
+                @RenderSection("Scripts", required: false)
+                </main>
                 </div> *@
 
                 @RenderBody()
@@ -225,21 +224,21 @@
     <script src="~/js/jquery.tipTip.minified.js" type="text/javascript"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/js/jsplugins.js" type="text/javascript"></script>
-    <script src="~/js/post.js"></script>
+    <script src="/js/post.js" type="text/javascript"></script>
 
     <script src="~/js/jquery.inview.js" type="text/javascript"></script>
     <script src="~/js/jquery.viewport.js" type="text/javascript"></script>
     <script src="~/js/jquery.validate.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="~/js/jquery.bxslider.min.js"></script>
     @*     <script>
-        $.ajax({
-            type: "GET", 
-            url: "/UserNotifcation/GetNotify",
-            data: { id : '9f912cd2-aac1-4c5a-94ca-25017964557e' },
-            success: function (data) {
-                console.log(data);          
-            }
-        });
+    $.ajax({
+    type: "GET",
+    url: "/UserNotifcation/GetNotify",
+    data: { id : '9f912cd2-aac1-4c5a-94ca-25017964557e' },
+    success: function (data) {
+    console.log(data);
+    }
+    });
     </script> *@
 
     <script>
@@ -279,4 +278,4 @@
 </body>
 </html>
 
-   
+

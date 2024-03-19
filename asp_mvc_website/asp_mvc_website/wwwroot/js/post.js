@@ -36,17 +36,34 @@ function upload() {
 
 var btnAdd = document.getElementById("openModalBtn");
 var modal = document.getElementById("PostModal");
+var noti = document.getElementById("SuccessNoti");
 var txtTitle = document.getElementById("title").value;
 var txtDescription = document.getElementById("description").value;
 var txtPrice = document.getElementById("price").value;
 var urlImage = document.getElementById("image").value;
+var p_modal = document.getElementById("P_Modal");
+
 btnAdd.onclick = function () {
-    modal.style.display = "block";
-    txtTitle = '';
-    txtDescription = '';
-    txtPrice = '';
-    urlImage.style.backgroundImage = '';
+    var isPoster = document.getElementById("_poster").value;
+    if (isPoster === "IsPoster") {
+        modal.style.display = "block";
+        txtTitle = '';
+        txtDescription = '';
+        txtPrice = '';
+        urlImage.style.backgroundImage = '';
+    } else {
+        p_modal.style.display = "block";
+    }
 }
+
+document.getElementById("goPackageBtn").addEventListener("click", function () {
+    
+    window.location.href = '/Package/Index';
+});
+document.getElementById("closePackage").addEventListener("click", function () {
+    p_modal.style.display = "none";
+});
+
 // Get the input element
 const priceInput = document.getElementById('price');
 const priceValidationMessage = document.getElementById('priceValidationMessage');
@@ -70,28 +87,10 @@ const postBtn = document.getElementById('postBtn');
 
 closeModalBtn.addEventListener('click', function () {
     modal.style.display = 'none';
-    urlImage.backgroundImage.clear;
+
 });
 
 postBtn.addEventListener('click', function () {
-    //var title = document.getElementById("title").value;
-    //var description = document.getElementById("description").value;
-    //var price = document.getElementById("price").value;
-    //var imageFile = document.querySelector(".file-uploader").files[0];
-    //var item = selectedItem;
-    //// Create FormData object
-    //var formData = new FormData();
-    //formData.append("Title", title);
-    //formData.append("Description", description);
-    //formData.append("Price", price);
-    //formData.append("File", imageFile);
-    //formData.append("Category", item);
-
-    //// Send POST request to controller endpoint
-    //fetch("/PostArtwork/_Post", {
-    //    method: "POST",
-    //    body: formData
-    //})
     var title = document.getElementById("title").value.trim();
     var description = document.getElementById("description").value.trim();
     var price = document.getElementById("price").value.trim();
@@ -103,6 +102,7 @@ postBtn.addEventListener('click', function () {
     // Validate title
     if (title === '') {
         alert("Title is required.");
+        //showCustomAlert("Title is required.");
         isValid = false;
     }
 
@@ -149,15 +149,39 @@ postBtn.addEventListener('click', function () {
         formData.append("IsNewCategory", isNew);
 
         // Send POST request to controller endpoint
-        fetch("/PostArtwork/_Post", {
+        fetch("/Shop/Post", {
             method: "POST",
             body: formData
         })
-            .then(response => {
-                // Handle response
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Network response was not ok');
+            }
+        })
+            .then(data => {
+                if (data.success) {
+                    // Close the modal
+                    modal.style.display = 'none';
+                    // Show success notification
+                    noti.style.display = 'block';
+                    setTimeout(function () {
+                        noti.style.display = 'none';
+                    }, 8000);
+                    // Clear form fields
+                    document.getElementById('title').value = '';
+                    document.getElementById('description').value = '';
+                    document.getElementById('price').value = '';
+                    document.getElementById('category').value = 'other';
+                    document.getElementById('categoryCustom').value = '';
+                    document.querySelector('.file-uploader').value = '';
+                    document.querySelector('.profile-picture').style.backgroundImage = '';
+                }
             })
             .catch(error => {
                 // Handle error
+                console.error('Error:', error);
             });
     }
 });
@@ -173,3 +197,4 @@ document.getElementById('category').addEventListener('change', function () {
         customItemInput.value = '';
     }
 });
+
