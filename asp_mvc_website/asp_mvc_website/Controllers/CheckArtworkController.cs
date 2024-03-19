@@ -1,6 +1,7 @@
 ﻿using asp_mvc_website.Enums;
 using asp_mvc_website.Models;
 using asp_mvc_website.Services;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Reflection;
@@ -24,21 +25,29 @@ namespace asp_mvc_website.Controllers
 			_client.BaseAddress = new Uri(configuration["Cron:localhost"]);
 		}
 		[HttpGet]
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
         {
-			var user = _currentUserService.User();
-			string userId = "4cf64858-1564-4bb4-a170-2f477aa7d816";
+			var user = await _currentUserService.User();
+			string userId = user.Id.ToString();
 
+			var noti = await GetNotibyUserid(userId);
+			if(!noti.IsSuccess)
+				return BadRequest("Get notification failed");
+
+            return View(noti.models);
+        }
+
+		private async Task<(bool IsSuccess, List<GetUsetNotification> models)> GetNotibyUserid(string userId)
+		{
 			List<GetUsetNotification> noti = new List<GetUsetNotification>();
 			HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "UserNotifcation/" + userId).Result;
-			if(response.IsSuccessStatusCode)
+			if (response.IsSuccessStatusCode)
 			{
 				var data = response.Content.ReadAsStringAsync().Result;
 				noti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(data);
 			}
-
-            return View(noti);
-        }
+			return (response.IsSuccessStatusCode, noti);
+		}
 
 		[HttpPost]
 		public async Task<IActionResult> CheckPost(int artworkId, bool isAccept, int notiId)
@@ -59,7 +68,7 @@ namespace asp_mvc_website.Controllers
 			if (!postUserNotificationResult.IsSuccess)
 				return BadRequest("Post user notification failed");
 
-			return Ok(new { success = true });
+			return View("/CheckArtwork/Index");
 		}
 
 		private async Task<(bool IsSuccess, HttpResponseMessage Response)> UpdateStatusArtwork(int artworkId)

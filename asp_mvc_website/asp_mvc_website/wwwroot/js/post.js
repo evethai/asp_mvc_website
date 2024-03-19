@@ -153,23 +153,14 @@ postBtn.addEventListener('click', function () {
             method: "POST",
             body: formData
         })
-        //    .then(response => {
-        //        // Handle response
-        //    })
-        //    .catch(error => {
-        //        // Handle error
-        //    });
         .then(response => {
             if (response.ok) {
-                // Handle success response
                 return response.json();
             } else {
-                // Handle other response statuses
                 throw new Error('Network response was not ok');
             }
         })
             .then(data => {
-                // Check if the operation was successful
                 if (data.success) {
                     // Close the modal
                     modal.style.display = 'none';

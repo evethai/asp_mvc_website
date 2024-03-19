@@ -1,15 +1,8 @@
 ﻿@model IEnumerable<GetUsetNotification>
 @{
-    Layout = "/Views/Shared/_LayoutAd.cshtml";
+	Layout = "/Views/Shared/_LayoutAd.cshtml";
 }
 <style>
-	* {
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-	}
-
-	/* Style the table to have full width */
 	.shop_table.cart {
 		width: 100%;
 		border-collapse: collapse;
@@ -121,163 +114,166 @@
 }
 else
 {
-	<div class="tab-container">
-		<button class="tab-button active" onclick="openTab('tab1')">Tab 1</button>
-		<button class="tab-button" onclick="openTab('tab2')">Tab 2</button>
-		<button class="tab-button" onclick="openTab('tab3')">Tab 3</button>
-	</div>
-	<div class="tab-content" id="tab1" style="display:block">
-		<h2>Notification new Post</h2>
-		<form method="post">
-			<table class="shop_table cart">
-				<thead>
-					<tr>
-						<th>Artwork</th>
-						<th>Title</th>
-						<th>Description</th>
-						<th>Date time</th>
-						<th>Image</th>
-						<th>Action</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var item in Model)
-					{
-						if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.ConfirmPost)
+	<div id="tabIndex">
+		<div class="tab-container">
+			<button class="tab-button active" onclick="openTab('tab1')">Tab 1</button>
+			<button class="tab-button" onclick="openTab('tab2')">Tab 2</button>
+			<button class="tab-button" onclick="openTab('tab3')">Tab 3</button>
+		</div>
+		<div class="tab-content" id="tab1" style="display:block">
+			<h2>Notification new Post</h2>
+			<form method="post">
+				<table class="shop_table cart">
+					<thead>
+						<tr>
+							<th>Artwork</th>
+							<th>Title</th>
+							<th>Description</th>
+							<th>Date time</th>
+							<th>Image</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
 						{
-							<tr class="cart_table_item" id="artwork_@item.artworkTitle">
+							if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.ConfirmPost)
+							{
+								<tr class="cart_table_item" id="artwork_@item.artworkTitle">
 
-								<td class="product-thumbnail">
-									<a href=""><h5>@item.artworkTitle</h5></a>
-								</td>
+									<td class="product-thumbnail">
+										<a href=""><h5>@item.artworkTitle</h5></a>
+									</td>
 
-								<td class="product-name">
-									<h6>@item.notificationTitle</h6>
-								</td>
+									<td class="product-name">
+										<h6>@item.notificationTitle</h6>
+									</td>
 
-								<td class="product-subtotal">
-									<span class="amount"> @item.notificationDescription</span>
-								</td>
+									<td class="product-subtotal">
+										<span class="amount"> @item.notificationDescription</span>
+									</td>
 
-								<td class="product-status">
-									<span class="">@item.dateTime</span>
-								</td>
+									<td class="product-status">
+										<span class="">@item.dateTime</span>
+									</td>
 
-								<td class="product-remove">
-									<a href=""><img src="@item.artwordUrl" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
-								</td>
-								<td>
-									<a href="#" class="Accept" title="Accept artwork" onclick="acceptArtwork(@item.artworkId,true,@item.notificationId)">Accept</a>
-									<a href="#" class="Reject" title="Reject artwork" onclick="acceptArtwork(@item.artworkId,false,@item.notificationId)">Reject</a>
+									<td class="product-remove">
+										<a href=""><img src="@item.artwordUrl" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+									</td>
+									<td>
+										<a href="#" class="Accept" title="Accept artwork" onclick="acceptArtwork(@item.artworkId,true,@item.notificationId)">Accept</a>
+										<a href="#" class="Reject" title="Reject artwork" onclick="acceptArtwork(@item.artworkId,false,@item.notificationId)">Reject</a>
 
-								</td>
-							</tr>
+									</td>
+								</tr>
+							}
 						}
-					}
-				</tbody>
-			</table>
-		</form>
-	</div>
-	<div class="tab-content" id="tab2" style="display: none;">
-		<h2>Confirm Post</h2>
-		<form method="post">
-			<table class="shop_table cart">
-				<thead>
-					<tr>
-						<th>Artwork</th>
-						<th>Title</th>
-						<th>Description</th>
-						<th>Date time</th>
-						<th>Image</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var item in Model)
-					{
-						if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptPost)
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<div class="tab-content" id="tab2" style="display: none;">
+			<h2>Confirm Post</h2>
+			<form method="post">
+				<table class="shop_table cart">
+					<thead>
+						<tr>
+							<th>Artwork</th>
+							<th>Title</th>
+							<th>Description</th>
+							<th>Date time</th>
+							<th>Image</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
 						{
-							<tr class="cart_table_item" id="artwork_@item.artworkTitle">
+							if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptPost)
+							{
+								<tr class="cart_table_item" id="artwork_@item.artworkTitle">
 
-								<td class="product-thumbnail">
-									<a href=""><h5>@item.artworkTitle</h5></a>
-								</td>
+									<td class="product-thumbnail">
+										<a href=""><h5>@item.artworkTitle</h5></a>
+									</td>
 
-								<td class="product-name">
-									<h6>@item.notificationTitle</h6>
-								</td>
+									<td class="product-name">
+										<h6>@item.notificationTitle</h6>
+									</td>
 
-								<td class="product-subtotal">
-									<span class="amount"> @item.notificationDescription</span>
-								</td>
+									<td class="product-subtotal">
+										<span class="amount"> @item.notificationDescription</span>
+									</td>
 
-								<td class="product-status">
-									<span class="">@item.dateTime</span>
-								</td>
+									<td class="product-status">
+										<span class="">@item.dateTime</span>
+									</td>
 
-								<td class="product-remove">
-									<a href=""><img src="@item.artwordUrl" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
-								</td>
-								<td>
-									<h3>Comfirm</h3>
-								</td>
-							</tr>
+									<td class="product-remove">
+										<a href=""><img src="@item.artwordUrl" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+									</td>
+									<td>
+										<h3>Comfirm</h3>
+									</td>
+								</tr>
+							}
 						}
-					}
-				</tbody>
-			</table>
-		</form>
-	</div>
-	<div class="tab-content" id="tab3" style="display: none;">
-		<h2>Deny Post</h2>
-		<form method="post">
-			<table class="shop_table cart">
-				<thead>
-					<tr>
-						<th>Artwork</th>
-						<th>Title</th>
-						<th>Description</th>
-						<th>Date time</th>
-						<th>Image</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (var item in Model)
-					{
-						if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.DenyPost)
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<div class="tab-content" id="tab3" style="display: none;">
+			<h2>Deny Post</h2>
+			<form method="post">
+				<table class="shop_table cart">
+					<thead>
+						<tr>
+							<th>Artwork</th>
+							<th>Title</th>
+							<th>Description</th>
+							<th>Date time</th>
+							<th>Image</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
 						{
-							<tr class="cart_table_item" id="artwork_@item.artworkTitle">
+							if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.DenyPost)
+							{
+								<tr class="cart_table_item" id="artwork_@item.artworkTitle">
 
-								<td class="product-thumbnail">
-									<a href=""><h5>@item.artworkTitle</h5></a>
-								</td>
+									<td class="product-thumbnail">
+										<a href=""><h5>@item.artworkTitle</h5></a>
+									</td>
 
-								<td class="product-name">
-									<h6>@item.notificationTitle</h6>
-								</td>
+									<td class="product-name">
+										<h6>@item.notificationTitle</h6>
+									</td>
 
-								<td class="product-subtotal">
-									<span class="amount"> @item.notificationDescription</span>
-								</td>
+									<td class="product-subtotal">
+										<span class="amount"> @item.notificationDescription</span>
+									</td>
 
-								<td class="product-status">
-									<span class="">@item.dateTime</span>
-								</td>
+									<td class="product-status">
+										<span class="">@item.dateTime</span>
+									</td>
 
-								<td class="product-remove">
-									<a href=""><img src="@item.artwordUrl" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
-								</td>
-								<td>
-									<h3>Reject</h3>
-								</td>
-							</tr>
+									<td class="product-remove">
+										<a href=""><img src="@item.artwordUrl" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+									</td>
+									<td>
+										<h3>Reject</h3>
+									</td>
+								</tr>
+							}
 						}
-					}
-				</tbody>
-			</table>
-		</form>
+					</tbody>
+				</table>
+			</form>
+		</div>
 	</div>
+	<div id="tab-container"></div>
 }
 <script>
 	function acceptArtwork(artworkId, isAccept, notiId) {
@@ -286,7 +282,9 @@ else
 			type: "POST",
 			data: { artworkId: artworkId, isAccept: isAccept, notiId: notiId },
 			success: function (data) {
-				window.location.href = '/CheckArtwork/Index';
+				$('#tabIndex').empty();
+				$('#tab-container').empty();
+				$("#tab-container").html(data);
 			},
 			error: function (xhr, status, error) {
 				console.error('Đã có lỗi xảy ra: ' + error);
