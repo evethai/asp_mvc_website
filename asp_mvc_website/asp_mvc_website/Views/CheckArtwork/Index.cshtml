@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GetUsetNotification>
+﻿@model Result
 @{
 	Layout = "/Views/Shared/_LayoutAd.cshtml";
 }
@@ -135,34 +135,34 @@ else
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var item in Model)
+						@foreach (var item in Model.data)
 						{
-							if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.ConfirmPost)
+							if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.ConfirmPost)
 							{
-								<tr class="cart_table_item" id="artwork_@item.artworkTitle">
+								<tr class="cart_table_item">
 
 									<td class="product-thumbnail">
-										<a href=""><h5>@item.artworkTitle</h5></a>
+										<a href=""><h5>@item.ArtWorkVM.Title</h5></a>
 									</td>
 
 									<td class="product-name">
-										<h6>@item.notificationTitle</h6>
+										<h6>@item.NotificationVM.Title</h6>
 									</td>
 
 									<td class="product-subtotal">
-										<span class="amount"> @item.notificationDescription</span>
+										<span class="amount"> @item.NotificationVM.Description</span>
 									</td>
 
 									<td class="product-status">
-										<span class="">@item.dateTime</span>
+										<span class="">@item.Date</span>
 									</td>
 
 									<td class="product-remove">
-										<a href=""><img src="@item.artwordUrl" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+										<a href=""><img src="@item.ArtWorkImageVM.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
 									</td>
 									<td>
-										<a href="#" class="Accept" title="Accept artwork" onclick="acceptArtwork(@item.artworkId,true,@item.notificationId)">Accept</a>
-										<a href="#" class="Reject" title="Reject artwork" onclick="acceptArtwork(@item.artworkId,false,@item.notificationId)">Reject</a>
+										<a href="#" class="Accept" title="Accept artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</a>
+										<a href="#" class="Reject" title="Reject artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,false,@item.NotificationVM.Id)">Reject</a>
 
 									</td>
 								</tr>
@@ -187,30 +187,30 @@ else
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var item in Model)
+						@foreach (var item in Model.data)
 						{
-							if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptPost)
+							if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptPost)
 							{
-								<tr class="cart_table_item" id="artwork_@item.artworkTitle">
+								<tr class="cart_table_item" >
 
 									<td class="product-thumbnail">
-										<a href=""><h5>@item.artworkTitle</h5></a>
+										<a href=""><h5>@item.ArtWorkVM.Title</h5></a>
 									</td>
 
 									<td class="product-name">
-										<h6>@item.notificationTitle</h6>
+										<h6>@item.NotificationVM.Title</h6>
 									</td>
 
 									<td class="product-subtotal">
-										<span class="amount"> @item.notificationDescription</span>
+										<span class="amount"> @item.NotificationVM.Description</span>
 									</td>
 
 									<td class="product-status">
-										<span class="">@item.dateTime</span>
+										<span class="">@item.Date</span>
 									</td>
 
 									<td class="product-remove">
-										<a href=""><img src="@item.artwordUrl" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+										<a href=""><img src="@item.ArtWorkImageVM.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
 									</td>
 									<td>
 										<h3>Comfirm</h3>
@@ -237,30 +237,30 @@ else
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var item in Model)
+						@foreach (var item in Model.data)
 						{
-							if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.DenyPost)
+							if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.DenyPost)
 							{
-								<tr class="cart_table_item" id="artwork_@item.artworkTitle">
+								<tr class="cart_table_item">
 
 									<td class="product-thumbnail">
-										<a href=""><h5>@item.artworkTitle</h5></a>
+										<a href=""><h5>@item.ArtWorkVM.Title</h5></a>
 									</td>
 
 									<td class="product-name">
-										<h6>@item.notificationTitle</h6>
+										<h6>@item.NotificationVM.Title</h6>
 									</td>
 
 									<td class="product-subtotal">
-										<span class="amount"> @item.notificationDescription</span>
+										<span class="amount"> @item.NotificationVM.Description</span>
 									</td>
 
 									<td class="product-status">
-										<span class="">@item.dateTime</span>
+										<span class="">@item.Date</span>
 									</td>
 
 									<td class="product-remove">
-										<a href=""><img src="@item.artwordUrl" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+										<a href=""><img src="@item.ArtWorkImageVM.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
 									</td>
 									<td>
 										<h3>Reject</h3>
@@ -282,9 +282,7 @@ else
 			type: "POST",
 			data: { artworkId: artworkId, isAccept: isAccept, notiId: notiId },
 			success: function (data) {
-				$('#tabIndex').empty();
-				$('#tab-container').empty();
-				$("#tab-container").html(data);
+				window.location.href = '/Dashbroad/Index';
 			},
 			error: function (xhr, status, error) {
 				console.error('Đã có lỗi xảy ra: ' + error);

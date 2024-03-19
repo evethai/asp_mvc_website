@@ -29,25 +29,43 @@ namespace asp_mvc_website.Controllers
         {
 			var user = await _currentUserService.User();
 			string userId = user.Id.ToString();
+			Result result = new Result();
+			DefaultSearch search = new DefaultSearch
+			{
+				perPage = 10,
+				currentPage = 0,
+			};
 
-			var noti = await GetNotibyUserid(userId);
-			if(!noti.IsSuccess)
-				return BadRequest("Get notification failed");
+			try
+			{
+				string searchParams = $"?userId={userId}&perPage={search.perPage}&currentPage={search.currentPage}&sortBy={search.sortBy}&isAscending={search.isAscending}";
+				UriBuilder builder = new UriBuilder(_client.BaseAddress);
+				builder.Path = $"api/UserNotifcation/getNotiUser";
+				builder.Query =  searchParams;
 
-            return View(noti.models);
+
+
+				HttpResponseMessage response = await _client.GetAsync(builder.Uri);
+				if (response.IsSuccessStatusCode)
+				{
+					var data = response.Content.ReadAsStringAsync().Result;
+					result = JsonConvert.DeserializeObject<Result>(data);
+				}
+				else
+				{
+					return BadRequest("Get notification failed");
+				}
+			}catch(HttpRequestException ex)
+			{
+				return BadRequest("Get notification failed" +ex);
+			}
+			
+
+            return View(result);
         }
 
-		private async Task<(bool IsSuccess, List<GetUsetNotification> models)> GetNotibyUserid(string userId)
-		{
-			List<GetUsetNotification> noti = new List<GetUsetNotification>();
-			HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "UserNotifcation/" + userId).Result;
-			if (response.IsSuccessStatusCode)
-			{
-				var data = response.Content.ReadAsStringAsync().Result;
-				noti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(data);
-			}
-			return (response.IsSuccessStatusCode, noti);
-		}
+
+
 
 		[HttpPost]
 		public async Task<IActionResult> CheckPost(int artworkId, bool isAccept, int notiId)
@@ -68,7 +86,7 @@ namespace asp_mvc_website.Controllers
 			if (!postUserNotificationResult.IsSuccess)
 				return BadRequest("Post user notification failed");
 
-			return View("/CheckArtwork/Index");
+			return RedirectToAction("Index", "Dashbroad");
 		}
 
 		private async Task<(bool IsSuccess, HttpResponseMessage Response)> UpdateStatusArtwork(int artworkId)
