@@ -36,12 +36,12 @@
         var userName = HttpContextAccessor.HttpContext.Session.GetString("UserEmail");
         var userId = HttpContextAccessor.HttpContext.Session.GetString("UserId");
         string serializedList = HttpContextAccessor.HttpContext.Session.GetString("MyListSessionKey");
-        List<GetUsetNotification> listNoti = null;
+        // List<GetUserNotificationDTO1> listNoti = null;
 
-        if (serializedList != null)
-        {
-            listNoti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(serializedList);
-        }
+        // if (serializedList != null)
+        // {
+        //     listNoti = JsonConvert.DeserializeObject<List<GetUserNotificationDTO1>>(serializedList);
+        // }
     }
 
     <div class="loader-wrapper">
@@ -247,24 +247,25 @@
             type: "GET",
             url: "/UserNotifcation/GetNotify",
             data: { id: '@userId' },
-            success: function (data) {
-                console.log(data);
-                var userNotifications = JSON.parse(data);
+            success: function (notidata) {
+                console.log(notidata.data)
+                // var userNotifications = JSON.parse(notidata.data)
                 var notificationContainer = $("#notificationContainer");
                 var unreadCount = 0;
-                userNotifications.forEach(function (notification) {
+                notidata.data.forEach(function (notification) {
+                    console.log(notification)
                     var anchor = $("<a>").attr("href", "#");
-                    if (!notification.isRead) {
+                    if (!notification.notificationVM.isRead) {
                         unreadCount++;
-                        var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artwordUrl);
+                    }
+                        var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
                         profileImage.css("margin-left", "15px");
-                        var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artworkTitle);
-                        var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationTitle);
+                        var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artWorkVM.title);
+                        var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationVM.description);
                         anchor.append(profileImage).append(txtDiv).append(subTxtDiv);
                         var notificationItem = $("<div>").addClass("sec new");
                         notificationItem.append(anchor);
                         notificationContainer.append(notificationItem);
-                    }
 
                     $(".number").text(unreadCount);
 
