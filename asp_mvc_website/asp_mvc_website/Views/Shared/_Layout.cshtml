@@ -51,25 +51,26 @@
                 <div id="header" class="header">
                     <div class="container menu-container">
                         <a class="logo" href="/Home/Index"><img alt="Logo" src="~/images/logo.png" width="200" height="55"></a>
-                        <div class="notification" style="float:right;">
-                            <a href="@Url.Action("Index", "Notification", new { id = userId})">
+                        <div class="notification" style="float:right;">                           
                                 <div class="notBtn">
                                     <div class="number" style="width:35px; height:35px"></div>
                                     @if (userId != null)
                                     {
-                                    <img src="~/images/notification.png" width="50px" alt="Alternate Text"/>
-                                        <div class="box">
-                                            <div class="display">
-                                                <div class="nothing">
-                                                    <i class="fas fa-child stick"></i>
-                                                    <div class="cent">Looks Like you're all caught up!</div>
-                                                </div>
-                                                <div class="cont" id="notificationContainer">
+                                    <a href="/Notification/Index/@userId">
+                                        <img src="~/images/notification.png" width="50px" alt="Alternate Text"/>
+                                        </a>
+                                            <div class="box">
+                                                <div class="display">
+                                                    <div class="nothing">
+                                                        <i class="fas fa-child stick"></i>
+                                                        <div class="cent">Looks Like you're all caught up!</div>
+                                                    </div>
+                                                    <div class="cont" id="notificationContainer">
 
-                                                    <!-- Notifications will be dynamically added here -->
+                                                        <!-- Notifications will be dynamically added here -->
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                     }
                                     else
                                     {
@@ -254,9 +255,8 @@
                 notidata.data.forEach(function (notification) {
                     console.log(notification)
                     var anchor = $("<a>").attr("href", "#");
-                    if (!notification.notificationVM.isRead) {
+                    if (notification.notificationVM.isRead == false) {
                         unreadCount++;
-                    }
                         var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
                         profileImage.css("margin-left", "15px");
                         var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artWorkVM.title);
@@ -265,12 +265,13 @@
                         var notificationItem = $("<div>").addClass("sec new");
                         notificationItem.append(anchor);
                         notificationContainer.append(notificationItem);
+                    }
 
                     $(".number").text(unreadCount);
 
-                    if (unreadCount === 0) {
-                        $(".number").hide();
-                    }
+                    // if (unreadCount === 0) {
+                    //     $(".number").hide();
+                    // }
                 });
             }
         });

@@ -74,4 +74,17 @@ namespace asp_mvc_website.Models
 		public int currentPage { get; set; }
 		public List<GetUserNotificationDTO1> data { get; set;}
 	}
+
+    public class Result
+    {
+        public int total { get; set; }
+        public List<GetUserNotificationDTO1> data { get; set; }
+        public int page { get; set; }
+    }
+    public class CreateUserNotificationDTO
+    {
+        public string? userId { get; set; }
+        public int? notificationId { get; set; }
+        public int? artworkId { get; set; }
+    }
 }
