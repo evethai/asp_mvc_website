@@ -14,10 +14,17 @@
         }
         @if (user != null)
         {
-            <!-- Button -->
-            <a class="dt-sc-button small type2" id="openModalBtn">Post Artwork</a>
-            <div class="clear"> </div>
-            <input type="hidden" id="_poster" value="@Model.IsPoster" />  
+            @if (Model.IsPoster == null)
+            {
+                <a class="dt-sc-button small type2" id="" data-bs-toggle="modal" data-bs-target="#P_Modal">Post Artwork</a>
+            }
+            else
+            {
+                <a class="dt-sc-button small type2" id="" data-bs-toggle="modal" data-bs-target="#PostModal">Post Artwork</a>
+            }
+
+
+            <div class="clear"> </div> 
         }
 
 

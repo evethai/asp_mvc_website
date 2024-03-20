@@ -46,8 +46,8 @@ namespace asp_mvc_website.Models
 	public class CreateUserNotificationDTO
 	{
 		public string? userId { get; set; }
-		public int? NotificationId { get; set; }
-		public int? ArtworkId { get; set; }
+		public int? notificationId { get; set; }
+		public int? artworkId { get; set; }
 	}
 
 	public class UserVM
@@ -60,6 +60,10 @@ namespace asp_mvc_website.Models
 	{
 		public String ArtworkId { get; set; }
 		public string Title { get; set; }
+		public string Description { get; set; }
+		public double? Price { get; set; }
+		public DateTime? CreateOn { get; set; }
+		public string UserId { get; set; }
 	}
 
 	public class ArtWorkImageVM

@@ -33,28 +33,18 @@ function upload() {
   
     // upload image to the server or the cloud
   }
-
-var btnAdd = document.getElementById("openModalBtn");
+  
 var modal = document.getElementById("PostModal");
+var p_modal = document.getElementById("P_Modal");
+
 var noti = document.getElementById("SuccessNoti");
+
 var txtTitle = document.getElementById("title").value;
 var txtDescription = document.getElementById("description").value;
 var txtPrice = document.getElementById("price").value;
 var urlImage = document.getElementById("image").value;
-var p_modal = document.getElementById("P_Modal");
 
-btnAdd.onclick = function () {
-    var isPoster = document.getElementById("_poster").value;
-    if (isPoster === "IsPoster") {
-        modal.style.display = "block";
-        txtTitle = '';
-        txtDescription = '';
-        txtPrice = '';
-        urlImage.style.backgroundImage = '';
-    } else {
-        p_modal.style.display = "block";
-    }
-}
+
 
 document.getElementById("goPackageBtn").addEventListener("click", function () {
     
@@ -65,21 +55,9 @@ document.getElementById("closePackage").addEventListener("click", function () {
 });
 
 // Get the input element
-const priceInput = document.getElementById('price');
-const priceValidationMessage = document.getElementById('priceValidationMessage');
+var priceInput = document.getElementById('price');
+var priceValidationMessage = document.getElementById('priceValidationMessage');
 
-
-priceInput.addEventListener('input', function () {
-    const regex = /^\d*\.?\d*$/;
-
-    if (!regex.test(priceInput.value)) {
-        priceValidationMessage.style.display = 'block';
-        priceInput.classList.add('is-invalid');
-    } else {
-        priceValidationMessage.style.display = 'none';
-        priceInput.classList.remove('is-invalid');
-    }
-});
 
 const closeModalBtn = document.getElementById('closeModalBtn');
 const postBtn = document.getElementById('postBtn');
@@ -87,6 +65,9 @@ const postBtn = document.getElementById('postBtn');
 
 closeModalBtn.addEventListener('click', function () {
     modal.style.display = 'none';
+    txtTitle = '';
+    txtDescription = '';
+    txtPrice = '';
 
 });
 

@@ -168,10 +168,10 @@ namespace asp_mvc_website.Controllers
                 return StatusCode(500, "Error when create new notification");
 
             var userNotiResult = await PostUserNotification(artworkPostResult.artworkId, notiResult.NotificationID);
-            if (!userNotiResult.IsSuccess)
+			if (!userNotiResult.IsSuccess)
                 return StatusCode(500, "Error when create new user notification");
 
-            ViewBag.PostSuccess = true;
+            //ViewBag.PostSuccess = true;
             return Ok(new { success = true });
         }
 
