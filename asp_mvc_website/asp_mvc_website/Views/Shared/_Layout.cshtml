@@ -203,12 +203,12 @@
             url: "/UserNotifcation/GetNotify",
             data: { id: '@userId' },
             success: function (notidata) {
-                console.log(notidata.data)
-                // var userNotifications = JSON.parse(notidata.data)
+                console.log(notidata.data);
                 var notificationContainer = $("#notificationContainer");
                 var unreadCount = 0;
+
                 notidata.data.forEach(function (notification) {
-                    console.log(notification)
+                    console.log(notification);
                     var anchor = $("<a>").attr("href", "#");
                     if (notification.notificationVM.isRead == false) {
                         unreadCount++;
@@ -221,15 +221,16 @@
                         notificationItem.append(anchor);
                         notificationContainer.append(notificationItem);
                     }
+                });
 
-            $(".number").text(unreadCount);
+                $(".number").text(unreadCount);
 
-            if (unreadCount === 0) {
-                $(".number").hide();
+                if (unreadCount === 0) {
+                    $(".number").hide();
+                }
             }
-        }
-    });
-</script>
+        });
+    </script>
 
 
 
