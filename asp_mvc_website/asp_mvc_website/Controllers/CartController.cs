@@ -168,13 +168,17 @@ namespace asp_mvc_website.Controllers
 						return RedirectToAction("Index");
 					}
 				}
-				artworkModel.Status = ArtWorkStatus.SoldPPendingConfirm;
+				ArtworkUpdateDTO artworkUpdate = new ArtworkUpdateDTO
+				{
+					ArtworkId = artworkId,
+					Status = ArtWorkStatus.SoldPPendingConfirm
+				};
 
                 // Send registration request to Web API
                 var responseUpdateArtwork = await _client.PutAsync(
 							_client.BaseAddress + "Artwork/Update",
 							new StringContent(
-								JsonConvert.SerializeObject(artworkModel),
+								JsonConvert.SerializeObject(artworkUpdate),
 								Encoding.UTF8,
 								"application/json"
 							));
