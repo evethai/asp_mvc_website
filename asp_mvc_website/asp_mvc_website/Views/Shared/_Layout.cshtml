@@ -40,12 +40,12 @@
         var userName = HttpContextAccessor.HttpContext.Session.GetString("UserEmail");
         var userId = HttpContextAccessor.HttpContext.Session.GetString("UserId");
         string serializedList = HttpContextAccessor.HttpContext.Session.GetString("MyListSessionKey");
-        List<GetUsetNotification> listNoti = null;
+        // List<GetUserNotificationDTO1> listNoti = null;
 
-        if (serializedList != null)
-        {
-            listNoti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(serializedList);
-        }
+        // if (serializedList != null)
+        // {
+        //     listNoti = JsonConvert.DeserializeObject<List<GetUserNotificationDTO1>>(serializedList);
+        // }
     }
 
     <div class="loader-wrapper">
@@ -56,25 +56,26 @@
                 <div id="header" class="header">
                     <div class="container menu-container">
                         <a class="logo" href="/Home/Index"><img alt="Logo" src="~/images/logo.png" width="200" height="55"></a>
-                        <div class="notification" style="float:right;">
-                            <a href="@Url.Action("Index", "Notification", new { id = userId})">
+                        <div class="notification" style="float:right;">                           
                                 <div class="notBtn">
                                     <div class="number" style="width:35px; height:35px"></div>
                                     @if (userId != null)
                                     {
-                                    <img src="~/images/notification.png" width="50px" alt="Alternate Text"/>
-                                        <div class="box">
-                                            <div class="display">
-                                                <div class="nothing">
-                                                    <i class="fas fa-child stick"></i>
-                                                    <div class="cent">Looks Like you're all caught up!</div>
-                                                </div>
-                                                <div class="cont" id="notificationContainer">
+                                    <a href="/Notification/Index/@userId">
+                                        <img src="~/images/notification.png" width="50px" alt="Alternate Text"/>
+                                        </a>
+                                            <div class="box">
+                                                <div class="display">
+                                                    <div class="nothing">
+                                                        <i class="fas fa-child stick"></i>
+                                                        <div class="cent">Looks Like you're all caught up!</div>
+                                                    </div>
+                                                    <div class="cont" id="notificationContainer">
 
-                                                    <!-- Notifications will be dynamically added here -->
+                                                        <!-- Notifications will be dynamically added here -->
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
                                     }
                                     else
                                     {
@@ -201,19 +202,20 @@
             type: "GET",
             url: "/UserNotifcation/GetNotify",
             data: { id: '@userId' },
-            success: function (data) {
-                console.log(data);
-                var userNotifications = JSON.parse(data);
+            success: function (notidata) {
+                console.log(notidata.data)
+                // var userNotifications = JSON.parse(notidata.data)
                 var notificationContainer = $("#notificationContainer");
                 var unreadCount = 0;
-                userNotifications.forEach(function (notification) {
+                notidata.data.forEach(function (notification) {
+                    console.log(notification)
                     var anchor = $("<a>").attr("href", "#");
-                    if (!notification.isRead) {
+                    if (notification.notificationVM.isRead == false) {
                         unreadCount++;
-                        var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artwordUrl);
+                        var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
                         profileImage.css("margin-left", "15px");
-                        var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artworkTitle);
-                        var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationTitle);
+                        var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artWorkVM.title);
+                        var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationVM.description);
                         anchor.append(profileImage).append(txtDiv).append(subTxtDiv);
                         var notificationItem = $("<div>").addClass("sec new");
                         notificationItem.append(anchor);
@@ -222,9 +224,9 @@
 
                     $(".number").text(unreadCount);
 
-                    if (unreadCount === 0) {
-                        $(".number").hide();
-                    }
+                    // if (unreadCount === 0) {
+                    //     $(".number").hide();
+                    // }
                 });
             }
         });

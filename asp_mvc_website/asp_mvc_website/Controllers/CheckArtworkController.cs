@@ -146,8 +146,8 @@ namespace asp_mvc_website.Controllers
 			var dto = new CreateUserNotificationDTO
 			{
 				userId = user.userId,
-				NotificationId = notiId,
-				ArtworkId = artworkId
+				notificationId = notiId,
+				artworkId = artworkId
 			};
 			var response = await _client.PostAsync(
 			   _client.BaseAddress + "UserNotifcation/CreateNotification",

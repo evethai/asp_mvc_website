@@ -3,7 +3,7 @@
 *@
 @{
 }
-@model IEnumerable<GetUsetNotification>
+@model GetUserNoti
 <style>
 	body {
 		font-family: "Roboto", sans-serif;
@@ -122,19 +122,19 @@
 		<h3 class="m-b-50 heading-line">Notifications <i class="fa fa-bell text-muted"></i></h3>
 		<div class="notification-ui_dd-content">
 
-			@foreach (var item in Model)
+			@foreach (var item in Model.data)
 			{
-				if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.Order && item.isRead == false)
+				if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.Order && item.NotificationVM.IsRead == false)
 				{
 					<div class="notification-list notification-list--unread">
 						<div class="notification-list_content">
 							<div class="notification-list_img">
-								<img src="@item.artwordUrl" alt="user">
+								<img src="@item.ArtWorkImageVM.Image" alt="user">
 							</div>
 							<div class="notification-list_detail">
-								<p style="color:black"><b>@item.nameUser</b> @item.notificationTitle</p>
-								<p class="text-muted">@item.notificationDescription</p>
-								<p class="text-muted"><small>@item.dateTime</small></p>
+								<p style="color:black"><b>@item.UserVM.FirstName @item.UserVM.LastName</b> @item.NotificationVM.Title</p>
+								<p class="text-muted">@item.NotificationVM.Description</p>
+								<p class="text-muted"><small>@item.NotificationVM.Date</small></p>
 							</div>
 						</div>
 						<div class="notification-list_feature-img">
@@ -149,19 +149,19 @@
 
 
 
-			@foreach (var item in Model)
+			@foreach (var item in Model.data)
 			{
-				if (!item.isRead && !(item.notiStatus == asp_mvc_website.Enums.NotiStatus.Order))
+				if (item.NotificationVM.IsRead == false && !(item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.Order))
 				{
-					<div class="notification-list notification-list--unread markRead" action="/Notifi" data-id="@item.notificationId" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.id">
+					<div class="notification-list notification-list--unread markRead" action="/Notifi" data-id="@item.NotificationVM.Id" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.NotificationVM.Id">
 						<div class="notification-list_content">
 							<div class="notification-list_img">
-								<img src="@item.artwordUrl" alt="user">
+								<img src="@item.ArtWorkImageVM.Image" alt="user">
 							</div>
 							<div class="notification-list_detail">
-								<p style="color:black"><b>@item.nameUser</b> @item.notificationTitle</p>
-								<p class="text-muted">@item.notificationDescription</p>
-								<p class="text-muted"><small>@item.dateTime</small></p>
+								<p style="color:black"><b>@item.UserVM.FirstName @item.UserVM.LastName</b> @item.NotificationVM.Title</p>
+								<p class="text-muted">@item.NotificationVM.Description</p>
+								<p class="text-muted"><small>@item.NotificationVM.Date</small></p>
 							</div>
 						</div>
 						@* <button action="/Notifi" class="btn btn-primary markRead" data-id="@item.id" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.id">MarkRead</button> *@
@@ -171,22 +171,22 @@
 
 					<!-- Button trigger modal -->
 					<!-- Modal -->
-					<div class="modal fade" id="exampleModal-@item.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal fade" id="exampleModal-@item.NotificationVM.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered modal-lg">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;">@item.nameUser @item.notificationTitle</h1>
+									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;">@item.UserVM.FirstName @item.UserVM.LastName @item.NotificationVM.Title</h1>
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
 									<div class="row">
 										<div class="col-6">
-											<img class="anhmodal" src="@item.artwordUrl" alt="Anh san pham" />
+											<img class="anhmodal" src="@item.ArtWorkImageVM.Image" alt="Anh san pham" />
 										</div>
 										<div class="col-6 align-items-center justify-content-end notiInfo">
-											<p style="color:black;">Arkwork Title: <br /> @item.artworkTitle</p>
-											<p style="color:black;">Notification Description: <br /> @item.notificationDescription</p>
-											<p style="color:black;">Date:<br /> @item.dateTime</p>
+											<p style="color:black;">Arkwork Title: <br /> @item.NotificationVM.Title</p>
+											<p style="color:black;">Notification Description: <br /> @item.NotificationVM.Description</p>
+											<p style="color:black;">Date:<br /> @item.NotificationVM.Date</p>
 										</div>
 									</div>
 								</div>
@@ -198,50 +198,50 @@
 					</div>
 				}
 			}
-			@foreach (var item in Model)
+			@foreach (var item in Model.data)
 			{
-				if (item.isRead)
+				if (item.NotificationVM.IsRead)
 				{
-					<div class="notification-list" action="/Notifi" data-id="@item.notificationId" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.id">
+					<div class="notification-list" action="/Notifi" data-id="@item.NotificationVM.Id" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.NotificationVM.Id">
 						<div class="notification-list_content">
 							<div class="notification-list_img">
-								<img src="@item.artwordUrl" alt="user">
+								<img src="@item.ArtWorkImageVM.Image" alt="user">
 							</div>
 							<div class="notification-list_detail">
-								<p style="color:black"><b>@item.nameUser</b> @item.notificationTitle</p>
-								<p class="text-muted">@item.notificationDescription</p>
-								<p class="text-muted"><small>@item.dateTime</small></p>
+								<p style="color:black"><b>@item.UserVM.FirstName @item.UserVM.LastName</b> @item.NotificationVM.Title</p>
+								<p class="text-muted">@item.NotificationVM.Description</p>
+								<p class="text-muted"><small>@item.NotificationVM.Date</small></p>
 							</div>
 						</div>
-						@if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptOrder)
+						@if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptOrder)
 						{
 							<div class="notification-list_feature-img">
 								<div class="abutton" style="color:black">has been approved</div>
 							</div>
 						}
-						@if (item.notiStatus == asp_mvc_website.Enums.NotiStatus.DenyOrder)
+						@if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.DenyOrder)
 						{
 							<div class="notification-list_feature-img">
 								<div class="dbutton" style="color:black">has been denied</div>
 							</div>
 						}
 					</div>
-					<div class="modal fade" id="exampleModal-@item.id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal fade" id="exampleModal-@item.NotificationVM.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered modal-lg">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;">@item.nameUser @item.notificationTitle</h1>
+									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;">@item.UserVM.FirstName @item.UserVM.LastName @item.NotificationVM.Title</h1>
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
 									<div class="row">
 										<div class="col-6">
-											<img class="anhmodal" src="@item.artwordUrl" alt="Anh san pham" />
+											<img class="anhmodal" src="@item.ArtWorkImageVM.Image" alt="Anh san pham" />
 										</div>
 										<div class="col-6 align-items-center justify-content-end notiInfo">
-											<p style="color:black;">Arkwork Title: <br/> @item.artworkTitle</p>
-											<p style="color:black;">Notification Description: <br /> @item.notificationDescription</p>
-											<p style="color:black;">Date:<br /> @item.dateTime</p>
+											<p style="color:black;">Arkwork Title: <br /> @item.NotificationVM.Title</p>
+											<p style="color:black;">Notification Description: <br /> @item.NotificationVM.Description</p>
+											<p style="color:black;">Date:<br /> @item.NotificationVM.Date</p>
 										</div>
 									</div>
 								</div>

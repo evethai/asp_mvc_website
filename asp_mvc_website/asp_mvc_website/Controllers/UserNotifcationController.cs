@@ -21,20 +21,20 @@ namespace asp_mvc_website.Controllers
             _client = _factory.CreateClient("ServerApi");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
-        public string GetNotify(string id)
+        public async Task<GetUserNoti> GetNotify(string id)
         {
-            List<GetUsetNotification> userNoti = new List<GetUsetNotification>();
-            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "UserNotifcation/"+ id).Result;
+            var response = await _client.GetAsync(_client.BaseAddress + "UserNotifcation/getNotiUser?userId=" + id);
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
-                userNoti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(data);
-                return data;
+                var userNoti = JsonConvert.DeserializeObject<GetUserNoti>(data);
+                return userNoti;
 
-                //    HttpContext.Session.SetString("MyListSessionKey", JsonConvert.SerializeObject(userNoti));
             }
-            else return null;
+            return null;
         }
+
+
 
     }
 }
