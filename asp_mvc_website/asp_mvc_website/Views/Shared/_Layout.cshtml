@@ -127,9 +127,9 @@
                         @if (userName != null)
                         {
                             <li class="menu-item-simple-parent" style="float:right;">
-                                <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a> <!--Thay đổi thành logout-->
+                                <a href="/User/Login">Logout<span class="fa fa-pencil-square-o"></span></a> <!--Thay đổi thành logout-->
                                 <ul class="sub-menu">
-                                    <li><a href="#">Hello @userName!</a></li>                                  
+                                    <li><a href="/Profile/Index/@userId">Hello @userName!</a></li>
                                 </ul>
                             </li>
                         }

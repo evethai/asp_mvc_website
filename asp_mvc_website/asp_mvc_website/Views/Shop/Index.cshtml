@@ -33,7 +33,6 @@
                 </div>
             </div>
         </div>
-
         <div class="column dt-sc-one-half space first animate" id="SuccessNoti" style="display: none" data-animation="fadeInDown" data-delay="100">
             <div class="dt-sc-success-box aligncenter"> <span></span> <h4> Success </h4> Post new Artwork is <b> success </b> Please wait for moderation and your post will be displayed in the Shop</div>
         </div>
@@ -50,16 +49,18 @@
                             <div class="mb-3">
                                 <label for="title" class="col-form-label" style="color: white; font: bold">Title:</label>
                                 <input type="text" style="background: #252525; color:white" class="form-control" name="title" id="title">
+                                <div id="titleValidationMessage" style="color: red; display: none;">Please enter a Title.</div>
                             </div>
                             <div class="mb-3">
                                 <label for="description" class="col-form-label" style="color: white; font: bold">Description:</label>
                                 <textarea name="description" id="description" class="form-control" style="height:150px;background:#252525;color:white"></textarea>
+                                <div id="descriptionValidationMessage" style="color: red; display: none;">Please enter a description.</div>
                             </div>
                             <div class="mb-3">
                                 <label for="price" class="col-form-label" style="color: white; font: bold">Price:</label>
                                 <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
                                        style="background: #252525;color:white" class="form-control" name="price" id="price">
-                                <div id="priceValidationMessage" style="color: red; display: none;">Please enter a valid number.</div>
+                                <div id="priceValidationMessage" style="color: red; display: none;">Price must be a valid number. (1.000 - 1.000.000.000 VND).</div>
                             </div>
                             <div class="mb-3">
                                 <label for="category" class="col-form-label" style="color: white; font: bold">Select Item:</label>
@@ -70,6 +71,7 @@
                                     })
                                     <option value="other" style="background: #252525; color: white;">Other</option>
                                 </select>
+                                <div id="catelogyValidationMessage" style="color: red; display: none;">Please select a catalogy.</div>
                             </div>
                             <div class="mb-3" id="customItemDiv" style="display: none;">
                                 <label for="categoryCustom" class="col-form-label" style="color: white; font: bold">Custom Item:</label>
@@ -87,6 +89,8 @@
                                            onchange="upload()"
                                            accept="image/*" />
                                 </div>
+                                <div id="imageValidationMessage" style="color: red; display: none;">Please select one image when post.</div>
+
                             </div>
                         </form>
                     </div>
