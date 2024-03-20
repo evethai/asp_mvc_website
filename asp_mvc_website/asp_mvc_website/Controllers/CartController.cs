@@ -1,5 +1,4 @@
-﻿using asp_mvc_website.DTO;
-using asp_mvc_website.Models;
+﻿using asp_mvc_website.Models;
 using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +16,7 @@ namespace asp_mvc_website.Controllers
         private readonly IHttpClientFactory _factory;
         private readonly ICurrentUserService _currentUserService;
         private CartService cartService;
+        private readonly string _cartCookieName = "CartItems";
         public CartController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, ICurrentUserService currentUserService, IConfiguration configuration)
         {
             _factory = httpClientFactory;
@@ -32,6 +32,12 @@ namespace asp_mvc_website.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+			var userId = HttpContext.Session.GetString("UserId");
+			if(userId == null)
+			{
+				return Redirect("/User/Login");
+			}
+
 			var cartItems = GetCartItem();
 
 			cartService = new CartService(cartItems);
@@ -43,7 +49,12 @@ namespace asp_mvc_website.Controllers
         [HttpGet]
         public IActionResult AddToCart(string id)
         {
-            ArtworkModel artworkModel = new ArtworkModel();
+			var userId = HttpContext.Session.GetString("UserId");
+			if (userId == null)
+			{
+				return Redirect("/User/Login");
+			}
+			ArtworkModel artworkModel = new ArtworkModel();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetById/" + id).Result;
             if (response.IsSuccessStatusCode)
             {
@@ -79,13 +90,7 @@ namespace asp_mvc_website.Controllers
 			//HttpContext.Session.SetString("CartItems", JsonConvert.SerializeObject(cartItems));
 
 			// Retrieve cart items from session or cookie
-			var cartItemsJson = HttpContext.Request.Cookies.ContainsKey("CartItems")
-			? HttpContext.Request.Cookies["CartItems"]
-			: null;
-
-			var cartItems = cartItemsJson != null
-				? JsonConvert.DeserializeObject<List<CartItemModel>>(cartItemsJson)
-				: new List<CartItemModel>();
+			var cartItems = GetCartItem();
 
             cartService = new CartService(cartItems);
 
@@ -103,20 +108,20 @@ namespace asp_mvc_website.Controllers
 				Image = artworkModel.Image
 			});
 
-			// Save the updated cart items back to cookie
-			var options = new Microsoft.AspNetCore.Http.CookieOptions
-			{
-				Expires = System.DateTimeOffset.Now.AddDays(1)
-			};
-			HttpContext.Response.Cookies.Append("CartItems", JsonConvert.SerializeObject(cartItems), options);
-			return false;
+            SaveCartToCookie(cartItems);
+
+            return false;
 		}
 
 		[Route("Cart/DeleteArtwork/{artworkId}")]
 		[HttpDelete]
 		public IActionResult DeleteArtwork(int artworkId)
 		{
-
+			var userId = HttpContext.Session.GetString("UserId");
+			if (userId == null)
+			{
+				return Redirect("/User/Login");
+			}
 			var cartItems = GetCartItem();
 
 			// Find the index of the item to delete based on its artworkId
@@ -135,12 +140,7 @@ namespace asp_mvc_website.Controllers
 			{
 				cartItems.RemoveAt(indexToDelete);
 
-				// Save the updated cart items back to the cookie
-				var options = new Microsoft.AspNetCore.Http.CookieOptions
-				{
-					Expires = System.DateTimeOffset.Now.AddDays(1)
-				};
-				HttpContext.Response.Cookies.Append("CartItems", JsonConvert.SerializeObject(cartItems), options);
+				SaveCartToCookie(cartItems);
 			}
 
 			// Return true to indicate success or failure
@@ -150,6 +150,11 @@ namespace asp_mvc_website.Controllers
 		[HttpGet]
 		public async Task<IActionResult> CheckOut(int artworkId)
 		{
+			var userId = HttpContext.Session.GetString("UserId");
+			if (userId == null)
+			{
+				return Redirect("/User/Login");
+			}
 			ArtworkModel artworkModel = new ArtworkModel();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetById/" + artworkId).Result;
             if (response.IsSuccessStatusCode)
@@ -158,11 +163,11 @@ namespace asp_mvc_website.Controllers
                 artworkModel = JsonConvert.DeserializeObject<ArtworkModel>(data);
 				if(artworkModel != null)
 				{
-					if (artworkModel.Status == ArtWorkStatus.InProgress){
+					if (artworkModel.Status == ArtWorkStatus.PendingConfirmation){
 						return RedirectToAction("Index");
 					}
 				}
-				artworkModel.Status = ArtWorkStatus.InProgress;
+				artworkModel.Status = ArtWorkStatus.PendingConfirmation;
 
                 // Send registration request to Web API
                 var responseUpdateArtwork = await _client.PostAsync(
@@ -181,21 +186,17 @@ namespace asp_mvc_website.Controllers
 					if (itemToUpdate != null)
 					{
 						// Update the item's quantity
-						itemToUpdate.Status = ArtWorkStatus.InProgress;
+						itemToUpdate.Status = ArtWorkStatus.PendingConfirmation;
 
-						// Save the updated cart back to session or database
-						var options = new Microsoft.AspNetCore.Http.CookieOptions
-						{
-							Expires = System.DateTimeOffset.Now.AddDays(1)
-						};
-						HttpContext.Response.Cookies.Append("CartItems", JsonConvert.SerializeObject(cartItems), options);
+                        // Save the updated cart back to session or database
+                        SaveCartToCookie(cartItems);
 
-						// Optionally, return a success response or redirect to the cart page
-						return RedirectToAction("Index");
+                        // Return a success response or redirect to the cart page
+                        return RedirectToAction("Index");
 					}
 					else
 					{
-						// Item not found in the cart, handle error (e.g., display a message)
+						// Item not found in the cart, handle error
 						return View("Error");
 					}
 				}
@@ -204,7 +205,7 @@ namespace asp_mvc_website.Controllers
 			return RedirectToAction("Index");
 		}
 
-		public List<CartItemModel> GetCartItem()
+		private List<CartItemModel> GetCartItem()
 		{
 			var settings = new JsonSerializerSettings
 			{
@@ -214,8 +215,8 @@ namespace asp_mvc_website.Controllers
 			};
 
 			// Retrieve cart items from session or cookie
-			var cartItemsJson = HttpContext.Request.Cookies.ContainsKey("CartItems")
-				? HttpContext.Request.Cookies["CartItems"]
+			var cartItemsJson = HttpContext.Request.Cookies.ContainsKey(_cartCookieName)
+				? HttpContext.Request.Cookies[_cartCookieName]
 				: null;
 
 			var cartItems = cartItemsJson != null
@@ -225,6 +226,15 @@ namespace asp_mvc_website.Controllers
 			return cartItems;
 		}
 
+        private void SaveCartToCookie(List<CartItemModel> cartItems)
+        {
+            var cartJson = JsonConvert.SerializeObject(cartItems);
+            HttpContext.Response.Cookies.Append(_cartCookieName, cartJson, new CookieOptions
+            {
+                Expires = DateTimeOffset.Now.AddDays(7) // Adjust expiration as needed
+            });
+        }
 
-	}
+
+    }
 }

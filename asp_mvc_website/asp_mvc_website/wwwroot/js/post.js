@@ -55,9 +55,23 @@ document.getElementById("closePackage").addEventListener("click", function () {
 });
 
 // Get the input element
-var priceInput = document.getElementById('price');
-var priceValidationMessage = document.getElementById('priceValidationMessage');
+const priceInput = document.getElementById('price');
+const priceValidationMessage = document.getElementById('priceValidationMessage');
+const titleValidationMessage = document.getElementById('titleValidationMessage');
+const descriptionValidationMessage = document.getElementById('descriptionValidationMessage');
+const catelogyValidationMessage = document.getElementById('catelogyValidationMessage');
+const imageValidationMessage = document.getElementById('imageValidationMessage');
+//priceInput.addEventListener('input', function () {
+//    const regex = /^\d*\.?\d*$/;
 
+//    if (!regex.test(priceInput.value)) {
+//        priceValidationMessage.style.display = 'block';
+//        priceInput.classList.add('is-invalid');
+//    } else {
+//        priceValidationMessage.style.display = 'none';
+//        priceInput.classList.remove('is-invalid');
+//    }
+//});
 
 const closeModalBtn = document.getElementById('closeModalBtn');
 const postBtn = document.getElementById('postBtn');
@@ -81,35 +95,44 @@ postBtn.addEventListener('click', function () {
     var isValid = true; 
 
     // Validate title
-    if (title === '') {
-        alert("Title is required.");
-        //showCustomAlert("Title is required.");
+    if (title ==='') {
+        titleValidationMessage.style.display = 'block';
         isValid = false;
+    } else {
+        titleValidationMessage.style.display = 'none';
     }
 
     // Validate description
     if (description === '') {
-        alert("Description is required.");
+        descriptionValidationMessage.style.display = 'block';
         isValid = false;
-    }
+    } else {
+        descriptionValidationMessage.style.display = 'none';
+    }      
 
     // Validate price (must be a number)
-    if (isNaN(price) || price === '') {
-        alert("Price must be a valid number.");
+    if (isNaN(price) || price === '' || price <= 1000 || price >= 1000000000) {
+        priceValidationMessage.style.display = 'block';
         isValid = false;
+    } else {
+        priceValidationMessage.style.display = 'none';
     }
 
     // Validate image
     if (!imageFile) {
-        alert("Image is required.");
+        imageValidationMessage.style.display = 'block';
         isValid = false;
+    } else {
+        imageValidationMessage.style.display = 'none';
     }
 
     // Validate selected item
     if (categorySelect === 'other' && customItemInput === '') {
-        alert("Custom item is required.");
+        catelogyValidationMessage.style.display = 'block';
         isValid = false;
-    } 
+    } else {
+        catelogyValidationMessage.style.display = 'none';
+    }
     var category = categorySelect;
     var isNew = false;
     if (categorySelect === 'other') {
