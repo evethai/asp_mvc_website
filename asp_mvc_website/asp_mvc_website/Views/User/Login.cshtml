@@ -29,7 +29,7 @@
                 <input type="password" class="form-control" name="Password" id="inputPassword" placeholder="Enter password">
                 <span asp-validation-for="Password" class="text-danger"></span>
                 <button type="button" class="btn btn-link position-absolute h-100 end-0 top-0 shadow-none" id="password-addon">
-                    <i class="mdi mdi-eye-outline f-16 text-muted"></i>
+                    <i class="mdi mdi-eye-outline f-16 text-muted" onclick="togglePasswordVisibility()" ></i>
                 </button>
 
             </div>
@@ -54,7 +54,7 @@
             <div class="col-4">
                 <div class="client-images my-3 my-md-0">
                     <a href="/User/ExternalLogin">
-                        <img src="images/img-2.png" class="mx-auto d-block img-fluid"
+                        <img src="~/images/login-gg.png" class="mx-auto d-block img-fluid"
                              alt="logo-img">
                     </a>
                 </div>
@@ -117,3 +117,17 @@
         <!-- end col -->
     </div><!-- end row --> *@
 </div><!-- auth content -->
+<script>
+    function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("inputPassword");
+        var toggleBtn = document.querySelector(".mdi mdi-eye-outline f-16 text-muted");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleBtn.textContent = "Hide";
+        } else {
+            passwordInput.type = "password";
+            toggleBtn.textContent = "Show";
+        }
+    }
+</script>
