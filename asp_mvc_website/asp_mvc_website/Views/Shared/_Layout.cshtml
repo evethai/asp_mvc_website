@@ -27,6 +27,11 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <link rel="stylesheet" href="~/css/noti.css" type="text/css" />
     <link rel="stylesheet" href="~/css/post.css" type="text/css" />
+    <style>
+        .menu.type1 li{
+            width:20%;
+        }
+    </style>
 </head>
 <body>
     @using Newtonsoft.Json;
@@ -84,8 +89,6 @@
                         </a>
                     </div>
                 </div>
-
-
                 <nav id="main-menu">
                     <div id="dt-menu-toggle" class="dt-menu-toggle">
                         Menu
@@ -117,68 +120,31 @@
                         *@
                         <li class="menu-item-simple-parent">
                             <a href="/Shop/Index">Shop <span class="fa fa-cart-plus"></span></a>
-                            <ul class="sub-menu">
-                            <li><a href="shop-detail.html">Shop Detail</a></li>
-                            <li><a href="/Cart">Cart Page</a></li>
-                            <li><a href="shop-checkout.html">Checkout Page</a></li>
-                            </ul>
-                            <a class="dt-menu-expand">+</a>
                         </li>
                         <li class="menu-item-simple-parent">
-                            <a href="blog.html">Blog <span class="fa fa-pencil-square-o"></span></a>
-                            <ul class="sub-menu">
-                                <li><a href="@Url.Action("Index","PostArtwork")">Blog detail</a></li>
-                                <li><a href="blog-detail-with-lhs.html">Blog-detail-left-sidebar</a></li>
-                                @*                                 <li><a href="@Url.Action("Index", "UserNotifcation", new { id = "1932234f-af4a-45e5-b8d9-b613d2dfbb5d"})">Notification</a></li> *@
-                            </ul>
-                            <a class="dt-menu-expand">+</a>
+                            <a href="/cart">Cart <span class="fa fa-cart-plus"></span></a>
                         </li>
                         @if (userName != null)
                         {
-                            @*                          <li class="menu-item-simple-parent">
-                        <p>Hello @userName!</p>
-                        </li>
-                        <li class="menu-item-simple-parent">
-                        <p>User ID @userId!</p>
-                        </li> *@
-                            <li class="menu-item-simple-parent">
-                                <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
+                            <li class="menu-item-simple-parent" style="float:right;">
+                                <a href="/User/Login">Logout<span class="fa fa-pencil-square-o"></span></a> <!--Thay đổi thành logout-->
                                 <ul class="sub-menu">
-                                    <li><a href="#">Hello @userName!</a></li>
-                                    <li><a href="#">User ID @userId!</a></li>
+                                    <li><a href="/Profile/Index/@userId">Hello @userName!</a></li>
                                 </ul>
                             </li>
                         }
                         else
-                        {
-                            @*                          <li class="menu-item-simple-parent">
-                        <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
-                        </li>
-                        <li class="menu-item-simple-parent">
-                        <a href="/User/Register">Register<span class="fa fa-map-marker"></span></a>
-                        </li> *@
-                            <li class="menu-item-simple-parent">
+                        {                          
+                            <li class="menu-item-simple-parent" style="float:right;">
                                 <a href="/User/Login">Login<span class="fa fa-pencil-square-o"></span></a>
                                 <ul class="sub-menu">
-                                    <li><a href="/User/Login">Login</a></li>
                                     <li><a href="/User/Register">Register</a></li>
                                 </ul>
                             </li>
                         }
                         <li class="menu-item-simple-parent">
 
-                        </li>
-                        <li class="menu-item-simple-parent">
-                            <a href="progressbar.html">shortcodes <span class="fa fa-paint-brush"></span></a>
-                            <ul class="sub-menu">
-                                <li><a href="progressbar.html"> Progress-bar </a></li>
-                                <li><a href="buttons.html"> Buttons Page </a></li>
-                                <li><a href="tabs.html"> tabs-accordions </a></li>
-                                <li><a href="typography.html"> typography </a></li>
-                                <li><a href="columns.html"> columns </a></li>
-                            </ul>
-                            <a class="dt-menu-expand">+</a>
-                        </li>
+                        </li>                      
                     </ul>
                 </nav>
             </div>
@@ -231,42 +197,30 @@
     <script src="~/js/jquery.viewport.js" type="text/javascript"></script>
     <script src="~/js/jquery.validate.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="~/js/jquery.bxslider.min.js"></script>
-    @*     <script>
-    $.ajax({
-    type: "GET",
-    url: "/UserNotifcation/GetNotify",
-    data: { id : '9f912cd2-aac1-4c5a-94ca-25017964557e' },
-    success: function (data) {
-    console.log(data);
-    }
-    });
-    </script> *@
-
-   <script>
-    $.ajax({
-        type: "GET",
-        url: "/UserNotifcation/GetNotify",
-        data: { id: '@userId' },
-        success: function (notidata) {
-            console.log(notidata.data);
-            var notificationContainer = $("#notificationContainer");
-            var unreadCount = 0;
-
-            notidata.data.forEach(function (notification) {
-                console.log(notification);
-                var anchor = $("<a>").attr("href", "#");
-                if (notification.notificationVM.isRead == false) {
-                    unreadCount++;
-                    var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
-                    profileImage.css("margin-left", "15px");
-                    var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artWorkVM.title);
-                    var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationVM.description);
-                    anchor.append(profileImage).append(txtDiv).append(subTxtDiv);
-                    var notificationItem = $("<div>").addClass("sec new");
-                    notificationItem.append(anchor);
-                    notificationContainer.append(notificationItem);
-                }
-            });
+    <script>
+        $.ajax({
+            type: "GET",
+            url: "/UserNotifcation/GetNotify",
+            data: { id: '@userId' },
+            success: function (notidata) {
+                console.log(notidata.data)
+                // var userNotifications = JSON.parse(notidata.data)
+                var notificationContainer = $("#notificationContainer");
+                var unreadCount = 0;
+                notidata.data.forEach(function (notification) {
+                    console.log(notification)
+                    var anchor = $("<a>").attr("href", "#");
+                    if (notification.notificationVM.isRead == false) {
+                        unreadCount++;
+                        var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
+                        profileImage.css("margin-left", "15px");
+                        var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artWorkVM.title);
+                        var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationVM.description);
+                        anchor.append(profileImage).append(txtDiv).append(subTxtDiv);
+                        var notificationItem = $("<div>").addClass("sec new");
+                        notificationItem.append(anchor);
+                        notificationContainer.append(notificationItem);
+                    }
 
             $(".number").text(unreadCount);
 

@@ -2,6 +2,11 @@
 @{
     ViewData["Title"] = "Shop Page";
 }
+<style>
+    .products .product-title a:first-child{
+        width:100%;
+    }
+</style>
 <section id="primary" class="content-full-width">
     <div class="container">
         <div class="main-title animate" data-animation="pullDown" data-delay="100">
@@ -12,15 +17,6 @@
         @{
             var user = HttpContextAccessor.HttpContext.Session.GetString("UserId");
         }
-        @if (user != null)
-        {
-            <!-- Button -->
-            <a class="dt-sc-button small type2" id="openModalBtn">Post Artwork</a>
-            <div class="clear"> </div>
-            <input type="hidden" id="_poster" value="@Model.IsPoster" />  
-        }
-
-
         <div class="modal" tabindex="-1" id="P_Modal" style="margin-top : 180px">
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content" style="background: #333">
@@ -28,7 +24,7 @@
                         <h5 class="modal-title" id="staticBackdropLabel" style="color: white; font: bold">Modal title</h5>
                     </div>
                     <div class="modal-body">
-                       <h3>You is not a Artist, You need Buy a Package to Post artwork</h3>
+                        <h3>You is not a Artist, You need Buy a Package to Post artwork</h3>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
@@ -37,8 +33,6 @@
                 </div>
             </div>
         </div>
-
-
         <div class="column dt-sc-one-half space first animate" id="SuccessNoti" style="display: none" data-animation="fadeInDown" data-delay="100">
             <div class="dt-sc-success-box aligncenter"> <span></span> <h4> Success </h4> Post new Artwork is <b> success </b> Please wait for moderation and your post will be displayed in the Shop</div>
         </div>
@@ -55,25 +49,29 @@
                             <div class="mb-3">
                                 <label for="title" class="col-form-label" style="color: white; font: bold">Title:</label>
                                 <input type="text" style="background: #252525; color:white" class="form-control" name="title" id="title">
+                                <div id="titleValidationMessage" style="color: red; display: none;">Please enter a Title.</div>
                             </div>
                             <div class="mb-3">
                                 <label for="description" class="col-form-label" style="color: white; font: bold">Description:</label>
                                 <textarea name="description" id="description" class="form-control" style="height:150px;background:#252525;color:white"></textarea>
+                                <div id="descriptionValidationMessage" style="color: red; display: none;">Please enter a description.</div>
                             </div>
                             <div class="mb-3">
                                 <label for="price" class="col-form-label" style="color: white; font: bold">Price:</label>
-                                <input type="text" style="background: #252525;color:white" class="form-control" name="price" id="price">
-                                <div id="priceValidationMessage" style="color: red; display: none;">Please enter a valid number.</div>
+                                <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
+                                       style="background: #252525;color:white" class="form-control" name="price" id="price">
+                                <div id="priceValidationMessage" style="color: red; display: none;">Price must be a valid number. (1.000 - 1.000.000.000 VND).</div>
                             </div>
                             <div class="mb-3">
                                 <label for="category" class="col-form-label" style="color: white; font: bold">Select Item:</label>
                                 <select class="form-select" style="background: #252525; color: white;" id="category" name="category">
-                                    @foreach(var item in Model.CategoryList)
+                                    @foreach (var item in Model.CategoryList)
                                     {
                                         <option value="@item.id" style="background: #252525; color: white;">@item.Name</option>
                                     })
                                     <option value="other" style="background: #252525; color: white;">Other</option>
                                 </select>
+                                <div id="catelogyValidationMessage" style="color: red; display: none;">Please select a catalogy.</div>
                             </div>
                             <div class="mb-3" id="customItemDiv" style="display: none;">
                                 <label for="categoryCustom" class="col-form-label" style="color: white; font: bold">Custom Item:</label>
@@ -91,6 +89,8 @@
                                            onchange="upload()"
                                            accept="image/*" />
                                 </div>
+                                <div id="imageValidationMessage" style="color: red; display: none;">Please select one image when post.</div>
+
                             </div>
                         </form>
                     </div>
@@ -121,7 +121,7 @@
             <div class="dt-sc-one-fifth column">
                 <div class="categories">
                     <h5>Sort By</h5>
-                    <div  class="selection-box">
+                    <div class="selection-box">
                         <select class="shop-dropdown" id="_sortBy" onchange="sortBy()">
                             <option value="-1" selected>Sort by</option>
                             <option value="1" class="fa fa-mortar-board">Popular Artist</option>
@@ -131,42 +131,68 @@
                     </div>
                 </div>
             </div>
-            <div class="dt-sc-three-fifth column">
-                <div class="Search">
-                    <h5>Search</h5>
-                    <div novalidate="novalidate" id="searchform">
-                        <p class="input-text">
-                            <input id="txtSearch" class="input-field" style="height:52px; color: white" />
-                            <label class="input-label">
-                                <i class="fa fa-search icon"></i>
-                            </label>
-                            <input type="button" id="myButton" class="submit" value="Search" style="height:52px" />
-                        </p>
-                    </div>
-                </div>
-            </div>
 
-            
+            @if (user != null)
+            {
+                <div class="dt-sc-three-fifth column" style="width:50%">
+                    <div class="Search">
+                        <h5>Search</h5>
+                        <div novalidate="novalidate" id="searchform">
+                            <p class="input-text">
+                                <input id="txtSearch" class="input-field" style="height:52px; color: white" />
+                                <label class="input-label">
+                                    <i class="fa fa-search icon"></i>
+                                </label>
+                                <input type="button" id="myButton" class="submit" value="Search" style="height:52px; padding:14px;" />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: inline-block;margin: 0 0 0 1.4%;">
+                    <h5 style="color:black">.</h5>
+                    <a class="dt-sc-button small type2" style="height:52px;padding:18px" id="openModalBtn">Post Artwork</a>
+                    <div class="clear"> </div>
+                    <input type="hidden" id="_poster" value="@Model.IsPoster" />
+                </div>
+            }
+            else
+            {
+                <div class="dt-sc-three-fifth column">
+                    <div class="Search">
+                        <h5>Search</h5>
+                        <div novalidate="novalidate" id="searchform">
+                            <p class="input-text">
+                                <input id="txtSearch" class="input-field" style="height:52px; color: white" />
+                                <label class="input-label">
+                                    <i class="fa fa-search icon"></i>
+                                </label>
+                                <input type="button" id="myButton" class="submit" value="Search" style="height:52px" />
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-        @if (ViewBag.DupplicateId != null) {
-        <div id="popupMessage" onclick="hidePopup()">
-            <div class="popup-content">
-                <div class="column dt-sc-one-half space animate" >
-                    <div class="dt-sc-info-box aligncenter">
-                        <span></span>
-                        <h4> Info </h4>
-                        <b>
-                            @{
-                                string duplicationArtwork = ViewBag.DupplicateId as string;
-                            }
-                            <p>@duplicationArtwork</p>
-                        </b>
+        @if (ViewBag.DupplicateId != null)
+        {
+            <div id="popupMessage" onclick="hidePopup()">
+                <div class="popup-content">
+                    <div class="column dt-sc-one-half space animate">
+                        <div class="dt-sc-info-box aligncenter">
+                            <span></span>
+                            <h4> Info </h4>
+                            <b>
+                                @{
+                                    string duplicationArtwork = ViewBag.DupplicateId as string;
+                                }
+                                <p>@duplicationArtwork</p>
+                            </b>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         }
-        
+
 
         <div id="listIndex">
             <ul class="products isotope">
@@ -177,18 +203,18 @@
                             <a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})"><div class="product-thumb"> <img src="@item.Image" style=" height:300px" /> </div> </a>
                             <div class="product-title">
                                 @* <a href="#" class="type1 dt-sc-button addToCartLink" data-artwork-id="@item.artworkId">
-                                    <span class="fa fa-shopping-cart"></span> Add to Cart
-                                </a> *@
+                            <span class="fa fa-shopping-cart"></span> Add to Cart
+                            </a> *@
                                 <a href="/Cart/AddToCart?id=@item.artworkId" class="type1 dt-sc-button ">
                                     <span class="fa fa-shopping-cart"></span> Add to Cart
                                 </a>
-                                <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a>
+                               @*  <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a> *@
                                 <p>@item.Description</p>
                             </div>
                         </div>
                         <div class="product-details">
                             <h5> <a href="shop-detail.html"> @item.Title </a> </h5>
-                            <span class="amount"> $@item.Price </span>
+                            <span class="amount"> @item.Price VND</span>
                         </div>
                     </li>
                 }
@@ -300,7 +326,7 @@
             });
         }
     });
-    
+
 
     document.querySelectorAll(".addToCartLink").forEach(function (link) {
         link.addEventListener("click", function (event) {
@@ -346,5 +372,16 @@
             urlImage.style.backgroundImage = 'none';
         }
     });
+    function formatCurrency(amount) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    var amountElements = document.getElementsByClassName("amount");
+    for (var i = 0; i < amountElements.length; i++) {
+        var amountText = amountElements[i].textContent;
+        var amount = parseFloat(amountText);
+        if (!isNaN(amount)) {
+            amountElements[i].textContent = formatCurrency(amount) + " VND";
+        }
+    }
 </script>
 
