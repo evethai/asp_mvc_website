@@ -41,13 +41,23 @@ namespace asp_mvc_website.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+			var userId = HttpContext.Session.GetString("UserId");
+			if (userId != null)
+			{
+				return Redirect("/Home");
+			}
+			return View("Login");
         }
 
         [HttpGet]
         public IActionResult Login()
         {
-            var model = new LoginModel();
+			var userId = HttpContext.Session.GetString("UserId");
+			if (userId != null)
+			{
+				return Redirect("/Home");
+			}
+			var model = new LoginModel();
             return View(model);
         }
 
@@ -119,7 +129,12 @@ namespace asp_mvc_website.Controllers
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+			var userId = HttpContext.Session.GetString("UserId");
+			if (userId != null)
+			{
+				return Redirect("/Home");
+			}
+			return View();
         }
 
 
@@ -195,16 +210,39 @@ namespace asp_mvc_website.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                // Read response content
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
+				// Read response content
+				var responseContent = await response.Content.ReadAsStringAsync();
+				var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
 
-                // Store token in session, cookie, or local storage
-                HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
-                HttpContext.Session.SetString("UserEmail", email);
-                // Redirect user to the home page or another appropriate page
-                return RedirectToAction("Index", "Home");
-            }
+				// Store token in session, cookie, or local storage
+				HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
+				HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
+				HttpContext.Session.SetString("UserEmail", email);
+				// Redirect user to the home page or another appropriate page
+
+				_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
+				var currentUser = await _currentUserService.User();
+				if (user != null)
+				{
+					HttpContext.Session.SetString("UserId", currentUser.Id.ToString());
+				}
+
+				var handler = new JwtSecurityTokenHandler();
+				var token = handler.ReadJwtToken(tokenResponse.Token);
+
+				// Extract role claims
+				var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
+				foreach (var role in roleClaims)
+				{
+					if (role.Equals(AppRole.Admin))
+					{
+						// Dashboard
+						return RedirectToAction("Index", "Dashbroad");
+					}
+				}
+
+				return RedirectToAction("Index", "Home");
+			}
             else
             {
                 ViewData["ErrorMessage"] = "not validate";

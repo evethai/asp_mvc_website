@@ -32,6 +32,12 @@ namespace asp_mvc_website.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+			var userId = HttpContext.Session.GetString("UserId");
+			if(userId == null)
+			{
+				return Redirect("/User/Login");
+			}
+
 			var cartItems = GetCartItem();
 
 			cartService = new CartService(cartItems);
@@ -43,7 +49,12 @@ namespace asp_mvc_website.Controllers
         [HttpGet]
         public IActionResult AddToCart(string id)
         {
-            ArtworkModel artworkModel = new ArtworkModel();
+			var userId = HttpContext.Session.GetString("UserId");
+			if (userId == null)
+			{
+				return Redirect("/User/Login");
+			}
+			ArtworkModel artworkModel = new ArtworkModel();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetById/" + id).Result;
             if (response.IsSuccessStatusCode)
             {
@@ -106,7 +117,11 @@ namespace asp_mvc_website.Controllers
 		[HttpDelete]
 		public IActionResult DeleteArtwork(int artworkId)
 		{
-
+			var userId = HttpContext.Session.GetString("UserId");
+			if (userId == null)
+			{
+				return Redirect("/User/Login");
+			}
 			var cartItems = GetCartItem();
 
 			// Find the index of the item to delete based on its artworkId
@@ -135,6 +150,11 @@ namespace asp_mvc_website.Controllers
 		[HttpGet]
 		public async Task<IActionResult> CheckOut(int artworkId)
 		{
+			var userId = HttpContext.Session.GetString("UserId");
+			if (userId == null)
+			{
+				return Redirect("/User/Login");
+			}
 			ArtworkModel artworkModel = new ArtworkModel();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetById/" + artworkId).Result;
             if (response.IsSuccessStatusCode)
