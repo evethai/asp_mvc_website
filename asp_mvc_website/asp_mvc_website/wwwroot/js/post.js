@@ -33,65 +33,51 @@ function upload() {
   
     // upload image to the server or the cloud
   }
-
-var btnAdd = document.getElementById("openModalBtn");
+  
 var modal = document.getElementById("PostModal");
-var txtTitle = document.getElementById("title").value;
-var txtDescription = document.getElementById("description").value;
-var txtPrice = document.getElementById("price").value;
-var urlImage = document.getElementById("image").value;
-btnAdd.onclick = function () {
-    modal.style.display = "block";
-    txtTitle = '';
-    txtDescription = '';
-    txtPrice = '';
-    urlImage.style.backgroundImage = '';
-}
+var p_modal = document.getElementById("P_Modal"); 
+
+var noti = document.getElementById("SuccessNoti");
+
+var txtTitle = document.getElementById("title");
+var txtDescription = document.getElementById("description");
+var txtPrice = document.getElementById("price");
+var pictureImaage = document.getElementById("p_image");
+
+//var urlImage = document.getElementById("image").value;
+
+var _clo_mo_btn = document.getElementById("CloseModalBtn");
+_clo_mo_btn.addEventListener('click', function () {
+    txtTitle.value = '';
+    txtDescription.value = '';
+    txtPrice.value = '';
+    pictureImaage.style.background = '#252525';
+});
+
+
+document.getElementById("goPackageBtn").addEventListener("click", function () {
+    
+    window.location.href = '/Package/Index';
+});
+document.getElementById("closePackage").addEventListener("click", function () {
+    p_modal.style.display = "none";
+});
+
 // Get the input element
 const priceInput = document.getElementById('price');
 const priceValidationMessage = document.getElementById('priceValidationMessage');
+const titleValidationMessage = document.getElementById('titleValidationMessage');
+const descriptionValidationMessage = document.getElementById('descriptionValidationMessage');
+const catelogyValidationMessage = document.getElementById('catelogyValidationMessage');
+const imageValidationMessage = document.getElementById('imageValidationMessage');
 
 
-priceInput.addEventListener('input', function () {
-    const regex = /^\d*\.?\d*$/;
-
-    if (!regex.test(priceInput.value)) {
-        priceValidationMessage.style.display = 'block';
-        priceInput.classList.add('is-invalid');
-    } else {
-        priceValidationMessage.style.display = 'none';
-        priceInput.classList.remove('is-invalid');
-    }
-});
-
-const closeModalBtn = document.getElementById('closeModalBtn');
 const postBtn = document.getElementById('postBtn');
 
 
-closeModalBtn.addEventListener('click', function () {
-    modal.style.display = 'none';
-    urlImage.backgroundImage.clear;
-});
+
 
 postBtn.addEventListener('click', function () {
-    //var title = document.getElementById("title").value;
-    //var description = document.getElementById("description").value;
-    //var price = document.getElementById("price").value;
-    //var imageFile = document.querySelector(".file-uploader").files[0];
-    //var item = selectedItem;
-    //// Create FormData object
-    //var formData = new FormData();
-    //formData.append("Title", title);
-    //formData.append("Description", description);
-    //formData.append("Price", price);
-    //formData.append("File", imageFile);
-    //formData.append("Category", item);
-
-    //// Send POST request to controller endpoint
-    //fetch("/PostArtwork/_Post", {
-    //    method: "POST",
-    //    body: formData
-    //})
     var title = document.getElementById("title").value.trim();
     var description = document.getElementById("description").value.trim();
     var price = document.getElementById("price").value.trim();
@@ -101,34 +87,44 @@ postBtn.addEventListener('click', function () {
     var isValid = true; 
 
     // Validate title
-    if (title === '') {
-        alert("Title is required.");
+    if (title ==='') {
+        titleValidationMessage.style.display = 'block';
         isValid = false;
+    } else {
+        titleValidationMessage.style.display = 'none';
     }
 
     // Validate description
     if (description === '') {
-        alert("Description is required.");
+        descriptionValidationMessage.style.display = 'block';
         isValid = false;
-    }
+    } else {
+        descriptionValidationMessage.style.display = 'none';
+    }      
 
     // Validate price (must be a number)
-    if (isNaN(price) || price === '') {
-        alert("Price must be a valid number.");
+    if (isNaN(price) || price === '' || price <= 1000 || price >= 1000000000) {
+        priceValidationMessage.style.display = 'block';
         isValid = false;
+    } else {
+        priceValidationMessage.style.display = 'none';
     }
 
     // Validate image
     if (!imageFile) {
-        alert("Image is required.");
+        imageValidationMessage.style.display = 'block';
         isValid = false;
+    } else {
+        imageValidationMessage.style.display = 'none';
     }
 
     // Validate selected item
     if (categorySelect === 'other' && customItemInput === '') {
-        alert("Custom item is required.");
+        catelogyValidationMessage.style.display = 'block';
         isValid = false;
-    } 
+    } else {
+        catelogyValidationMessage.style.display = 'none';
+    }
     var category = categorySelect;
     var isNew = false;
     if (categorySelect === 'other') {
@@ -149,15 +145,41 @@ postBtn.addEventListener('click', function () {
         formData.append("IsNewCategory", isNew);
 
         // Send POST request to controller endpoint
-        fetch("/PostArtwork/_Post", {
+        fetch("/Shop/Post", {
             method: "POST",
             body: formData
         })
-            .then(response => {
-                // Handle response
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Network response was not ok');
+            }
+        })
+            .then(data => {
+                if (data.success) {
+                    modal.style.display = 'none';
+                    
+                    noti.style.display = 'block';
+                    setTimeout(function () {
+                        noti.style.display = 'none';
+                    }, 5000);
+                    document.getElementById('title').value = '';
+                    document.getElementById('description').value = '';
+                    document.getElementById('price').value = '';
+                    document.getElementById('category').value = 'other';
+                    document.getElementById('categoryCustom').value = '';
+                    document.querySelector('.file-uploader').value = '';
+                    document.querySelector('.profile-picture').style.backgroundImage = '';
+
+                    
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
+                }
             })
             .catch(error => {
                 // Handle error
+                console.error('Error:', error);
             });
     }
 });
@@ -173,3 +195,4 @@ document.getElementById('category').addEventListener('change', function () {
         customItemInput.value = '';
     }
 });
+

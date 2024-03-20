@@ -90,6 +90,7 @@ header {
     cursor: context-menu;
 }
 
+
 .fas:hover {
     color: #d63031;
 }
@@ -97,6 +98,7 @@ header {
 .notBtn:hover > .box {
     height: 60vh
 }
+
 
 .content {
     padding: 20px;

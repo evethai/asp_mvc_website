@@ -24,20 +24,20 @@ namespace asp_mvc_website.Controllers
             _client = _factory.CreateClient("ServerApi");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
-        public IActionResult Index(string id)
+        public async Task<IActionResult> Index(string id)
         {
-            id = "a88a4533-52da-4b30-b9c5-b259423f14b2";
-            List<GetUsetNotification> userNoti = new List<GetUsetNotification>();
-            HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "UserNotifcation/" + id).Result;
+            //id = "a88a4533-52da-4b30-b9c5-b259423f14b2";
+            var response = await _client.GetAsync(_client.BaseAddress + "UserNotifcation/getNotiUser?userId=" + id);
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
-                userNoti = JsonConvert.DeserializeObject<List<GetUsetNotification>>(data);
+               var  userNoti = JsonConvert.DeserializeObject<GetUserNoti>(data);
+				//userNoti = userNoti.OrderByDescending(noti => noti.dateTime).ToList();
 
-
-                //    HttpContext.Session.SetString("MyListSessionKey", JsonConvert.SerializeObject(userNoti));
-            }
-            return View(userNoti);
+				//    HttpContext.Session.SetString("MyListSessionKey", JsonConvert.SerializeObject(userNoti));
+				return View(userNoti);
+			}
+			return View(null);
         }
 
 		[HttpPut]
@@ -50,7 +50,6 @@ namespace asp_mvc_website.Controllers
 
 				if (response.IsSuccessStatusCode)
 				{
-
 					//return RedirectToAction("Index"); // Return Ok if marking as read is successful
 					return Ok();
 				}
@@ -68,5 +67,7 @@ namespace asp_mvc_website.Controllers
 				return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing the request.");
 			}
 		}
+
+
 	}
 }
