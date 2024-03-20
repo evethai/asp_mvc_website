@@ -25,4 +25,15 @@ namespace asp_mvc_website.Models
         [Required(ErrorMessage = "You must agree to the terms and conditions.")]
         public bool IsCheckPolicy { get; set; }
     }
+
+    public class RegisterDTO
+    {
+        [Required]
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        [Required, EmailAddress]
+        public string Email { get; set; } = null!;
+        [Required]
+        public string Password { get; set; } = null!;
+    }
 }

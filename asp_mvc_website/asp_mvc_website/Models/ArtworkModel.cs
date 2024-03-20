@@ -35,6 +35,7 @@ namespace asp_mvc_website.Models
         PendingConfirmation = 1,
         InProgress = 2,
         Sold = 3,
+        SoldPPendingConfirm = 4
 
     }
     
