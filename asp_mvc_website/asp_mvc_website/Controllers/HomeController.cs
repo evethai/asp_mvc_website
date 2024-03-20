@@ -14,7 +14,7 @@ namespace asp_mvc_website.Controllers
         private readonly HttpClient _client;
         private readonly ICurrentUserService _currentUserService;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration configuration, 
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration,
             IHttpClientFactory httpClientFactory, ICurrentUserService currentUserService)
         {
             _factory = httpClientFactory;
@@ -45,7 +45,7 @@ namespace asp_mvc_website.Controllers
 
         [HttpGet]
         public IActionResult Index()
-        {           
+        {
             List<ArtworkModel> artworkList = new List<ArtworkModel>();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetAll").Result;
             if (response.IsSuccessStatusCode)
@@ -57,7 +57,7 @@ namespace asp_mvc_website.Controllers
             return View(artworkList);
         }
 
-            public IActionResult Privacy()
+        public IActionResult Privacy()
         {
             return View();
         }

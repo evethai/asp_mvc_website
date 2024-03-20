@@ -94,9 +94,9 @@ namespace asp_mvc_website.Controllers
 
                 // Extract role claims
                 var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-                foreach(var role in roleClaims)
+                foreach (var role in roleClaims)
                 {
-                    if(role.Equals(AppRole.Admin))
+                    if (role.Equals(AppRole.Admin))
                     {
                         // Dashboard
                         return RedirectToAction("Index", "Dashbroad");
@@ -159,32 +159,18 @@ namespace asp_mvc_website.Controllers
             }
         }
 
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            var response = await _client.DeleteAsync(_client.BaseAddress + "User/SignOut");
-            HttpContext.Session?.Remove("AccessToken");
-            HttpContext.Session?.Remove("RefeshToken");
-            return RedirectToAction("Index");
+            var response = await _client.GetAsync(_client.BaseAddress + "User/SignOut");
+            if (response.IsSuccessStatusCode)
+            {
+                HttpContext.Session?.Remove("AccessToken");
+                HttpContext.Session?.Remove("RefeshToken");
+                return RedirectToAction("Login");
+            }
+            return Unauthorized();
         }
-
-        //public async Task<IActionResult> RefeshToken()
-        //{
-        //    var model = new TokenResponse
-        //    {
-        //        Token = HttpContext.Session?.GetString("AccessToken"),
-        //        RefreshToken = HttpContext.Session?.GetString("RefeshToken"),
-        //    };
-        //    var response = await _client.PostAsync(_client.BaseAddress + "User/refresh-token", new StringContent(model.RefreshToken));
-        //    if(!response.IsSuccessStatusCode)
-        //    {
-        //        return RedirectToAction("Logout");
-        //    }
-        //    var responseContent = await response.Content.ReadAsStringAsync();
-        //    var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseContent);
-        //    HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
-        //    HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
-        //}
-
     }
 
 
