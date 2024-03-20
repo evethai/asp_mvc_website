@@ -88,6 +88,11 @@
 														<span class="">Sold</span>
 														break;
 													}
+												case ArtWorkStatus.SoldPPendingConfirm:
+													{
+														<span class="">Sold Pending Confirm</span>
+														break;
+													}
 												default:
 													{
 														<span class="">Pending Confirmation</span>
@@ -112,9 +117,9 @@
 										</td>
 
 										<td class="product-remove">
-											@if (item.Status == ArtWorkStatus.InProgress)
+											@if (item.Status == ArtWorkStatus.SoldPPendingConfirm || item.Status == ArtWorkStatus.Sold)
 											{
-												<a href="#" class="remove" title="Remove this item"></a>
+												<a href="#" class="remove" title=""></a>
 											}
 											else
 											{
