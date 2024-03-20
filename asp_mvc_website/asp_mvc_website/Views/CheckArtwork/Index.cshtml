@@ -194,7 +194,7 @@ else
 									<td>
 										<input id="userID" value="@item.ArtWorkVM.UserId" type="hidden"/>
 										<a href="@Url.Action("Index","CheckArtwork")" class="Accept" title="Accept artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</a>
-										<a href="@Url.Action("Index","CheckArtwork")" class="Reject" title="Reject artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,false,@item.NotificationVM.Id)">Reject</a>
+										<a href="" data-bs-toggle="modal" data-bs-target="#reason-@item.ArtWorkVM.ArtworkId" class="Reject" title="Reject artwork" >Reject</a>
 
 									</td>
 								</tr>
@@ -212,6 +212,24 @@ else
 											</div>
 											<div class="modal-footer">
 												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="modal" tabindex="-1" style="margin-top : 100px" id="reason-@item.ArtWorkVM.ArtworkId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog modal-lg modal-dialog-scrollable">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="staticBackdropLabel">Artwork Reject</h5>
+											</div>
+											<div class="modal-body">
+												<label for="reason">Reason</label>
+													<textarea id="reason" name="reason" rows="4" cols="50"></textarea>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
+												<button type="button" action="@Url.Action("Index","CheckArtwork")" class="Reject" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,false,@item.NotificationVM.Id)">Reject</button>
 											</div>
 										</div>
 									</div>
@@ -366,10 +384,11 @@ else
 <script>
 	function acceptArtwork(artworkId, isAccept, notiId) {
 		var userId = document.getElementById("userID").value;
+		var reason = document.getElementById("reason").value;
 		$.ajax({
 			url: "/CheckArtwork/CheckPost",
 			type: "POST",
-			data: { artworkId: artworkId, isAccept: isAccept, notiId: notiId, userId: userId },
+			data: { artworkId: artworkId, isAccept: isAccept, notiId: notiId, userId: userId, reason: reason },
 			success: function (data) {
 				window.location.reload(true);
 			},

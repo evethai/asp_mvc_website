@@ -29,6 +29,10 @@ namespace asp_mvc_website.Controllers
 		public async Task<IActionResult> Index()
         {
 			var user = await _currentUserService.User();
+			if (user == null)
+			{
+				return Redirect("/User/Login");
+			}
 			string userId = user.Id.ToString();
 			Result result = new Result();
 
@@ -50,18 +54,24 @@ namespace asp_mvc_website.Controllers
 
 
 		[HttpPost]
-		public async Task<IActionResult> CheckPost(int artworkId, bool isAccept, int notiId, string userId)
+		public async Task<IActionResult> CheckPost(int artworkId, bool isAccept, int notiId, string userId, string reason)
 		{
 			if (isAccept)
 			{
 				var updateStatusArtworkResult = await UpdateStatusArtwork(artworkId);
 				if (!updateStatusArtworkResult.IsSuccess)
-					return BadRequest("Update status artwork failed");
+					return BadRequest("Update status artwork failed");	
+			}
+			else
+			{
+				var increaseQuantityPosterResult = await IncreaseQuantityPoster(userId);
+				if (!increaseQuantityPosterResult.IsSuccessStatusCode)
+					return BadRequest("Increase quantity poster failed");
 			}
 			var updateStatusNotiResult = await UpdateStatusNoti(notiId, isAccept);
 			if (!updateStatusNotiResult.IsSuccess)
 				return BadRequest("Post notification failed");
-			var postNotificationResult = await PostNotification(isAccept);
+			var postNotificationResult = await PostNotification(isAccept,reason);
 			if (!postNotificationResult.IsSuccess)
 				return BadRequest("Post notification failed");
 			var postUserNotificationResult = await PostUserNotification(artworkId, postNotificationResult.NotificationID, userId);
@@ -97,13 +107,14 @@ namespace asp_mvc_website.Controllers
 			return (response.IsSuccessStatusCode, response);
 		}
 
-		private async Task<(bool IsSuccess, int NotificationID)> PostNotification(bool IsAccept)
+		private async Task<(bool IsSuccess, int NotificationID)> PostNotification(bool IsAccept, string reason)
 		{
-			string description = IsAccept ? "Your artwork has been accepted" : "Your artwork has been rejected";
+			string description = IsAccept ? "Your artwork has been accepted" : reason;
+			string title = IsAccept ? "Accept post artwork" : "Deny post artwork";
 
 			createNotificationModel model = new createNotificationModel
 			{
-				Title = "Confirm post artwork",
+				Title = title,
 				Description = description,
 				notiStatus = NotiStatus.Normal
 			};
@@ -138,6 +149,12 @@ namespace asp_mvc_website.Controllers
 			if (!response.IsSuccessStatusCode)
 				return (false, response);
 			return (response.IsSuccessStatusCode, response);
+		}
+
+		private async Task<HttpResponseMessage> IncreaseQuantityPoster(string userId)
+		{
+			var request = new HttpRequestMessage(HttpMethod.Put, _client.BaseAddress + "Poster/IncreasePost?userId=" + userId);
+			return await _client.SendAsync(request);
 		}
 
 	}
