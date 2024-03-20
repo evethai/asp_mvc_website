@@ -74,7 +74,7 @@
                                     }
                                     else
                                     {
-                                        <img src="~/images/notification.png" width="50px" alt="Alternate Text" title="You need login!!!!"/>
+                                        <img src="~/images/notification.png" width="50px" alt="Alternate Text" title="You need login!!!!" />
                                     }
                                 </div>
                             </a>
@@ -117,11 +117,11 @@
                         *@
                         <li class="menu-item-simple-parent">
                             <a href="/Shop/Index">Shop <span class="fa fa-cart-plus"></span></a>
-                            @* <ul class="sub-menu">
+                            <ul class="sub-menu">
                             <li><a href="shop-detail.html">Shop Detail</a></li>
                             <li><a href="/Cart">Cart Page</a></li>
                             <li><a href="shop-checkout.html">Checkout Page</a></li>
-                            </ul> *@
+                            </ul>
                             <a class="dt-menu-expand">+</a>
                         </li>
                         <li class="menu-item-simple-parent">
@@ -242,40 +242,43 @@
     });
     </script> *@
 
-    <script>
-        $.ajax({
-            type: "GET",
-            url: "/UserNotifcation/GetNotify",
-            data: { id: '@userId' },
-            success: function (notidata) {
-                console.log(notidata.data)
-                // var userNotifications = JSON.parse(notidata.data)
-                var notificationContainer = $("#notificationContainer");
-                var unreadCount = 0;
-                notidata.data.forEach(function (notification) {
-                    console.log(notification)
-                    var anchor = $("<a>").attr("href", "#");
-                    if (notification.notificationVM.isRead == false) {
-                        unreadCount++;
-                        var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
-                        profileImage.css("margin-left", "15px");
-                        var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artWorkVM.title);
-                        var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationVM.description);
-                        anchor.append(profileImage).append(txtDiv).append(subTxtDiv);
-                        var notificationItem = $("<div>").addClass("sec new");
-                        notificationItem.append(anchor);
-                        notificationContainer.append(notificationItem);
-                    }
+   <script>
+    $.ajax({
+        type: "GET",
+        url: "/UserNotifcation/GetNotify",
+        data: { id: '@userId' },
+        success: function (notidata) {
+            console.log(notidata.data);
+            var notificationContainer = $("#notificationContainer");
+            var unreadCount = 0;
 
-                    $(".number").text(unreadCount);
+            notidata.data.forEach(function (notification) {
+                console.log(notification);
+                var anchor = $("<a>").attr("href", "#");
+                if (notification.notificationVM.isRead == false) {
+                    unreadCount++;
+                    var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
+                    profileImage.css("margin-left", "15px");
+                    var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artWorkVM.title);
+                    var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationVM.description);
+                    anchor.append(profileImage).append(txtDiv).append(subTxtDiv);
+                    var notificationItem = $("<div>").addClass("sec new");
+                    notificationItem.append(anchor);
+                    notificationContainer.append(notificationItem);
+                }
+            });
 
-                    if (unreadcount === 0) {
-                        $(".number").hide();
-                    }
-                });
+            $(".number").text(unreadCount);
+
+            if (unreadCount === 0) {
+                $(".number").hide();
             }
-        });
-    </script>
+        }
+    });
+</script>
+
+
+
 </body>
 </html>
 
