@@ -1,0 +1,310 @@
+﻿@model Result
+@{
+	Layout = "/Views/Shared/_LayoutAd.cshtml";
+}
+<style>
+	.shop_table.cart {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+		/* Style table header */
+		.shop_table.cart th {
+			background-color: #f2f2f2;
+			padding: 10px;
+			text-align: left;
+			border: 1px solid #ddd;
+		}
+
+		/* Style table body */
+		.shop_table.cart td {
+			padding: 10px;
+			text-align: left;
+			border: 1px solid #ddd;
+		}
+
+			/* Add grid lines for each column */
+			.shop_table.cart th.product-thumbnail,
+			.shop_table.cart td.product-thumbnail {
+				width: 20%;
+			}
+
+			.shop_table.cart th.product-name,
+			.shop_table.cart td.product-name {
+				width: 20%;
+			}
+
+			.shop_table.cart th.product-price,
+			.shop_table.cart td.product-price {
+				width: 20%;
+			}
+
+			.shop_table.cart th.product-subtotal,
+			.shop_table.cart td.product-subtotal {
+				width: 20%;
+			}
+
+			.shop_table.cart th.product-remove,
+			.shop_table.cart td.product-remove {
+				width: 20%;
+			}
+
+	.Accept {
+		display: inline-block;
+		padding: 5px 10px;
+		background-color: #4CAF50; /* Green */
+		color: white;
+		text-decoration: none;
+		border-radius: 3px;
+		width: 70px;
+		margin: auto;
+	}
+
+	/* Style reject button */
+	.Reject {
+		display: inline-block;
+		padding: 5px 10px;
+		background-color: #f44336; /* Red */
+		color: white;
+		text-decoration: none;
+		border-radius: 3px;
+		width: 70px;
+		margin-top: 10px;
+	}
+
+		/* Hover effects */
+		.Accept:hover,
+		.Reject:hover {
+			opacity: 0.8;
+		}
+
+	.tab-container {
+		display: flex;
+	}
+
+	.tab-button {
+		background-color: #f0f0f0;
+		border: none;
+		padding: 10px 20px;
+		cursor: pointer;
+		outline: none;
+	}
+
+		.tab-button:hover {
+			background-color: #ddd;
+		}
+
+		.tab-button.active {
+			background-color: #ccc;
+		}
+
+	.tab-content {
+		display: none;
+		padding: 20px;
+	}
+
+		.tab-content h2 {
+			margin-top: 0;
+		}
+</style>
+
+@if (Model == null)
+{
+	<h2>No have any Notification!</h2>
+}
+else
+{
+	<div id="tabIndex">
+		<div class="tab-container">
+			<button class="tab-button active" onclick="openTab('tab1')">Tab 1</button>
+			<button class="tab-button" onclick="openTab('tab2')">Tab 2</button>
+			<button class="tab-button" onclick="openTab('tab3')">Tab 3</button>
+		</div>
+		<div class="tab-content" id="tab1" style="display:block">
+			<h2>Notification new Post</h2>
+			<form method="post">
+				<table class="shop_table cart">
+					<thead>
+						<tr>
+							<th>Artwork</th>
+							<th>Title</th>
+							<th>Description</th>
+							<th>Date time</th>
+							<th>Image</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model.data)
+						{
+							if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.ConfirmPost)
+							{
+								<tr class="cart_table_item">
+
+									<td class="product-thumbnail">
+										<a href=""><h5>@item.ArtWorkVM.Title</h5></a>
+									</td>
+
+									<td class="product-name">
+										<h6>@item.NotificationVM.Title</h6>
+									</td>
+
+									<td class="product-subtotal">
+										<span class="amount"> @item.NotificationVM.Description</span>
+									</td>
+
+									<td class="product-status">
+										<span class="">@item.Date</span>
+									</td>
+
+									<td class="product-remove">
+										<a href=""><img src="@item.ArtWorkImageVM.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+									</td>
+									<td>
+										<a href="#" class="Accept" title="Accept artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</a>
+										<a href="#" class="Reject" title="Reject artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,false,@item.NotificationVM.Id)">Reject</a>
+
+									</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<div class="tab-content" id="tab2" style="display: none;">
+			<h2>Confirm Post</h2>
+			<form method="post">
+				<table class="shop_table cart">
+					<thead>
+						<tr>
+							<th>Artwork</th>
+							<th>Title</th>
+							<th>Description</th>
+							<th>Date time</th>
+							<th>Image</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model.data)
+						{
+							if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptPost)
+							{
+								<tr class="cart_table_item" >
+
+									<td class="product-thumbnail">
+										<a href=""><h5>@item.ArtWorkVM.Title</h5></a>
+									</td>
+
+									<td class="product-name">
+										<h6>@item.NotificationVM.Title</h6>
+									</td>
+
+									<td class="product-subtotal">
+										<span class="amount"> @item.NotificationVM.Description</span>
+									</td>
+
+									<td class="product-status">
+										<span class="">@item.Date</span>
+									</td>
+
+									<td class="product-remove">
+										<a href=""><img src="@item.ArtWorkImageVM.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+									</td>
+									<td>
+										<h3>Comfirm</h3>
+									</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			</form>
+		</div>
+		<div class="tab-content" id="tab3" style="display: none;">
+			<h2>Deny Post</h2>
+			<form method="post">
+				<table class="shop_table cart">
+					<thead>
+						<tr>
+							<th>Artwork</th>
+							<th>Title</th>
+							<th>Description</th>
+							<th>Date time</th>
+							<th>Image</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model.data)
+						{
+							if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.DenyPost)
+							{
+								<tr class="cart_table_item">
+
+									<td class="product-thumbnail">
+										<a href=""><h5>@item.ArtWorkVM.Title</h5></a>
+									</td>
+
+									<td class="product-name">
+										<h6>@item.NotificationVM.Title</h6>
+									</td>
+
+									<td class="product-subtotal">
+										<span class="amount"> @item.NotificationVM.Description</span>
+									</td>
+
+									<td class="product-status">
+										<span class="">@item.Date</span>
+									</td>
+
+									<td class="product-remove">
+										<a href=""><img src="@item.ArtWorkImageVM.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
+									</td>
+									<td>
+										<h3>Reject</h3>
+									</td>
+								</tr>
+							}
+						}
+					</tbody>
+				</table>
+			</form>
+		</div>
+	</div>
+	<div id="tab-container"></div>
+}
+<script>
+	function acceptArtwork(artworkId, isAccept, notiId) {
+		$.ajax({
+			url: "/CheckArtwork/CheckPost",
+			type: "POST",
+			data: { artworkId: artworkId, isAccept: isAccept, notiId: notiId },
+			success: function (data) {
+				window.location.href = '/Dashbroad/Index';
+			},
+			error: function (xhr, status, error) {
+				console.error('Đã có lỗi xảy ra: ' + error);
+			}
+		});
+	}
+
+	function openTab(tabId) {
+		var i, tabContent, tabButton;
+
+		tabContent = document.getElementsByClassName("tab-content");
+		for (i = 0; i < tabContent.length; i++) {
+			tabContent[i].style.display = "none";
+		}
+
+		tabButton = document.getElementsByClassName("tab-button");
+		for (i = 0; i < tabButton.length; i++) {
+			tabButton[i].className = tabButton[i].className.replace(" active", "");
+		}
+
+		document.getElementById(tabId).style.display = "block";
+		event.currentTarget.className += " active";
+	}
+</script>
+			
