@@ -163,14 +163,15 @@ namespace asp_mvc_website.Controllers
                 artworkModel = JsonConvert.DeserializeObject<ArtworkModel>(data);
 				if(artworkModel != null)
 				{
-					if (artworkModel.Status == ArtWorkStatus.PendingConfirmation){
+					if (artworkModel.Status == ArtWorkStatus.SoldPPendingConfirm)
+					{
 						return RedirectToAction("Index");
 					}
 				}
-				artworkModel.Status = ArtWorkStatus.PendingConfirmation;
+				artworkModel.Status = ArtWorkStatus.SoldPPendingConfirm;
 
                 // Send registration request to Web API
-                var responseUpdateArtwork = await _client.PostAsync(
+                var responseUpdateArtwork = await _client.PutAsync(
 							_client.BaseAddress + "Artwork/Update",
 							new StringContent(
 								JsonConvert.SerializeObject(artworkModel),
@@ -186,7 +187,7 @@ namespace asp_mvc_website.Controllers
 					if (itemToUpdate != null)
 					{
 						// Update the item's quantity
-						itemToUpdate.Status = ArtWorkStatus.PendingConfirmation;
+						itemToUpdate.Status = ArtWorkStatus.SoldPPendingConfirm;
 
                         // Save the updated cart back to session or database
                         SaveCartToCookie(cartItems);

@@ -29,6 +29,8 @@ namespace asp_mvc_website.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+
+
             List<PackageModel> package = new List<PackageModel>();
             HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Package").Result;
             if (response.IsSuccessStatusCode)
