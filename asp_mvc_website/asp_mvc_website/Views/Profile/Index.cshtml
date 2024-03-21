@@ -48,12 +48,13 @@
 							<button data-id="@item.UserId" class="product-like">
 								<img src="~/images/like.png" width="15px"/>
 								<span class="like-text">Like</span>
-								<span class="like-count">@item.likeNumber</span> <!-- Example for displaying like count -->
+
+								<span class="like-count">@item.likeNumber.Count()</span> <!-- Example for displaying like count -->
 							</button>
 							<button class="product-comment" onclick="openPopup()">
 								<img src="~/images/comment.png" width="15px" />
 								<span class="comment-text">Comment</span>
-								<span class="comment-count">@item.commentNumber</span> <!-- Example for displaying comment count -->
+								<span class="comment-count">@item.commentNumber.Count()</span> <!-- Example for displaying comment count -->
 							</button>
 						</div>
 					</div>

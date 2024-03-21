@@ -60,8 +60,8 @@ namespace asp_mvc_website.Models
 		public string UserId { get; set; }
 		public double Price { get; set; }
 		public string Image { get; set; } = string.Empty;
-		public int likeNumber { get; set; }
-		public int commentNumber { get; set; }
+		public List<LikeModel> likeNumber { get; set; }
+		public List<CommentModel> commentNumber { get; set; }
 	}
 
 }
