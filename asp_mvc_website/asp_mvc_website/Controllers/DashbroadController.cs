@@ -1,4 +1,4 @@
-﻿using asp_mvc_website.Helpers;
+﻿
 using asp_mvc_website.Models;
 using asp_mvc_website.Services;
 using Firebase.Auth;
@@ -8,9 +8,12 @@ using Newtonsoft.Json;
 using System.Data;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using asp_mvc_website.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace asp_mvc_website.Controllers
 {
+    [Route("admin")]
     public class DashbroadController : Controller
     {
         private readonly IHttpClientFactory _factory;
@@ -91,9 +94,8 @@ namespace asp_mvc_website.Controllers
             }
             return View();
         }
-
         [HttpGet("getUserRoles")]
-        public async Task<IActionResult> UserListRole(asp_mvc_website.Models.DefaultSearch defaultSearch)
+        public async Task<IActionResult> UserListRole(Helpers.DefaultSearch defaultSearch)
         {
             HttpResponseMessage response = null;
             if (defaultSearch.currentPage != 0 || defaultSearch.perPage != 10)
