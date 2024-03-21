@@ -93,7 +93,7 @@ namespace asp_mvc_website.Controllers
         }
 
         [HttpGet("getUserRoles")]
-        public async Task<IActionResult> UserListRole(DefaultSearch defaultSearch)
+        public async Task<IActionResult> UserListRole(asp_mvc_website.Models.DefaultSearch defaultSearch)
         {
             HttpResponseMessage response = null;
             if (defaultSearch.currentPage != 0 || defaultSearch.perPage != 10)
