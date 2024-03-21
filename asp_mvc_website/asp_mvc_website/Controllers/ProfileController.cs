@@ -1,7 +1,9 @@
 ﻿using asp_mvc_website.Models;
 using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace asp_mvc_website.Controllers
 {
@@ -23,35 +25,35 @@ namespace asp_mvc_website.Controllers
 
         public IActionResult Index(string id)
 		{
-			UserModel userModel = new UserModel();
+			ProfileModel userModel = new ProfileModel();
 			HttpResponseMessage responseUser = _client.GetAsync(_client.BaseAddress + "User/GetUserById/" + id).Result;
 			if (responseUser.IsSuccessStatusCode)
 			{
 				string data = responseUser.Content.ReadAsStringAsync().Result;
-				userModel = JsonConvert.DeserializeObject<UserModel>(data);
+				userModel = JsonConvert.DeserializeObject<ProfileModel>(data);
 			}
-
-			List<ArtworkModel> artworkModels = new List<ArtworkModel>();
-			HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetAllArtworkByUserID/" + id).Result;
-			if (response.IsSuccessStatusCode)
+			return View(userModel);
+		}
+		public async Task<IActionResult> LikeArtwork(LikeModel like) 
+		{
+			try
 			{
-				string data = response.Content.ReadAsStringAsync().Result;
-				artworkModels = JsonConvert.DeserializeObject<List<ArtworkModel>>(data);
+				var user = await _currentUserService.User();
+				like.UserId = user.Id.ToString();
+				string data = JsonConvert.SerializeObject(like);
+				StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+				HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "/Like/CreateLike", content);
+
+				if (response.IsSuccessStatusCode)
+				{
+					return RedirectToAction("Index");
+				}
 			}
-            List<LikeModel> likeModels = new List<LikeModel>();
-            HttpResponseMessage responseLike = _client.GetAsync(_client.BaseAddress + "Like/GetAllLikeByArtworkId/" + id).Result;
-            if (responseLike.IsSuccessStatusCode)
-            {
-                string data = response.Content.ReadAsStringAsync().Result;
-                likeModels = JsonConvert.DeserializeObject<List<LikeModel>>(data);
-            }
-
-            ProfileModel profileModel = new ProfileModel();
-			profileModel.user = userModel;
-			profileModel.artworks = artworkModels;
-            profileModel.like = likeModels;
-
-			return View(profileModel);
+			catch (Exception ex)
+			{
+				View(ex);
+			}
+			return View("Index");
 		}
 	}
 }

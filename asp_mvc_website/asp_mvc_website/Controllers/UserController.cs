@@ -18,12 +18,13 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using System.Xml.Linq;
 
 namespace asp_mvc_website.Controllers
 {
     public class UserController : Controller
     {
-
+        private readonly IHttpClientFactory _factory;
         private readonly ILogger<UserController> _logger;
         private readonly HttpClient _client;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -31,10 +32,10 @@ namespace asp_mvc_website.Controllers
         public UserController(ILogger<UserController> logger, IHttpClientFactory httpClientFactory,
             IConfiguration configuration, ICurrentUserService currentUserService)
         {
-            _currentUserService = currentUserService;
-            _logger = logger;
+            _factory = httpClientFactory;
             _client = new HttpClient();
-            _client = httpClientFactory.CreateClient();
+            _currentUserService = currentUserService;
+            _client = _factory.CreateClient("ServerApi");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
         public IActionResult Index()
@@ -91,9 +92,9 @@ namespace asp_mvc_website.Controllers
                 HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
                 HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
                 HttpContext.Session.SetString("UserEmail", model.Email);
-                // Redirect user to the home page or another appropriate page
+				// Redirect user to the home page or another appropriate page
 
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
+				_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
                 var user = await _currentUserService.User();
                 if (user != null)
                 {
@@ -105,14 +106,14 @@ namespace asp_mvc_website.Controllers
 
                 // Extract role claims
                 var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-                foreach(var role in roleClaims)
+                foreach (var role in roleClaims)
                 {
-                    if(role.Equals(AppRole.Admin))
+                    if (role.Equals(AppRole.Admin))
                     {
                         // Dashboard
                         return RedirectToAction("Index", "Dashbroad");
                     }
-                }
+                }   
 
                 return RedirectToAction("Index", "Home");
             }
@@ -217,6 +218,7 @@ namespace asp_mvc_website.Controllers
 				HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
 				HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
 				HttpContext.Session.SetString("UserEmail", email);
+				HttpContext.Session.SetString("FirstName", name);
 				// Redirect user to the home page or another appropriate page
 
 				_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
@@ -294,6 +296,20 @@ namespace asp_mvc_website.Controllers
         //    HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
         //}
 
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            var response = await _client.DeleteAsync(_client.BaseAddress + "User/SignOut");
+            if (response.IsSuccessStatusCode)
+            {
+                HttpContext.Session?.Remove("AccessToken");
+                HttpContext.Session?.Remove("RefeshToken");
+                HttpContext.Session.Remove("UserId");
+                HttpContext.Session.Remove("UserEmail");
+                return RedirectToAction("Login");
+            }
+            return Unauthorized();
+        }
     }
 
     public class TokenResponse

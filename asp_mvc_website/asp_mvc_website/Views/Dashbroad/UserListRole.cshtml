@@ -1,0 +1,242 @@
+﻿@model UserRolseResponse;
+@{
+    Layout = "_LayoutAd";
+    var count = 0;
+    var listRole = ViewData["listRole"] as RolesNameVM;
+    var totalPage = Int64.Parse(ViewData["totalPage"].ToString());
+    var currentPage = Int64.Parse(ViewData["currentPage"].ToString()); ;
+    string[] userRoleName = null;
+}
+
+<div id="page-inner">
+
+    <div class="row">
+        <div class="col-md-12 ">
+            <h2>User Management</h2>
+            <h5>Total User In System: @Model.total </h5>
+
+        </div>
+    </div>
+    <!-- ------------------------------------------------------------------------------------------------- -->
+    <div id="tableContent" class="row">
+        <div class="col-md-12">
+            <input type="hidden" id="selectedPage" value="@currentPage" />
+            <input type="hidden" id="totalPage" value="@totalPage" />
+            <!-- Advanced Tables -->
+            <div class="panel panel-default">
+                <div class="panel-heading header-table">
+                    <div>
+                        Advanced Tables
+                    </div>
+                    <div>
+                        <button class="btn btn-warning" data-toggle="modal" data-target="#roleManage">Role Management</button>
+                    </div>
+                    @* ================Role Manage Modal ===============*@
+                    <div class="modal fade" id="roleManage" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title text-success" id="myModalLabel">USERROLE MANAGEMENT</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div>Current Role</div>
+
+                                    <div class="text-warning">This action will update after click "Update Role". Warning this action cannot undo</div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    <button data-id="@count" data-userId="" type="button" class="btn btn-warning roleasd">Update Role</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Name</th>
+                                    <th>User Name</th>
+                                    <th>Dob</th>
+                                    <th class="text-secondary">Roles/Click on user's role to edit</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var data in Model.data)
+                                {
+
+                                    List<string> listUserRoles = new List<string>();
+                                    count++;
+                                    <tr class="odd gradeX">
+                                        <td>@count</td>
+                                        <td>@data.FirstName @data.LastName</td>
+                                        <td>@data.UserName</td>
+                                        <td>
+                                            @data.Birthday.ToString("dd/MM/yyyy")
+                                        </td>
+                                        <td class="center">
+                                            <div type="button" data-toggle="modal" data-target="#userRoleModal-@count">
+                                                @foreach (var role in @data.RolesName)
+                                                {
+                                                    {
+                                                        listUserRoles.Add(role);
+                                                    }
+                                                    <button class="btn btn-success  btn-sm">@role</button>
+                                                }
+
+                                            </div>
+                                        </td>
+                                        <td class="center">
+
+                                            <div class="form-check form-switch" data-toggle="modal" data-target="#flexSwitchCheckChecked-@count">
+                                                @if (@data.IsActive)
+                                                {
+                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked-@count" checked>
+                                                }
+                                                else
+                                                {
+                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked-@count">
+                                                }
+                                                <label class="form-check-label" for="flexSwitchCheckChecked-@count">Active</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger" data-toggle="modal" data-target="#userProfile-@count">View</button>
+
+                                            @* ================User Profile Modal ===============*@
+                                            <div class="modal fade" id="userProfile-@count" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                            <h4 class="modal-title text-danger" id="myModalLabel">User Profile</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <section class="vh-100" style="background-color: #f4f5f7;">
+                                                                <div class="container py-5 h-100">
+                                                                    <div class="row d-flex justify-content-center align-items-center h-100">
+                                                                        <div class="col col-lg-6 mb-4 mb-lg-0">
+                                                                            <div class="card mb-3" style="border-radius: .5rem;">
+                                                                                <div class="row g-0">
+                                                                                    <div class="col-md-4 gradient-custom text-center text-white"
+                                                                                         style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;">
+                                                                                        <img src="https://phunugioi.com/wp-content/uploads/2020/10/avatar-chat-cho-con-trai-yeu-mau-tim.jpg"
+                                                                                             alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+                                                                                        <h5>@data.FirstName @data.LastName</h5>
+                                                                                        <p>
+                                                                                            @foreach (var role in @data.RolesName)
+                                                                                            {
+                                                                                                <button class="btn btn-success btn-sm">@role</button>
+                                                                                            }
+                                                                                        </p>
+                                                                                    </div>
+                                                                                    <div class="col-md-8">
+                                                                                        <div class="card-body">
+                                                                                            <h3>Information</h3>
+                                                                                            <hr class="mt-0 mb-4">
+                                                                                            <div class="row pt-1">
+                                                                                                <div class="col-6 mb-3">
+                                                                                                    <h5>Email:</h5>
+                                                                                                    <p class="text-muted">@data.Email</p>
+                                                                                                </div>
+                                                                                                <div class="col-6 mb-3">
+                                                                                                    <h5>Birthday:</h5>
+                                                                                                    <p class="text-muted">@data.Birthday.ToString("dd/MM/yyyy")</p>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </section>
+
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                    </tr>
+
+                                    @* ================RoleModal ===============*@
+                                    <div class="modal fade" id="userRoleModal-@count" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    <h4 class="modal-title text-success" id="myModalLabel">USERROLE MANAGEMENT</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="text-primary">User Name: @data.UserName</div>
+                                                    <div class="text-secondary">User Role:</div>
+                                                    @{
+                                                        userRoleName = @listUserRoles.ToArray();
+                                                    }
+                                                    @Html.ListBoxFor(m => userRoleName, listRole.ListRole, new
+                                                        {
+                                                            id = $"userRole-{@count}",
+                                                            @class = $"role-selected",
+                                                            @style = "width: 100%; height: 200px"
+                                                        })
+                                                    <div class="text-warning">This action will update after click "Update Role". Warning this action cannot undo</div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button  type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    <button data-id="@count" data-userId="@data.Id" type="button" class="btn btn-warning setRoleBtn">Update Role</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @* ================Disable Modal ===============*@
+                                    <div class="modal fade" id="flexSwitchCheckChecked-@count" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                    <h4 class="modal-title text-danger" id="myModalLabel">CHANGE STATUS USER</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="text-primary">User Name: @data.UserName</div>
+                                                    <div class="text-secondary">Are you sure to change status of this user</div>
+
+                                                    <div class="text-warning">This action will update after click "Oke". Warning this action cannot undo</div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                    <button data-userId="@data.Id" type="button" class="btn btn-danger changeUserStatus">Oke</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 25px;" class="text-center">
+                            <div id="pagination" class="paging-list">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <!--End Advanced Tables -->
+        </div>
+    </div>
+
+</div>
+<script src="assets/js/jquery-1.10.2.js"></script>

@@ -2,8 +2,12 @@
 {
 	public class ProfileModel
 	{
-		public UserModel user { get; set; }
-		public List<ArtworkModel> artworks { get; set; }
-		public List<LikeModel> like { get; set; }
+       
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public DateTime Birthday { get; set; }
+        public string Email { get; set; }
+        public List<ProfileArt> artworks { get; set; }
+		
 	}
 }

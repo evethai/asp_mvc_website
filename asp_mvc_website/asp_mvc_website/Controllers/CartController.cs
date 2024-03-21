@@ -1,5 +1,6 @@
 ﻿using asp_mvc_website.Models;
 using asp_mvc_website.Services;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -163,21 +164,28 @@ namespace asp_mvc_website.Controllers
                 artworkModel = JsonConvert.DeserializeObject<ArtworkModel>(data);
 				if(artworkModel != null)
 				{
-					if (artworkModel.Status == ArtWorkStatus.PendingConfirmation){
+					if (artworkModel.Status == ArtWorkStatus.SoldPPendingConfirm)
+					{
 						return RedirectToAction("Index");
 					}
 				}
-				artworkModel.Status = ArtWorkStatus.PendingConfirmation;
+				ArtworkUpdateDTO artworkUpdate = new ArtworkUpdateDTO
+				{
+					ArtworkId = artworkId,
+					Status = ArtWorkStatus.SoldPPendingConfirm
+				};
 
                 // Send registration request to Web API
-                var responseUpdateArtwork = await _client.PostAsync(
-							_client.BaseAddress + "Artwork/Update",
-							new StringContent(
-								JsonConvert.SerializeObject(artworkModel),
-								Encoding.UTF8,
-								"application/json"
-							));
-                if (responseUpdateArtwork.IsSuccessStatusCode)
+    //            var responseUpdateArtwork = await _client.PutAsync(
+				//			_client.BaseAddress + "Artwork/UpdateArtwork",
+				//			new StringContent(
+				//				JsonConvert.SerializeObject(artworkUpdate),
+				//				Encoding.UTF8,
+				//				"application/json"
+				//));
+
+				var responseUpdateArtwork = await _client.PutAsJsonAsync<ArtworkUpdateDTO>(_client.BaseAddress + "Artwork/UpdateArtwork", artworkUpdate);
+				if (responseUpdateArtwork.IsSuccessStatusCode)
                 {
 					var cartItems = GetCartItem();
 
@@ -186,7 +194,7 @@ namespace asp_mvc_website.Controllers
 					if (itemToUpdate != null)
 					{
 						// Update the item's quantity
-						itemToUpdate.Status = ArtWorkStatus.PendingConfirmation;
+						itemToUpdate.Status = ArtWorkStatus.SoldPPendingConfirm;
 
                         // Save the updated cart back to session or database
                         SaveCartToCookie(cartItems);
