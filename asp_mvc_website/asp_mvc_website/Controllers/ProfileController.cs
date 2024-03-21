@@ -34,6 +34,7 @@ namespace asp_mvc_website.Controllers
 			}
 			return View(userModel);
 		}
+		[HttpPost]
 		public async Task<IActionResult> LikeArtwork(LikeModel like) 
 		{
 			try
@@ -43,6 +44,28 @@ namespace asp_mvc_website.Controllers
 				string data = JsonConvert.SerializeObject(like);
 				StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
 				HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "/Like/CreateLike", content);
+
+				if (response.IsSuccessStatusCode)
+				{
+					return RedirectToAction("Index");
+				}
+			}
+			catch (Exception ex)
+			{
+				View(ex);
+			}
+			return View("Index");
+		}
+		[HttpDelete]
+		public async Task<IActionResult> UnLikeArtwork(LikeModel like)
+		{
+			try
+			{
+				var user = await _currentUserService.User();
+				like.UserId = user.Id.ToString();
+				string data = JsonConvert.SerializeObject(like);
+				StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+				HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "/Like/DeleteLike", content);
 
 				if (response.IsSuccessStatusCode)
 				{
