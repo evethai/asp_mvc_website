@@ -35,21 +35,51 @@ namespace asp_mvc_website.Controllers
 			}
 			string userId = user.Id.ToString();
 			Result result = new Result();
+			List<GetUserNotificationDTO1> dto = new List<GetUserNotificationDTO1>();
 
-			var response = await _client.GetAsync(_client.BaseAddress + $"UserNotifcation/getNotiUser?userId={userId}&perPage=10&currentPage=0");
+
+			HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"UserNotifcation/getNotiUser?userId={userId}");
+
+			if (response.IsSuccessStatusCode)
+			{
+                var data = response.Content.ReadAsStringAsync().Result;
+                result = JsonConvert.DeserializeObject<Result>(data);
+            }
+			foreach(var item in result.data)
+			{
+				if (item.NotificationVM.notiStatus == NotiStatus.ConfirmPost)
+				{
+					dto.Add(item);
+				}
+			}
+
+			return View(dto);
+        }
+		[HttpGet]
+		public async Task<IActionResult> Select (NotiStatus status)
+		{
+			var user = await _currentUserService.User();
+			string userId = user.Id.ToString();
+			Result result = new Result();
+			List<GetUserNotificationDTO1> dto = new List<GetUserNotificationDTO1>();
+
+			HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + $"UserNotifcation/getNotiUser?userId={userId}");
+
 			if (response.IsSuccessStatusCode)
 			{
 				var data = response.Content.ReadAsStringAsync().Result;
 				result = JsonConvert.DeserializeObject<Result>(data);
 			}
-			else
+			foreach (var item in result.data)
 			{
-				return BadRequest("Get notification failed");
+				if (item.NotificationVM.notiStatus == status)
+				{
+					dto.Add(item);
+				}
 			}
 
-			return View(result);
-        }
-
+			return View(dto);
+		}
 
 
 
@@ -78,7 +108,7 @@ namespace asp_mvc_website.Controllers
 			if (!postUserNotificationResult.IsSuccess)
 				return BadRequest("Post user notification failed");
 
-            return Json("true");
+            return Ok("true");
         }
 
         private async Task<(bool IsSuccess, HttpResponseMessage Response)> UpdateStatusArtwork(int artworkId)

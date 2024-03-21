@@ -163,7 +163,7 @@ postBtn.addEventListener('click', function () {
                     noti.style.display = 'block';
                     setTimeout(function () {
                         noti.style.display = 'none';
-                    }, 5000);
+                    }, 8000);
                     document.getElementById('title').value = '';
                     document.getElementById('description').value = '';
                     document.getElementById('price').value = '';
@@ -171,10 +171,10 @@ postBtn.addEventListener('click', function () {
                     document.getElementById('categoryCustom').value = '';
                     document.querySelector('.file-uploader').value = '';
                     document.querySelector('.profile-picture').style.backgroundImage = '';
-
-                    
+                 
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
+                    window.location.reload();
                 }
             })
             .catch(error => {
