@@ -106,6 +106,37 @@
 		.tab-content h2 {
 			margin-top: 0;
 		}
+
+	/* Style for modal body */
+	.modal-body {
+		padding: 20px;
+		text-align: center;
+	}
+
+		/* Style for the image */
+		.modal-body img {
+			width: 75%;
+			margin-bottom: 15px;
+		}
+
+		/* Style for the titles */
+		.modal-body h3 {
+			font-size: 18px;
+			margin-bottom: 10px;
+		}
+
+		/* Style for the description */
+		.modal-body p {
+			font-size: 16px;
+			margin-bottom: 10px;
+		}
+
+		/* Style for the price */
+		.modal-body .price {
+			font-size: 20px;
+			font-weight: bold;
+			color: #007bff; /* Example color */
+		}
 </style>
 
 @if (Model == null)
@@ -142,7 +173,7 @@ else
 								<tr class="cart_table_item">
 
 									<td class="product-thumbnail">
-										<a href=""><h5>@item.ArtWorkVM.Title</h5></a>
+										<a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.ArtWorkVM.ArtworkId"><h5>@item.ArtWorkVM.Title</h5></a>
 									</td>
 
 									<td class="product-name">
@@ -161,11 +192,48 @@ else
 										<a href=""><img src="@item.ArtWorkImageVM.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
 									</td>
 									<td>
-										<a href="#" class="Accept" title="Accept artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</a>
-										<a href="#" class="Reject" title="Reject artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,false,@item.NotificationVM.Id)">Reject</a>
+										<input id="userID" value="@item.ArtWorkVM.UserId" type="hidden"/>
+										<a href="@Url.Action("Index","CheckArtwork")" class="Accept" title="Accept artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</a>
+										<a href="" data-bs-toggle="modal" data-bs-target="#reason-@item.ArtWorkVM.ArtworkId" class="Reject" title="Reject artwork" >Reject</a>
 
 									</td>
 								</tr>
+								<div class="modal" tabindex="-1"  style="margin-top : 100px" id="exampleModal-@item.ArtWorkVM.ArtworkId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog modal-lg modal-dialog-scrollable">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="staticBackdropLabel">Artwork title</h5>
+											</div>
+											<div class="modal-body">
+												<img src="@item.ArtWorkImageVM.Image" style="width:50%;" />
+												<h3> Title : @item.ArtWorkVM.Title</h3>
+												<h3>Description : @item.ArtWorkVM.Description</h3>
+												<h3>Price : @item.ArtWorkVM.Price</h3>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="modal" tabindex="-1" style="margin-top : 100px" id="reason-@item.ArtWorkVM.ArtworkId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog modal-lg modal-dialog-scrollable">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="staticBackdropLabel">Artwork Reject</h5>
+											</div>
+											<div class="modal-body">
+												<label for="reason">Reason</label>
+													<textarea id="reason" name="reason" rows="4" cols="50"></textarea>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
+												<button type="button" action="@Url.Action("Index","CheckArtwork")" class="Reject" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,false,@item.NotificationVM.Id)">Reject</button>
+											</div>
+										</div>
+									</div>
+								</div>
 							}
 						}
 					</tbody>
@@ -194,7 +262,7 @@ else
 								<tr class="cart_table_item" >
 
 									<td class="product-thumbnail">
-										<a href=""><h5>@item.ArtWorkVM.Title</h5></a>
+										<a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.ArtWorkVM.ArtworkId"><h5>@item.ArtWorkVM.Title</h5></a>
 									</td>
 
 									<td class="product-name">
@@ -213,9 +281,27 @@ else
 										<a href=""><img src="@item.ArtWorkImageVM.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
 									</td>
 									<td>
-										<h3>Comfirm</h3>
+										<h4>Comfirm</h4>
 									</td>
 								</tr>
+								<div class="modal" tabindex="-1" style="margin-top : 100px" id="exampleModal-@item.ArtWorkVM.ArtworkId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog modal-lg modal-dialog-scrollable">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="staticBackdropLabel">Artwork title</h5>
+											</div>
+											<div class="modal-body">
+												<img src="@item.ArtWorkImageVM.Image" style="width:50%;" />
+												<h3> Title : @item.ArtWorkVM.Title</h3>
+												<h3>Description : @item.ArtWorkVM.Description</h3>
+												<h3>Price : @item.ArtWorkVM.Price</h3>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
+											</div>
+										</div>
+									</div>
+								</div>
 							}
 						}
 					</tbody>
@@ -244,7 +330,7 @@ else
 								<tr class="cart_table_item">
 
 									<td class="product-thumbnail">
-										<a href=""><h5>@item.ArtWorkVM.Title</h5></a>
+										<a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.ArtWorkVM.ArtworkId"><h5>@item.ArtWorkVM.Title</h5></a>
 									</td>
 
 									<td class="product-name">
@@ -263,9 +349,27 @@ else
 										<a href=""><img src="@item.ArtWorkImageVM.Image" style="width:25%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" /></a>
 									</td>
 									<td>
-										<h3>Reject</h3>
+										<h4>Reject</h4>
 									</td>
 								</tr>
+								<div class="modal" tabindex="-1" style="margin-top : 100px" id="exampleModal-@item.ArtWorkVM.ArtworkId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+									<div class="modal-dialog modal-lg modal-dialog-scrollable">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h5 class="modal-title" id="staticBackdropLabel">Artwork title</h5>
+											</div>
+											<div class="modal-body">
+												<img src="@item.ArtWorkImageVM.Image" style="width:50%;" />
+												<h3> Title : @item.ArtWorkVM.Title</h3>
+												<h3>Description : @item.ArtWorkVM.Description</h3>
+												<h3>Price : @item.ArtWorkVM.Price</h3>
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
+											</div>
+										</div>
+									</div>
+								</div>
 							}
 						}
 					</tbody>
@@ -275,14 +379,18 @@ else
 	</div>
 	<div id="tab-container"></div>
 }
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script>
 	function acceptArtwork(artworkId, isAccept, notiId) {
+		var userId = document.getElementById("userID").value;
+		var reason = document.getElementById("reason").value;
 		$.ajax({
 			url: "/CheckArtwork/CheckPost",
 			type: "POST",
-			data: { artworkId: artworkId, isAccept: isAccept, notiId: notiId },
+			data: { artworkId: artworkId, isAccept: isAccept, notiId: notiId, userId: userId, reason: reason },
 			success: function (data) {
-				window.location.href = '/Dashbroad/Index';
+				window.location.reload(true);
 			},
 			error: function (xhr, status, error) {
 				console.error('Đã có lỗi xảy ra: ' + error);
@@ -306,5 +414,9 @@ else
 		document.getElementById(tabId).style.display = "block";
 		event.currentTarget.className += " active";
 	}
+	var closeModal = document.getElementById("closePackage");
+	closeModal.addEventListener('click', function () {
+		modal.style.display = 'none';
+	});
 </script>
 			

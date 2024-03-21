@@ -3,8 +3,8 @@
     ViewData["Title"] = "Shop Page";
 }
 <style>
-    .products .product-title a:first-child{
-        width:100%;
+    .products .product-title a:first-child {
+        width: 100%;
     }
 </style>
 <section id="primary" class="content-full-width">
@@ -42,7 +42,7 @@
             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                 <div class="modal-content" style="background: #333">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel" style="color: white; font: bold">Modal title</h5>
+                        <h5 class="modal-title" id="staticBackdropLabel" style="color: white; font: bold">Post new Artwork</h5>
                     </div>
                     <div class="modal-body">
                         <form>
@@ -79,7 +79,7 @@
                             </div>
                             <div class="mb-3">
                                 <label for="image" class="col-form-label" style="color: white; font: bold">Image:</label>
-                                <div class="profile-picture" id="image" style="margin:auto;background:#252525; background-size:cover;">
+                                <div class="profile-picture" id="p_image" style="margin:auto;background:#252525; background-size:cover;">
                                     <h1 class="upload-icon">
                                         <i class="fa fa-plus fa-2x" aria-hidden="true"></i>
                                     </h1>
@@ -95,7 +95,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" id="closeModalBtn" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" id="CloseModalBtn" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" id="postBtn">Post</button>
                     </div>
                 </div>
@@ -150,9 +150,13 @@
                 </div>
                 <div style="display: inline-block;margin: 0 0 0 1.4%;">
                     <h5 style="color:black">.</h5>
-                    <a class="dt-sc-button small type2" style="height:52px;padding:18px" id="openModalBtn">Post Artwork</a>
+                    @if(Model.IsPoster != null)
+                    {
+                        <a class="dt-sc-button small type2" style="height:52px;padding:18px" data-bs-toggle="modal" data-bs-target="#PostModal">Post Artwork</a>
+                    }else{
+                        <a class="dt-sc-button small type2" style="height:52px;padding:18px" data-bs-toggle="modal" data-bs-target="#P_Modal">Post Artwork</a>
+                    }
                     <div class="clear"> </div>
-                    <input type="hidden" id="_poster" value="@Model.IsPoster" />
                 </div>
             }
             else
@@ -208,7 +212,7 @@
                                 <a href="/Cart/AddToCart?id=@item.artworkId" class="type1 dt-sc-button ">
                                     <span class="fa fa-shopping-cart"></span> Add to Cart
                                 </a>
-                               @*  <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a> *@
+                                @*  <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a> *@
                                 <p>@item.Description</p>
                             </div>
                         </div>
@@ -363,15 +367,15 @@
         popupMessage.parentNode.removeChild(popupMessage);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Check if HideModal flag is set
-        if (@hideModal) {
-            var modal = document.getElementById('PostModal');
-            modal.style.display = 'none';
-            var urlImage = document.getElementById('image');
-            urlImage.style.backgroundImage = 'none';
-        }
-    });
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     // Check if HideModal flag is set
+    //     if (@hideModal) {
+    //         var modal = document.getElementById('PostModal');
+    //         modal.style.display = 'none';
+    //         var urlImage = document.getElementById('image');
+    //         urlImage.style.backgroundImage = 'none';
+    //     }
+    // });
     function formatCurrency(amount) {
         return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }

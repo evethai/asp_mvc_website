@@ -33,28 +33,27 @@ function upload() {
   
     // upload image to the server or the cloud
   }
-
-var btnAdd = document.getElementById("openModalBtn");
+  
 var modal = document.getElementById("PostModal");
-var noti = document.getElementById("SuccessNoti");
-var txtTitle = document.getElementById("title").value;
-var txtDescription = document.getElementById("description").value;
-var txtPrice = document.getElementById("price").value;
-var urlImage = document.getElementById("image").value;
-var p_modal = document.getElementById("P_Modal");
+var p_modal = document.getElementById("P_Modal"); 
 
-btnAdd.onclick = function () {
-    var isPoster = document.getElementById("_poster").value;
-    if (isPoster === "IsPoster") {
-        modal.style.display = "block";
-        txtTitle = '';
-        txtDescription = '';
-        txtPrice = '';
-        urlImage.style.backgroundImage = '';
-    } else {
-        p_modal.style.display = "block";
-    }
-}
+var noti = document.getElementById("SuccessNoti");
+
+var txtTitle = document.getElementById("title");
+var txtDescription = document.getElementById("description");
+var txtPrice = document.getElementById("price");
+var pictureImaage = document.getElementById("p_image");
+
+//var urlImage = document.getElementById("image").value;
+
+var _clo_mo_btn = document.getElementById("CloseModalBtn");
+_clo_mo_btn.addEventListener('click', function () {
+    txtTitle.value = '';
+    txtDescription.value = '';
+    txtPrice.value = '';
+    pictureImaage.style.background = '#252525';
+});
+
 
 document.getElementById("goPackageBtn").addEventListener("click", function () {
     
@@ -71,26 +70,12 @@ const titleValidationMessage = document.getElementById('titleValidationMessage')
 const descriptionValidationMessage = document.getElementById('descriptionValidationMessage');
 const catelogyValidationMessage = document.getElementById('catelogyValidationMessage');
 const imageValidationMessage = document.getElementById('imageValidationMessage');
-//priceInput.addEventListener('input', function () {
-//    const regex = /^\d*\.?\d*$/;
 
-//    if (!regex.test(priceInput.value)) {
-//        priceValidationMessage.style.display = 'block';
-//        priceInput.classList.add('is-invalid');
-//    } else {
-//        priceValidationMessage.style.display = 'none';
-//        priceInput.classList.remove('is-invalid');
-//    }
-//});
 
-const closeModalBtn = document.getElementById('closeModalBtn');
 const postBtn = document.getElementById('postBtn');
 
 
-closeModalBtn.addEventListener('click', function () {
-    modal.style.display = 'none';
 
-});
 
 postBtn.addEventListener('click', function () {
     var title = document.getElementById("title").value.trim();
@@ -173,14 +158,12 @@ postBtn.addEventListener('click', function () {
         })
             .then(data => {
                 if (data.success) {
-                    // Close the modal
                     modal.style.display = 'none';
-                    // Show success notification
+                    
                     noti.style.display = 'block';
                     setTimeout(function () {
                         noti.style.display = 'none';
-                    }, 8000);
-                    // Clear form fields
+                    }, 5000);
                     document.getElementById('title').value = '';
                     document.getElementById('description').value = '';
                     document.getElementById('price').value = '';
@@ -188,6 +171,10 @@ postBtn.addEventListener('click', function () {
                     document.getElementById('categoryCustom').value = '';
                     document.querySelector('.file-uploader').value = '';
                     document.querySelector('.profile-picture').style.backgroundImage = '';
+
+                    
+                    $('body').removeClass('modal-open');
+                    $('.modal-backdrop').remove();
                 }
             })
             .catch(error => {
