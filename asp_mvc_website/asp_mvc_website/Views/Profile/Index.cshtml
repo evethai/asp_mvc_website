@@ -45,10 +45,9 @@
 						<p class="product-price">@item.Price VND</p>
 						<p class="product-price">@item.Description</p>
 						<div class="product-actions">
-							<button class="product-like">
+							<button data-id="@item.UserId" class="product-like">
 								<img src="~/images/like.png" width="15px"/>
 								<span class="like-text">Like</span>
-
 								<span class="like-count">@item.likeNumber</span> <!-- Example for displaying like count -->
 							</button>
 							<button class="product-comment" onclick="openPopup()">
@@ -91,3 +90,6 @@
 	}
 </script>
 
+<script>
+
+</script>
