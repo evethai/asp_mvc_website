@@ -40,8 +40,9 @@ namespace asp_mvc_website.Controllers
 			{
 				return Redirect("/User/Login");
 			}
-
+			var orderItem = GetOrderByUser(userId);
 			var cartItems = GetCartItem();
+			cartItems = RefreshCartItem(cartItems, orderItem);
 
 			cartService = new CartService(cartItems);
 			ViewBag.TotalPrice =  cartService.CalculateTotalPrice();
@@ -277,6 +278,26 @@ namespace asp_mvc_website.Controllers
 			return cartItems;
 		}
 
+		private List<CartItemModel> RefreshCartItem(List<CartItemModel> listCartItems, List<OrderModel> listOrderItem)
+		{
+			//If have no item will return
+			if (listCartItems.Count == 0 || listOrderItem.Count == 0)
+			{
+				return listCartItems;
+			}
+
+			//Remove item that have been ordered
+			foreach (var item in listCartItems)
+			{
+				var	removeItem = listOrderItem.Where(a => a.ArtworkId == item.artworkId).FirstOrDefault();
+				if (removeItem != null)
+				{
+					listCartItems.Remove(item);
+				}
+			}
+			return listCartItems;
+		}
+
         private void SaveCartToCookie(List<CartItemModel> cartItems)
         {
             var cartJson = JsonConvert.SerializeObject(cartItems);
@@ -286,17 +307,18 @@ namespace asp_mvc_website.Controllers
             });
         }
 
-		//private void GetCartByUser(string userId)
-		//{
-		//	List<OrderModel> order = new List<OrderModel>();
-		//	HttpResponseMessage responseOrder = _client.GetAsync(_client.BaseAddress + "Order/GetOrderByUser/" + userId).Result;
-		//	if (responseOrder.IsSuccessStatusCode)
-		//	{
-		//		string dataOrder = responseOrder.Content.ReadAsStringAsync().Result;
-		//		order = JsonConvert.DeserializeObject<List<OrderModel>>(dataOrder);
-		//	}
-		//}
+		private List<OrderModel> GetOrderByUser(string userId)
+		{
+			List<OrderModel> order = new List<OrderModel>();
+			HttpResponseMessage responseOrder = _client.GetAsync(_client.BaseAddress + "Order/GetOrderByUser/" + userId).Result;
+			if (responseOrder.IsSuccessStatusCode)
+			{
+				string dataOrder = responseOrder.Content.ReadAsStringAsync().Result;
+				order = JsonConvert.DeserializeObject<List<OrderModel>>(dataOrder);
+			}
+			return order;
+		}
 
 
-    }
+	}
 }
