@@ -85,7 +85,7 @@ namespace asp_mvc_website.Controllers
                 Status = ArtWorkStatus.Sold
             };
             var response = await _client.PutAsJsonAsync<ArtworkUpdateDTO>(_client.BaseAddress + "Artwork/UpdateArtwork", dto);
-
+            // response.
             return (response.IsSuccessStatusCode, response);
         }
 

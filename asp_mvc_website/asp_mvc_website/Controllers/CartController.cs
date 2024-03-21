@@ -1,4 +1,5 @@
-﻿using asp_mvc_website.Models;
+﻿using asp_mvc_website.Enums;
+using asp_mvc_website.Models;
 using asp_mvc_website.Services;
 using Humanizer;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
+using System.Drawing;
 using System.Text;
 
 namespace asp_mvc_website.Controllers
@@ -199,8 +201,49 @@ namespace asp_mvc_website.Controllers
                         // Save the updated cart back to session or database
                         SaveCartToCookie(cartItems);
 
-                        // Return a success response or redirect to the cart page
-                        return RedirectToAction("Index");
+
+						//Create notify to artist
+						string description = "You have one order";
+						string title = "Buy artwork";
+
+						createNotificationModel model = new createNotificationModel
+						{
+							Title = title,
+							Description = description,
+							notiStatus = NotiStatus.Order
+						};
+						 response = await _client.PostAsync(
+						   _client.BaseAddress + "Notification/CreateNotification",
+						   new StringContent(
+							   JsonConvert.SerializeObject(model),
+							   Encoding.UTF8,
+							   "application/json"));
+						if (!response.IsSuccessStatusCode)
+							return BadRequest();
+						 data = response.Content.ReadAsStringAsync().Result;
+						var notiResponse = JsonConvert.DeserializeObject<ResponseNotificationDTO>(data);
+						// NotiId was created
+						var notiId = notiResponse.Data.Id;
+
+						var userNoti = new CreateUserNotificationDTO
+						{
+							userId = artworkModel.UserId,
+							notificationId = notiId,
+							artworkId = artworkId,
+							userIdFor = userId
+						};
+						 response = await _client.PostAsync(
+						   _client.BaseAddress + "UserNotifcation/CreateNotification",
+						   new StringContent(
+							   JsonConvert.SerializeObject(userNoti),
+							   Encoding.UTF8,
+							   "application/json"));
+						if (!response.IsSuccessStatusCode)
+						{
+							return BadRequest();
+						}
+						// Return a success response or redirect to the cart pa
+						return RedirectToAction("Index");
 					}
 					else
 					{
