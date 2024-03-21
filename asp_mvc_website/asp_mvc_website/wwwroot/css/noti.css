@@ -3,7 +3,10 @@
     color: black;
 }
 
-
+.notification .cont {
+    height: 50px; /* Adjust the height as needed */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+}
 
 .box::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
@@ -29,8 +32,6 @@ header {
     height: 110px;
     vertical-align: middle;
 }
-
-
 
 .icons {
     display: inline;
@@ -99,7 +100,12 @@ header {
     height: 60vh
 }
 
-
+.no-notification {
+    color: black;
+}
+.zoomed {
+    transform: scale(1.1); /* Zoom effect */
+}
 .content {
     padding: 20px;
     color: black;
@@ -153,9 +159,12 @@ header {
     padding: 25px 10px;
     background-color: #F4F4F4;
     transition: 0.5s;
+    color: black;
 }
 
-
+.box.no-notification:hover {
+    transform: scale(1.1); /* Zoom effect */
+}
 .profilenoti {
     -webkit-clip-path: circle(50% at 50% 50%);
     clip-path: circle(50% at 50% 50%);

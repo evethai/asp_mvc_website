@@ -215,7 +215,7 @@
                         unreadCount++;
                         var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
                         profileImage.css("margin-left", "15px");
-                        var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artWorkVM.title);
+                        var txtDiv = $("<div>").addClass("txt").text(notification.userVM.firstName + " " + notification.userVM.lastName+ " " + notification.notificationVM.title);
                         var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationVM.description);
                         anchor.append(profileImage).append(txtDiv).append(subTxtDiv);
                         var notificationItem = $("<div>").addClass("sec new");
@@ -228,6 +228,7 @@
 
                 if (unreadCount === 0) {
                     $(".number").hide();
+                    notificationContainer.html("<div class='sec new no-notification'>You don't have new notifications</div>");
                 }
             }
         });
