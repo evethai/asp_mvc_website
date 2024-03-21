@@ -1,7 +1,11 @@
 ﻿using asp_mvc_website.Models;
 using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using System.Reflection;
+using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace asp_mvc_website.Controllers
 {
@@ -21,37 +25,61 @@ namespace asp_mvc_website.Controllers
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
 
-        public IActionResult Index(string id)
+        public async Task<IActionResult> Index(string id)
 		{
-			UserModel userModel = new UserModel();
+			var user = await _currentUserService.User();
+			ProfileModel userModel = new ProfileModel();
 			HttpResponseMessage responseUser = _client.GetAsync(_client.BaseAddress + "User/GetUserById/" + id).Result;
 			if (responseUser.IsSuccessStatusCode)
 			{
 				string data = responseUser.Content.ReadAsStringAsync().Result;
-				userModel = JsonConvert.DeserializeObject<UserModel>(data);
+				userModel = JsonConvert.DeserializeObject<ProfileModel>(data);
 			}
-
-			List<ArtworkModel> artworkModels = new List<ArtworkModel>();
-			HttpResponseMessage response = _client.GetAsync(_client.BaseAddress + "Artwork/GetAllArtworkByUserID/" + id).Result;
-			if (response.IsSuccessStatusCode)
-			{
-				string data = response.Content.ReadAsStringAsync().Result;
-				artworkModels = JsonConvert.DeserializeObject<List<ArtworkModel>>(data);
-			}
-            List<LikeModel> likeModels = new List<LikeModel>();
-            HttpResponseMessage responseLike = _client.GetAsync(_client.BaseAddress + "Like/GetAllLikeByArtworkId/" + id).Result;
-            if (responseLike.IsSuccessStatusCode)
-            {
-                string data = response.Content.ReadAsStringAsync().Result;
-                likeModels = JsonConvert.DeserializeObject<List<LikeModel>>(data);
-            }
-
-            ProfileModel profileModel = new ProfileModel();
-			profileModel.user = userModel;
-			profileModel.artworks = artworkModels;
-            profileModel.like = likeModels;
-
-			return View(profileModel);
+			ViewData["currentUserId"] = user.Id.ToString();
+			return View(userModel);
 		}
-	}
+		[HttpPost]
+		public async Task<IActionResult> LikeArtwork([FromBody]LikeModel like)
+		{
+			try
+			{
+				var userId = like.UserId;
+				HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "Like/CreateLike", new StringContent(
+					JsonConvert.SerializeObject(like),
+					Encoding.UTF8,
+					"application/json"));
+				if (response.IsSuccessStatusCode)
+				{
+					return Ok(new {status = true});
+				}
+			}
+			catch (Exception ex)
+			{
+				View(ex);
+			}
+			return View("Index");
+		}
+		public async Task<IActionResult> RemoveLike(LikeModel like)
+        {
+            try
+            {
+                var user = await _currentUserService.User();
+                like.UserId = user.Id.ToString();
+                string data = JsonConvert.SerializeObject(like);
+                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _client.DeleteAsync(_client.BaseAddress + "/Like/DeleteLike");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                View(ex);
+            }
+            return View("Index");
+        }
+
+    }
 }

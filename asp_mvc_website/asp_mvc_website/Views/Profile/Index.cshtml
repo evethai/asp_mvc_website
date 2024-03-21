@@ -1,39 +1,83 @@
 ﻿@model ProfileModel
 @{
 	ViewData["Title"] = "Profile Page";
+	var isLike = false ;
+	var currentUserId = ViewData["currentUserId"].ToString();
 }
+<style>
+	/* CSS để ẩn popup ban đầu */
+	.popupComment {
+		display: none;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background-color: white;
+		padding: 20px;
+		border: 1px solid #ccc;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+		max-width: 80%;
+		max-height: 80%;
+		overflow-y: auto;
+	}
+
+	/* CSS để style button */
+</style>
 <section id="primary" class="content-full-width">
 	<div class="container">
 		<div class="profile">
 			<div class="profile-header">
 				<img src="https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg" alt="Background Image" class="background-image">
 				<img src="~/images/profile.png" alt="Avatar" class="avatar">
-				<h1 class="name">@Model.user.FirstName @Model.user.LastName</h1>				
+				<h1 class="name">@Model.FirstName @Model.LastName</h1>				
 				<div class="profile-details">
 					<div class="additional-info">
-						<p>Birthday: @Model.user.Birthday</p> <p>Email: john@example.com</p>
+						<p>Birthday: @Model.Birthday</p> <p>Email: @Model.Email</p>
 					</div>
 				</div>
-			</div>			
+			</div>
 				@foreach (var item in Model.artworks)
 				{
+				{ isLike = false; }
 				<div class="product-container">
 					<a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})">
 						<div class="product-thumb"> <img src="@item.Image"/> </div>
 					</a>
 					<div class="product-details">
 						<h3 class="product-title">@item.Title</h3>
-						<p class="product-price">$@item.Price</p>
+						<p class="product-price">@item.Price VND</p>
+						<p class="product-price">@item.Description</p>
 						<div class="product-actions">
-							<button class="product-like">
-								<img src="~/images/like.png" width="15px"/>
-								<span class="like-text">Like</span>
-								<span class="like-count">@Model.like.Count()</span> <!-- Example for displaying like count -->
-							</button>
-							<button class="product-comment">
+							@foreach(var user in item.likeNumber)
+							{
+								@if (user.UserId.Equals(currentUserId))
+								{
+									<button data-aid="@item.artworkId" data-id="@currentUserId" class="product-like" style="background-color: lightskyblue">
+										<img src="~/images/like.png" width="15px" />
+										<span class="like-text">Like</span>
+
+										<span class="like-count">@item.likeNumber.Count()</span> <!-- Example for displaying like count -->
+									</button>
+									{
+										isLike = true;
+									}
+								} 
+							} 
+							@if(!isLike)
+							{
+
+								<button data-aid="@item.artworkId" data-id="@currentUserId" class="product-like">
+									<img src="~/images/like.png" width="15px" />
+									<span class="like-text">Like</span>
+
+									<span class="like-count">@item.likeNumber.Count()</span> <!-- Example for displaying like count -->
+								</button>
+							}
+
+							<button class="product-comment" onclick="openPopup()">
 								<img src="~/images/comment.png" width="15px" />
 								<span class="comment-text">Comment</span>
-								<span class="comment-count">5</span> <!-- Example for displaying comment count -->
+								<span class="comment-count">@item.commentNumber.Count()</span> <!-- Example for displaying comment count -->
 							</button>
 						</div>
 					</div>
@@ -41,6 +85,15 @@
 				}			
 		</div>
 	</div>
+	@* ----------------POPUP COMMENT---------------- *@
+	<div id="popupComment" class="popupComment">
+		<h2>Danh sách Comment</h2>
+		<ul id="commentList">
+			<li>NGU VỪA THÔI</li>
+		</ul>
+		<button onclick="closePopup()">Đóng</button>
+	</div>
+
 </section>
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
@@ -49,5 +102,66 @@
 			sliderContainer.parentNode.removeChild(sliderContainer);
 		}
 	});
+	function openPopup() {
+		var popup = document.getElementById("popupComment");
+		popup.style.display = "block";
+	}
+
+	// Function để đóng popup
+	function closePopup() {
+		var popup = document.getElementById("popupComment");
+		popup.style.display = "none";
+	}
+
+	$('.product-like').click(function () {
+		var userId = $(this).data("id");
+		var artworkId = $(this).data("aid");
+		var data = {
+			userId,
+			artworkId,
+		};
+		$.ajax({
+			dataType: "json",
+			contentType: "application/json; charset=utf-8",
+			type: "POST",
+			url: "/Profile/LikeArtwork",
+			data: JSON.stringify(data),
+			success: function (data) {
+				loadPage(userId)
+			},
+		});
+	})
+
+	function loadPage(userId) {
+		$.ajax({
+			type: "GET",
+			url: "/Profile/Index",
+			data: {id : userId},
+			success: function (data) {
+				var updateContent = $(data).find('.profile').html();
+				$('.profile').html(updateContent);
+				$('.product-like').click(function () {
+					var userId = $(this).data("id");
+					var artworkId = $(this).data("aid");
+					var data = {
+						userId,
+						artworkId,
+					};
+					$.ajax({
+						dataType: "json",
+						contentType: "application/json; charset=utf-8",
+						type: "POST",
+						url: "/Profile/LikeArtwork",
+						data: JSON.stringify(data),
+						success: function (data) {
+							loadPage(userId)
+						},
+					});
+				})
+			},
+		});
+	}
+
+
 </script>
 
