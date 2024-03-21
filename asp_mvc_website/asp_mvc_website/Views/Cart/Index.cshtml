@@ -5,10 +5,6 @@
 		pointer-events: none; /* Disable pointer events */
 		opacity: 0.5; /* Reduce opacity to visually indicate it's disabled */
 	}
-
-	img {
-		width: 100%;
-	}
 	</style>
 
 <div class="breadcrumb">
@@ -65,7 +61,7 @@
 										</td>
 
 										<td class="product-subtotal">
-											<span class="amount"><i class="fa fa-gbp"></i> @item.Price</span>
+											<span class="amount"><i class=""></i> @item.Price VND</span>
 										</td>
 
 										<td class="product-status">
@@ -208,7 +204,15 @@
 	// 		}
 	// 	});
 	// }
-
-
-
+	function formatCurrency(amount) {
+		return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+	}
+	var amountElements = document.getElementsByClassName("amount");
+	for (var i = 0; i < amountElements.length; i++) {
+		var amountText = amountElements[i].textContent;
+		var amount = parseFloat(amountText);
+		if (!isNaN(amount)) {
+			amountElements[i].textContent = formatCurrency(amount) + " VND";
+		}
+	}
 </script>

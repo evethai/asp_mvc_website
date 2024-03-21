@@ -15,20 +15,41 @@ namespace asp_mvc_website.Models
 
     }
 
-    //public class GetUsetNotification   
-    //{
-    //    public int id {  get; set; }
-    //    public string? artworkTitle { get; set;}
-    //    public string? notificationTitle { get; set; }
-    //    public  string? notificationDescription {  get; set; }
-    //    public bool isRead {  get; set; }
-    //    public DateTime dateTime { get; set; }
-    //    public NotiStatus notiStatus { get; set; }
-    //    public string? nameUser { get; set; }
-    //    public string artwordUrl { get; set; }
-    //    public int artworkId { get; set; }
-    //    public int notificationId { get; set; }
-    //}
+    public class GetUsetNotification   
+    {
+        public int id {  get; set; }
+        public string? artworkTitle { get; set;}
+        public string? notificationTitle { get; set; }
+        public  string? notificationDescription {  get; set; }
+        public bool isRead {  get; set; }
+        public DateTime dateTime { get; set; }
+        public NotiStatus notiStatus { get; set; }
+        public string? nameUser { get; set; }
+        public string artwordUrl { get; set; }
+		public int artworkId { get; set; }
+		public int notificationId { get; set; }
+	}
+	public class NotificationUserModel
+	{
+		public int Id { get; set; }
+		public string Title { get; set; } = string.Empty;
+		public string Description { get; set; } = string.Empty;
+		public DateTime? Date { get; set; }
+		public bool? IsRead { get; set; }
+	}
+	public class CreateAdminNotificationDTO
+	{
+		public int? NotificationId { get; set; }
+		public int? ArtworkId { get; set; }
+	}
+
+	public class CreateUserNotificationDTO
+	{
+		public string? userId { get; set; }
+		public int? notificationId { get; set; }
+		public int? artworkId { get; set; }
+	}
+
 	public class UserVM
 	{
 		public String LastName { get; set; }
@@ -39,6 +60,10 @@ namespace asp_mvc_website.Models
 	{
 		public String ArtworkId { get; set; }
 		public string Title { get; set; }
+		public string Description { get; set; }
+		public double? Price { get; set; }
+		public DateTime? CreateOn { get; set; }
+		public string UserId { get; set; }
 	}
 
 	public class ArtWorkImageVM
@@ -81,10 +106,5 @@ namespace asp_mvc_website.Models
         public List<GetUserNotificationDTO1> data { get; set; }
         public int page { get; set; }
     }
-    public class CreateUserNotificationDTO
-    {
-        public string? userId { get; set; }
-        public int? notificationId { get; set; }
-        public int? artworkId { get; set; }
-    }
+
 }

@@ -99,7 +99,7 @@
                             <p><span>Title :</span>@Model.artworkModel.Title</p>
                         </li>
                         <li>
-                            <p><span>Artist :</span>@Model.userModel.FirstName</p>
+                            <p><span>Artist :</span>@Model.userModel.FirstName @Model.userModel.LastName</p>
                         </li>
                         <li>
                             <p><span>Description :</span>@Model.artworkModel.Description</p>
@@ -108,7 +108,7 @@
                             <p><span>Uploaded :</span>@Model.artworkModel.CreateOn </p>
                         </li>
                         <li>
-                            <p><span>Price :</span><i class="fa fa-dollar"></i>@Model.artworkModel.Price</p>
+                            <span>Price :</span> <p class="amount">@Model.artworkModel.Price VND</p>
                         </li>
                         @*                         <li>
                         <p><span>Statistics :</span><i class="fa fa-eye"></i>2,318</p>
@@ -176,6 +176,17 @@
 
 </section>
 <script>
+    function formatCurrency(amount) {
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    var amountElements = document.getElementsByClassName("amount");
+    for (var i = 0; i < amountElements.length; i++) {
+        var amountText = amountElements[i].textContent;
+        var amount = parseFloat(amountText);
+        if (!isNaN(amount)) {
+            amountElements[i].textContent = formatCurrency(amount) + " VND";
+        }
+    }
     document.addEventListener("DOMContentLoaded", function () {
         var sliderContainer = document.getElementById("slider-container");
         if (sliderContainer) {
@@ -190,5 +201,5 @@
     // When the button is clicked, show the modal
     btnAdd.onclick = function () {
         modal.style.display = "block";
-    }
+    }  
 </script>

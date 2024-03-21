@@ -24,72 +24,64 @@ namespace asp_mvc_website.Controllers
 			_client = _factory.CreateClient("ServerApi");
 			_client.BaseAddress = new Uri(configuration["Cron:localhost"]);
 		}
+
 		[HttpGet]
 		public async Task<IActionResult> Index()
         {
 			var user = await _currentUserService.User();
+			if (user == null)
+			{
+				return Redirect("/User/Login");
+			}
 			string userId = user.Id.ToString();
 			Result result = new Result();
-			DefaultSearch search = new DefaultSearch
+
+			var response = await _client.GetAsync(_client.BaseAddress + $"UserNotifcation/getNotiUser?userId={userId}&perPage=10&currentPage=0");
+			if (response.IsSuccessStatusCode)
 			{
-				perPage = 10,
-				currentPage = 0,
-			};
-
-			try
-			{
-				string searchParams = $"?userId={userId}&perPage={search.perPage}&currentPage={search.currentPage}&sortBy={search.sortBy}&isAscending={search.isAscending}";
-				UriBuilder builder = new UriBuilder(_client.BaseAddress);
-				builder.Path = $"api/UserNotifcation/getNotiUser";
-				builder.Query =  searchParams;
-
-
-
-				HttpResponseMessage response = await _client.GetAsync(builder.Uri);
-				if (response.IsSuccessStatusCode)
-				{
-					var data = response.Content.ReadAsStringAsync().Result;
-					result = JsonConvert.DeserializeObject<Result>(data);
-				}
-				else
-				{
-					return BadRequest("Get notification failed");
-				}
-			}catch(HttpRequestException ex)
-			{
-				return BadRequest("Get notification failed" +ex);
+				var data = response.Content.ReadAsStringAsync().Result;
+				result = JsonConvert.DeserializeObject<Result>(data);
 			}
-			
+			else
+			{
+				return BadRequest("Get notification failed");
+			}
 
-            return View(result);
+			return View(result);
         }
 
 
 
 
 		[HttpPost]
-		public async Task<IActionResult> CheckPost(int artworkId, bool isAccept, int notiId)
+		public async Task<IActionResult> CheckPost(int artworkId, bool isAccept, int notiId, string userId, string reason)
 		{
 			if (isAccept)
 			{
 				var updateStatusArtworkResult = await UpdateStatusArtwork(artworkId);
 				if (!updateStatusArtworkResult.IsSuccess)
-					return BadRequest("Update status artwork failed");
+					return BadRequest("Update status artwork failed");	
+			}
+			else
+			{
+				var increaseQuantityPosterResult = await IncreaseQuantityPoster(userId);
+				if (!increaseQuantityPosterResult.IsSuccessStatusCode)
+					return BadRequest("Increase quantity poster failed");
 			}
 			var updateStatusNotiResult = await UpdateStatusNoti(notiId, isAccept);
 			if (!updateStatusNotiResult.IsSuccess)
 				return BadRequest("Post notification failed");
-			var postNotificationResult = await PostNotification(isAccept);
+			var postNotificationResult = await PostNotification(isAccept,reason);
 			if (!postNotificationResult.IsSuccess)
 				return BadRequest("Post notification failed");
-			var postUserNotificationResult = await PostUserNotification(artworkId, postNotificationResult.NotificationID);
+			var postUserNotificationResult = await PostUserNotification(artworkId, postNotificationResult.NotificationID, userId);
 			if (!postUserNotificationResult.IsSuccess)
 				return BadRequest("Post user notification failed");
 
-			return RedirectToAction("Index", "Dashbroad");
-		}
+            return Json("true");
+        }
 
-		private async Task<(bool IsSuccess, HttpResponseMessage Response)> UpdateStatusArtwork(int artworkId)
+        private async Task<(bool IsSuccess, HttpResponseMessage Response)> UpdateStatusArtwork(int artworkId)
 		{
 			ArtworkUpdateDTO dto = new ArtworkUpdateDTO
 			{
@@ -115,13 +107,14 @@ namespace asp_mvc_website.Controllers
 			return (response.IsSuccessStatusCode, response);
 		}
 
-		private async Task<(bool IsSuccess, int NotificationID)> PostNotification(bool IsAccept)
+		private async Task<(bool IsSuccess, int NotificationID)> PostNotification(bool IsAccept, string reason)
 		{
-			string description = IsAccept ? "Your artwork has been accepted" : "Your artwork has been rejected";
+			string description = IsAccept ? "Your artwork has been accepted" : reason;
+			string title = IsAccept ? "Accept post artwork" : "Deny post artwork";
 
 			createNotificationModel model = new createNotificationModel
 			{
-				Title = "Confirm post artwork",
+				Title = title,
 				Description = description,
 				notiStatus = NotiStatus.Normal
 			};
@@ -137,15 +130,12 @@ namespace asp_mvc_website.Controllers
 			var dto = JsonConvert.DeserializeObject<ResponseNotificationDTO>(data);
 			return (true, dto.Data.Id);
 		}
-		private async Task<(bool IsSuccess, HttpResponseMessage Response)> PostUserNotification(int artworkId, int notiId)
+		private async Task<(bool IsSuccess, HttpResponseMessage Response)> PostUserNotification(int artworkId, int notiId, string userId)
 		{
-			var user = await GetUserId(artworkId);
-			if (!user.IsSuccess)
-				return (false, null);
 
 			var dto = new CreateUserNotificationDTO
 			{
-				userId = user.userId,
+				userId = userId,
 				notificationId = notiId,
 				artworkId = artworkId
 			};
@@ -156,22 +146,16 @@ namespace asp_mvc_website.Controllers
 				   Encoding.UTF8,
 				   "application/json"));
 
+			if (!response.IsSuccessStatusCode)
+				return (false, response);
 			return (response.IsSuccessStatusCode, response);
 		}
 
-		private async Task<(bool IsSuccess, string userId)> GetUserId(int artworkId)
+		private async Task<HttpResponseMessage> IncreaseQuantityPoster(string userId)
 		{
-			ArtworkModel model = new ArtworkModel();
-			HttpResponseMessage response = await _client.GetAsync(_client.BaseAddress + "Artwork/GetUserIdByArtworkId/" + artworkId);
-			if (!response.IsSuccessStatusCode)
-				return (false, string.Empty);
-
-			var data = response.Content.ReadAsStringAsync().Result;
-			model = JsonConvert.DeserializeObject<ArtworkModel>(data);
-			return (true, model.UserId);
-
+			var request = new HttpRequestMessage(HttpMethod.Put, _client.BaseAddress + "Poster/IncreasePost?userId=" + userId);
+			return await _client.SendAsync(request);
 		}
-
 
 	}
 }

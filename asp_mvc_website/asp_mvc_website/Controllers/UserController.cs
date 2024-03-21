@@ -106,9 +106,9 @@ namespace asp_mvc_website.Controllers
 
                 // Extract role claims
                 var roleClaims = token.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value).ToList();
-                foreach(var role in roleClaims)
+                foreach (var role in roleClaims)
                 {
-                    if(role.Equals(AppRole.Admin))
+                    if (role.Equals(AppRole.Admin))
                     {
                         // Dashboard
                         return RedirectToAction("Index", "Dashbroad");
@@ -296,6 +296,18 @@ namespace asp_mvc_website.Controllers
         //    HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
         //}
 
+        [HttpGet]
+        public async Task<IActionResult> Logout()
+        {
+            var response = await _client.GetAsync(_client.BaseAddress + "User/SignOut");
+            if (response.IsSuccessStatusCode)
+            {
+                HttpContext.Session?.Remove("AccessToken");
+                HttpContext.Session?.Remove("RefeshToken");
+                return RedirectToAction("Login");
+            }
+            return Unauthorized();
+        }
     }
 
     public class TokenResponse

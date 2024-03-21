@@ -1,7 +1,13 @@
-﻿using asp_mvc_website.Models;
+﻿using asp_mvc_website.Helpers;
+using asp_mvc_website.Models;
 using asp_mvc_website.Services;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using System.Data;
+using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace asp_mvc_website.Controllers
 {
@@ -86,11 +92,63 @@ namespace asp_mvc_website.Controllers
             return View();
         }
 
-        [HttpGet("getRole")]
-        public async Task<IActionResult> getAllRole()
+        [HttpGet("getUserRoles")]
+        public async Task<IActionResult> UserListRole(DefaultSearch defaultSearch)
         {
-            var result = _client.GetAsync(_client.BaseAddress + "admin/GetRole").Result;
-            return Ok(result);
+            HttpResponseMessage response = null;
+            if (defaultSearch.currentPage != 0 || defaultSearch.perPage != 10)
+            {
+                response = await _client.GetAsync(_client.BaseAddress + $"admin/getUserRole?perPage={defaultSearch.perPage}&currentPage={defaultSearch.currentPage}");
+            }
+            else
+            {
+                response = await _client.GetAsync(_client.BaseAddress + $"admin/getUserRole?");
+            }
+
+            string data = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<UserRolseResponse>(data);
+
+            var responseRoleList = await _client.GetAsync(_client.BaseAddress + "admin/getRole");
+            var roles = await responseRoleList.Content.ReadAsStringAsync() ;
+            var rolesList = JsonConvert.DeserializeObject<List<RolesVM>>(roles);
+
+            List<string> roleNames = new List<string>();
+            foreach(var role in rolesList)
+            {
+                roleNames.Add(role.name);
+            }
+            var rolesNameList = roleNames.ToArray<string>();
+            var roleName = new RolesNameVM();
+            roleName.ListRole = new SelectList(rolesNameList);
+
+            var page = result.total / 10;
+            if (result.total % 10 != 0) page++;
+            ViewData["listRole"] = roleName;
+            ViewData["totalPage"] = page;
+            ViewData["currentPage"] = result.page;
+            return View(result);
         }
+
+        [HttpPost("AddUserRole")]
+        public async Task<IActionResult> AddUserRole([FromBody] UserRolesCM model)
+        {
+            var response = await _client.PostAsync(_client.BaseAddress + $"admin/addUserRole?userId={model.userId}",
+                new StringContent(JsonConvert.SerializeObject(model.roleName), Encoding.UTF8, "application/json"));
+            string data = response.Content.ReadAsStringAsync().Result;
+            //var result = JsonConvert.DeserializeObject<UserRolseResponse>(data); 
+            return Ok(data);
+        }
+
+
+        [HttpPost("ChangeStatusUser")]
+        public async Task<IActionResult> ChangeStatusUser([FromBody] UserCM model)
+        {
+            var response = await _client.PostAsync(_client.BaseAddress + $"admin/changeUserStatus?userId={model.userId}", null);
+      
+            string data = response.Content.ReadAsStringAsync().Result;
+            //var result = JsonConvert.DeserializeObject<UserRolseResponse>(data); 
+            return Ok(data);
+        }
+
     }
 }

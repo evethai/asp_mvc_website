@@ -29,18 +29,21 @@
         <div class="form-password mb-3 auth-pass-inputgroup">
             <label asp-for="Password" class="control-label"></label>
             <div class="position-relative">
-                <input asp-for="Password" class="form-control" placeholder="Enter password" />
+                <input asp-for="Password" type="password" class="form-control" placeholder="Enter password" />
                 <span asp-validation-for="Password" class="text-danger"></span>
                 <button type="button" class="btn btn-link position-absolute h-100 end-0 top-0 shadow-none" id="password-addon">
-                    <i class="mdi mdi-eye-outline f-16 text-muted"></i>
+                    <i class="mdi mdi-eye-outline f-16 text-muted" onclick="togglePasswordVisibility()"></i>
                 </button>
             </div>
         </div>
         <div class="form-password mb-3 auth-pass-inputgroup">
             <label asp-for="ConfirmPassword" class="control-label">Confirm Password</label>
             <div class="position-relative">
-                <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirm password" />
+                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm password" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                <button type="button" class="btn btn-link position-absolute h-100 end-0 top-0 shadow-none" id="password-addon">
+                    <i class="mdi mdi-eye-outline f-16 text-muted" onclick="togglePasswordComfirmVisibility()"></i>
+                </button>
             </div>
         </div>
 
@@ -89,3 +92,29 @@
     </div>
     </div><!-- end row --> *@
 </div><!-- auth content -->
+<script>
+    function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("Password");
+        var toggleBtn = document.querySelector(".mdi mdi-eye-outline f-16 text-muted");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleBtn.textContent = "Hide";
+        } else {
+            passwordInput.type = "password";
+            toggleBtn.textContent = "Show";
+        }
+    }
+    function togglePasswordComfirmVisibility() {
+        var passwordInput = document.getElementById("ConfirmPassword");
+        var toggleBtn = document.querySelector(".mdi mdi-eye-outline f-16 text-muted");
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleBtn.textContent = "Hide";
+        } else {
+            passwordInput.type = "password";
+            toggleBtn.textContent = "Show";
+        }
+    }
+</script>
