@@ -23,7 +23,7 @@ namespace asp_mvc_website.Controllers
 {
     public class UserController : Controller
     {
-
+        private readonly IHttpClientFactory _factory;
         private readonly ILogger<UserController> _logger;
         private readonly HttpClient _client;
         private readonly IHttpClientFactory _httpClientFactory;
@@ -31,10 +31,10 @@ namespace asp_mvc_website.Controllers
         public UserController(ILogger<UserController> logger, IHttpClientFactory httpClientFactory,
             IConfiguration configuration, ICurrentUserService currentUserService)
         {
-            _currentUserService = currentUserService;
-            _logger = logger;
+            _factory = httpClientFactory;
             _client = new HttpClient();
-            _client = httpClientFactory.CreateClient();
+            _currentUserService = currentUserService;
+            _client = _factory.CreateClient("ServerApi");
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
         public IActionResult Index()
@@ -112,7 +112,7 @@ namespace asp_mvc_website.Controllers
                         // Dashboard
                         return RedirectToAction("Index", "Dashbroad");
                     }
-                }
+                }   
 
                 return RedirectToAction("Index", "Home");
             }
@@ -297,11 +297,13 @@ namespace asp_mvc_website.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout()
         {
-            var response = await _client.GetAsync(_client.BaseAddress + "User/SignOut");
+            var response = await _client.DeleteAsync(_client.BaseAddress + "User/SignOut");
             if (response.IsSuccessStatusCode)
             {
                 HttpContext.Session?.Remove("AccessToken");
                 HttpContext.Session?.Remove("RefeshToken");
+                HttpContext.Session.Remove("UserId");
+                HttpContext.Session.Remove("UserEmail");
                 return RedirectToAction("Login");
             }
             return Unauthorized();

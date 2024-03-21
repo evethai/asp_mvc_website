@@ -19,7 +19,7 @@ $(document).ready(function () {
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             type: "POST",
-            url: "/AddUserRole",
+            url: "/admin/AddUserRole",
             data: JSON.stringify(data),
             success: function (data) {
                 window.location.reload();
@@ -38,7 +38,7 @@ $(document).ready(function () {
             dataType: "json",
             contentType: "application/json; charset=utf-8",
             type: "POST",
-            url: "/ChangeStatusUser",
+            url: "/admin/ChangeStatusUser",
             data: JSON.stringify(data),
             success: function (data) {
                 window.location.reload();
@@ -55,7 +55,7 @@ $(document).ready(function () {
         }
         $.ajax({
             type: "GET",
-            url: "/getUserRoles",
+            url: "/admin/getUserRoles",
             data: data,
             success: function (data) {
                 var updateContent = $(data).find('#tableContent').html();
@@ -81,7 +81,7 @@ $(document).ready(function () {
                             dataType: "json",
                             contentType: "application/json; charset=utf-8",
                             type: "POST",
-                            url: "/AddUserRole",
+                            url: "/admin/AddUserRole",
                             data: JSON.stringify(data),
                             success: function (data) {
                                 $('.modal-backdrop').hide();
@@ -101,7 +101,7 @@ $(document).ready(function () {
                             dataType: "json",
                             contentType: "application/json; charset=utf-8",
                             type: "POST",
-                            url: "/ChangeStatusUser",
+                            url: "/admin/ChangeStatusUser",
                             data: JSON.stringify(data),
                             success: function (data) {
                                 $('.modal-backdrop').hide();
