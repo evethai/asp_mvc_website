@@ -243,6 +243,17 @@ namespace asp_mvc_website.Controllers
             });
         }
 
+		//private void GetCartByUser(string userId)
+		//{
+		//	List<OrderModel> order = new List<OrderModel>();
+		//	HttpResponseMessage responseOrder = _client.GetAsync(_client.BaseAddress + "Order/GetOrderByUser/" + userId).Result;
+		//	if (responseOrder.IsSuccessStatusCode)
+		//	{
+		//		string dataOrder = responseOrder.Content.ReadAsStringAsync().Result;
+		//		order = JsonConvert.DeserializeObject<List<OrderModel>>(dataOrder);
+		//	}
+		//}
+
 
     }
 }
