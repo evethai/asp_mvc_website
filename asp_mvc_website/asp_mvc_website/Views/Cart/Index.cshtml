@@ -98,10 +98,10 @@
 										</td>
 
 										<td class="product-status" style="padding:0px;">
-											@if (item.Status == ArtWorkStatus.InProgress)
+											@if (item.Status == ArtWorkStatus.SoldPPendingConfirm || item.Status == ArtWorkStatus.Sold)
 											{
 												<a id="checkoutButtonDisable" class="dt-sc-button medium type2 with-icon" href="#">
-													<i class="fa fa-shopping-cart"></i> <span>In process</span>
+													<i class="fa fa-shopping-cart"></i> <span>Pending Confirm</span>
 												</a>
 											}
 											else

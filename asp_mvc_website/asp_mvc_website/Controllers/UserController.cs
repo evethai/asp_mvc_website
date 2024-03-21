@@ -304,8 +304,8 @@ namespace asp_mvc_website.Controllers
             {
                 HttpContext.Session?.Remove("AccessToken");
                 HttpContext.Session?.Remove("RefeshToken");
-                HttpContext.Session.Remove("UserId");
-                HttpContext.Session.Remove("UserEmail");
+                HttpContext.Session?.Remove("UserId");
+                HttpContext.Session?.Remove("UserEmail");
                 return RedirectToAction("Login");
             }
             return Unauthorized();

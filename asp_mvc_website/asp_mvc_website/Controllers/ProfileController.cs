@@ -3,7 +3,9 @@ using asp_mvc_website.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using System.Reflection;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace asp_mvc_website.Controllers
 {
@@ -23,8 +25,9 @@ namespace asp_mvc_website.Controllers
             _client.BaseAddress = new Uri(configuration["Cron:localhost"]);
         }
 
-        public IActionResult Index(string id)
+        public async Task<IActionResult> Index(string id)
 		{
+			var user = await _currentUserService.User();
 			ProfileModel userModel = new ProfileModel();
 			HttpResponseMessage responseUser = _client.GetAsync(_client.BaseAddress + "User/GetUserById/" + id).Result;
 			if (responseUser.IsSuccessStatusCode)
@@ -32,21 +35,22 @@ namespace asp_mvc_website.Controllers
 				string data = responseUser.Content.ReadAsStringAsync().Result;
 				userModel = JsonConvert.DeserializeObject<ProfileModel>(data);
 			}
+			ViewData["currentUserId"] = user.Id.ToString();
 			return View(userModel);
 		}
-		public async Task<IActionResult> LikeArtwork(LikeModel like) 
+		[HttpPost]
+		public async Task<IActionResult> LikeArtwork([FromBody]LikeModel like)
 		{
 			try
 			{
-				var user = await _currentUserService.User();
-				like.UserId = user.Id.ToString();
-				string data = JsonConvert.SerializeObject(like);
-				StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-				HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "/Like/CreateLike", content);
-
+				var userId = like.UserId;
+				HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "Like/CreateLike", new StringContent(
+					JsonConvert.SerializeObject(like),
+					Encoding.UTF8,
+					"application/json"));
 				if (response.IsSuccessStatusCode)
 				{
-					return RedirectToAction("Index");
+					return Ok(new {status = true});
 				}
 			}
 			catch (Exception ex)
@@ -55,5 +59,27 @@ namespace asp_mvc_website.Controllers
 			}
 			return View("Index");
 		}
-	}
+		public async Task<IActionResult> RemoveLike(LikeModel like)
+        {
+            try
+            {
+                var user = await _currentUserService.User();
+                like.UserId = user.Id.ToString();
+                string data = JsonConvert.SerializeObject(like);
+                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _client.DeleteAsync(_client.BaseAddress + "/Like/DeleteLike");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                View(ex);
+            }
+            return View("Index");
+        }
+
+    }
 }

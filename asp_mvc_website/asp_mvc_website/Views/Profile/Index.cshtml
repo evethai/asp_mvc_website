@@ -1,6 +1,8 @@
 ﻿@model ProfileModel
 @{
 	ViewData["Title"] = "Profile Page";
+	var isLike = false ;
+	var currentUserId = ViewData["currentUserId"].ToString();
 }
 <style>
 	/* CSS để ẩn popup ban đầu */
@@ -36,6 +38,7 @@
 			</div>
 				@foreach (var item in Model.artworks)
 				{
+				{ isLike = false; }
 				<div class="product-container">
 					<a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})">
 						<div class="product-thumb"> <img src="@item.Image"/> </div>
@@ -45,16 +48,36 @@
 						<p class="product-price">@item.Price VND</p>
 						<p class="product-price">@item.Description</p>
 						<div class="product-actions">
-							<button class="product-like">
-								<img src="~/images/like.png" width="15px"/>
-								<span class="like-text">Like</span>
+							@foreach(var user in item.likeNumber)
+							{
+								@if (user.UserId.Equals(currentUserId))
+								{
+									<button data-aid="@item.artworkId" data-id="@currentUserId" class="product-like" style="background-color: lightskyblue">
+										<img src="~/images/like.png" width="15px" />
+										<span class="like-text">Like</span>
 
-								<span class="like-count">@item.likeNumber</span> <!-- Example for displaying like count -->
-							</button>
+										<span class="like-count">@item.likeNumber.Count()</span> <!-- Example for displaying like count -->
+									</button>
+									{
+										isLike = true;
+									}
+								} 
+							} 
+							@if(!isLike)
+							{
+
+								<button data-aid="@item.artworkId" data-id="@currentUserId" class="product-like">
+									<img src="~/images/like.png" width="15px" />
+									<span class="like-text">Like</span>
+
+									<span class="like-count">@item.likeNumber.Count()</span> <!-- Example for displaying like count -->
+								</button>
+							}
+
 							<button class="product-comment" onclick="openPopup()">
 								<img src="~/images/comment.png" width="15px" />
 								<span class="comment-text">Comment</span>
-								<span class="comment-count">@item.commentNumber</span> <!-- Example for displaying comment count -->
+								<span class="comment-count">@item.commentNumber.Count()</span> <!-- Example for displaying comment count -->
 							</button>
 						</div>
 					</div>
@@ -89,5 +112,56 @@
 		var popup = document.getElementById("popupComment");
 		popup.style.display = "none";
 	}
+
+	$('.product-like').click(function () {
+		var userId = $(this).data("id");
+		var artworkId = $(this).data("aid");
+		var data = {
+			userId,
+			artworkId,
+		};
+		$.ajax({
+			dataType: "json",
+			contentType: "application/json; charset=utf-8",
+			type: "POST",
+			url: "/Profile/LikeArtwork",
+			data: JSON.stringify(data),
+			success: function (data) {
+				loadPage(userId)
+			},
+		});
+	})
+
+	function loadPage(userId) {
+		$.ajax({
+			type: "GET",
+			url: "/Profile/Index",
+			data: {id : userId},
+			success: function (data) {
+				var updateContent = $(data).find('.profile').html();
+				$('.profile').html(updateContent);
+				$('.product-like').click(function () {
+					var userId = $(this).data("id");
+					var artworkId = $(this).data("aid");
+					var data = {
+						userId,
+						artworkId,
+					};
+					$.ajax({
+						dataType: "json",
+						contentType: "application/json; charset=utf-8",
+						type: "POST",
+						url: "/Profile/LikeArtwork",
+						data: JSON.stringify(data),
+						success: function (data) {
+							loadPage(userId)
+						},
+					});
+				})
+			},
+		});
+	}
+
+
 </script>
 
