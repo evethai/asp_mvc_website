@@ -1,5 +1,6 @@
 ﻿using asp_mvc_website.Models;
 using asp_mvc_website.Services;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -175,14 +176,16 @@ namespace asp_mvc_website.Controllers
 				};
 
                 // Send registration request to Web API
-                var responseUpdateArtwork = await _client.PutAsync(
-							_client.BaseAddress + "Artwork/Update",
-							new StringContent(
-								JsonConvert.SerializeObject(artworkUpdate),
-								Encoding.UTF8,
-								"application/json"
-							));
-                if (responseUpdateArtwork.IsSuccessStatusCode)
+    //            var responseUpdateArtwork = await _client.PutAsync(
+				//			_client.BaseAddress + "Artwork/UpdateArtwork",
+				//			new StringContent(
+				//				JsonConvert.SerializeObject(artworkUpdate),
+				//				Encoding.UTF8,
+				//				"application/json"
+				//));
+
+				var responseUpdateArtwork = await _client.PutAsJsonAsync<ArtworkUpdateDTO>(_client.BaseAddress + "Artwork/UpdateArtwork", artworkUpdate);
+				if (responseUpdateArtwork.IsSuccessStatusCode)
                 {
 					var cartItems = GetCartItem();
 
