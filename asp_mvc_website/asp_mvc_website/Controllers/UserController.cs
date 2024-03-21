@@ -18,6 +18,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
+using System.Xml.Linq;
 
 namespace asp_mvc_website.Controllers
 {
@@ -91,9 +92,9 @@ namespace asp_mvc_website.Controllers
                 HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
                 HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
                 HttpContext.Session.SetString("UserEmail", model.Email);
-                // Redirect user to the home page or another appropriate page
+				// Redirect user to the home page or another appropriate page
 
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
+				_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
                 var user = await _currentUserService.User();
                 if (user != null)
                 {
@@ -217,6 +218,7 @@ namespace asp_mvc_website.Controllers
 				HttpContext.Session.SetString("AccessToken", tokenResponse.Token);
 				HttpContext.Session.SetString("RefeshToken", tokenResponse.RefreshToken);
 				HttpContext.Session.SetString("UserEmail", email);
+				HttpContext.Session.SetString("FirstName", name);
 				// Redirect user to the home page or another appropriate page
 
 				_client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
