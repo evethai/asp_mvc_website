@@ -133,15 +133,63 @@
 								<img src="@item.ArtWorkImageVM.Image" alt="user">
 							</div>
 							<div class="notification-list_detail">
-								<p style="color:black"><b>@item.UserVM.FirstName @item.UserVM.LastName</b> @item.NotificationVM.Title</p>
+								<p style="color:black"><b>@item.NotificationVM.Title</b></p>
 								<p class="text-muted">@item.NotificationVM.Description</p>
 								<p class="text-muted"><small>@item.NotificationVM.Date</small></p>
 							</div>
 						</div>
 						<div class="notification-list_feature-img">
 							<input id="userID" value="@item.UserIdFor" type="hidden" />
-							<a class="abutton" id="accept" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</a>
-							<a data-bs-toggle="modal" data-bs-target="#reason-@item.ArtWorkVM.ArtworkId" class="dbutton" id="deny">Deny</a>
+							@* <button class="abutton" id="accept" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</button> *@
+							<button class="abutton" id="accept" data-bs-toggle="modal" data-bs-target="#accept-@item.ArtWorkVM.ArtworkId">Accept</button>
+							<button data-bs-toggle="modal" data-bs-target="#reason-@item.ArtWorkVM.ArtworkId" class="dbutton" id="deny">Deny</button>
+						</div>
+					</div>
+
+					//modal accept
+					<div class="modal fade" id="accept-@item.ArtWorkVM.ArtworkId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;">Notification</h1>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body" style="color:black;">
+									Are you sure to accept this order?
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+									<button type="button" id="accept" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)" class="btn btn-primary">Accept</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					// modal2
+					<div class="modal fade" data-bs-backdrop="static" id="reason-@item.NotificationVM.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;"><strong>@item.UserVM.FirstName @item.UserVM.LastName</strong> @item.NotificationVM.Title</h1>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-6">
+											<img class="anhmodal" src="@item.ArtWorkImageVM.Image" alt="Anh san pham" />
+										</div>
+										<div class="col-6 align-items-center justify-content-end notiInfo">
+											<p style="color:black;"><strong>Arkwork Title:</strong> <br /> @item.NotificationVM.Title</p>
+											<p style="color:black;"><strong>Notification Description: </strong><br /> @item.NotificationVM.Description</p>
+											<p style="color:black;"><strong>Price: </strong><br /> @item.ArtWorkVM.Price Vnđ</p>
+											<p style="color:black;"><strong>Date:</strong><br /> @item.NotificationVM.Date</p>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -165,32 +213,7 @@
 						</div>
 					</div>
 
-					// modal2
-					<div class="modal fade" data-bs-backdrop="static" id="exampleModal-@item.NotificationVM.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered modal-lg">
-							<div class="modal-content">
-								<div class="modal-header">
-									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;"><strong>@item.UserVM.FirstName @item.UserVM.LastName</strong> @item.NotificationVM.Title</h1>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-								</div>
-								<div class="modal-body">
-									<div class="row">
-										<div class="col-6">
-											<img class="anhmodal" src="@item.ArtWorkImageVM.Image" alt="Anh san pham" />
-										</div>
-										<div class="col-6 align-items-center justify-content-end notiInfo">
-											<p style="color:black;"><strong>Arkwork Title:</strong> <br /> @item.NotificationVM.Title</p>
-											<p style="color:black;"><strong>Notification Description: </strong><br /> @item.NotificationVM.Description</p>
-											<p style="color:black;"><strong>Date:</strong><br /> @item.NotificationVM.Date</p>
-										</div>
-									</div>
-								</div>
-								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
-								</div>
-							</div>
-						</div>
-					</div>
+					
 				}
 			}
 
@@ -206,7 +229,7 @@
 								<img src="@item.ArtWorkImageVM.Image" alt="user">
 							</div>
 							<div class="notification-list_detail">
-								<p style="color:black"><b>@item.UserVM.FirstName @item.UserVM.LastName</b> @item.NotificationVM.Title</p>
+								<p style="color:black"><b>@item.NotificationVM.Title</b></p>
 								<p class="text-muted">@item.NotificationVM.Description</p>
 								<p class="text-muted"><small>@item.NotificationVM.Date</small></p>
 							</div>
@@ -223,7 +246,7 @@
 							<div class="modal-content">
 								<div class="modal-header">
 									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;"><strong>@item.UserVM.FirstName @item.UserVM.LastName</strong> @item.NotificationVM.Title</h1>
-									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									@* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
 								</div>
 								<div class="modal-body">
 									<div class="row">
@@ -233,6 +256,7 @@
 										<div class="col-6 align-items-center justify-content-end notiInfo">
 											<p style="color:black;"><strong>Arkwork Title:</strong> <br /> @item.NotificationVM.Title</p>
 											<p style="color:black;"><strong>Notification Description: </strong><br /> @item.NotificationVM.Description</p>
+											<p style="color:black;"><strong>Price: </strong><br /> @item.ArtWorkVM.Price Vnđ</p>
 											<p style="color:black;"><strong>Date:</strong><br /> @item.NotificationVM.Date</p>
 										</div>
 									</div>
@@ -255,7 +279,7 @@
 								<img src="@item.ArtWorkImageVM.Image" alt="user">
 							</div>
 							<div class="notification-list_detail">
-								<p style="color:black"><b>@item.UserVM.FirstName @item.UserVM.LastName</b> @item.NotificationVM.Title</p>
+								<p style="color:black"><b>@item.NotificationVM.Title</b></p>
 								<p class="text-muted">@item.NotificationVM.Description</p>
 								<p class="text-muted"><small>@item.NotificationVM.Date</small></p>
 							</div>
@@ -288,6 +312,7 @@
 										<div class="col-6 align-items-center justify-content-end notiInfo">
 											<p style="color:black;"><strong>Arkwork Title:</strong> <br /> @item.NotificationVM.Title</p>
 											<p style="color:black;"><strong>Notification Description: </strong><br /> @item.NotificationVM.Description</p>
+											<p style="color:black;"><strong>Price: </strong><br /> @item.ArtWorkVM.Price Vnđ</p>
 											<p style="color:black;"><strong>Date:</strong><br /> @item.NotificationVM.Date</p>
 										</div>
 									</div>
