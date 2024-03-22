@@ -165,11 +165,36 @@ namespace asp_mvc_website.Controllers
                 artworkModel = JsonConvert.DeserializeObject<ArtworkModel>(data);
 				if(artworkModel != null)
 				{
-					if (artworkModel.Status == ArtWorkStatus.SoldPPendingConfirm)
+					if (artworkModel.Status == ArtWorkStatus.SoldPPendingConfirm
+						|| artworkModel.Status == ArtWorkStatus.Sold)
 					{
+						//remove item in cart
+						var cartItems = GetCartItem();
+
+						// Find the index of the item to delete based on its artworkId
+						int indexToDelete = -1;
+						for (int i = 0; i < cartItems.Count; i++)
+						{
+							if (cartItems[i].artworkId == artworkModel.artworkId)
+							{
+								indexToDelete = i;
+								break;
+							}
+						}
+
+						// If the item exists in the cart, remove it
+						if (indexToDelete != -1)
+						{
+							cartItems.RemoveAt(indexToDelete);
+
+							SaveCartToCookie(cartItems);
+						}
+
+						//notification to user that item is sold
+
 						return RedirectToAction("Index");
 					}
-				}
+				}	
 				ArtworkUpdateDTO artworkUpdate = new ArtworkUpdateDTO
 				{
 					ArtworkId = artworkId,
