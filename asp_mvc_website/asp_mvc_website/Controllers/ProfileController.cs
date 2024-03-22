@@ -36,6 +36,16 @@ namespace asp_mvc_website.Controllers
 				userModel = JsonConvert.DeserializeObject<ProfileModel>(data);
 			}
 			ViewData["currentUserId"] = user.Id.ToString();
+			userModel.UserId = id;
+			if(user.Id.ToString() == id)
+			{
+				HttpResponseMessage responseUserPoster = _client.GetAsync(_client.BaseAddress + "Poster/" + id).Result;
+				if (responseUserPoster.IsSuccessStatusCode)
+				{
+					string dataPost = responseUserPoster.Content.ReadAsStringAsync().Result;
+					userModel.poster = JsonConvert.DeserializeObject<PosterModel>(dataPost);
+				}
+			}
 			return View(userModel);
 		}
 		[HttpPost]
@@ -59,27 +69,27 @@ namespace asp_mvc_website.Controllers
 			}
 			return View("Index");
 		}
-		public async Task<IActionResult> RemoveLike(LikeModel like)
-        {
-            try
-            {
-                var user = await _currentUserService.User();
-                like.UserId = user.Id.ToString();
-                string data = JsonConvert.SerializeObject(like);
-                StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _client.DeleteAsync(_client.BaseAddress + "/Like/DeleteLike");
+		[HttpPost]
+		public async Task<IActionResult> CommentArt([FromBody] CommentModel cmt)
+		{
+			try
+			{
+				var userId = cmt.UserId;
+				HttpResponseMessage response = await _client.PostAsync(_client.BaseAddress + "Comment/CreateComment", new StringContent(
+					JsonConvert.SerializeObject(cmt),
+					Encoding.UTF8,
+					"application/json"));
+				if (response.IsSuccessStatusCode)
+				{
+					return Ok(new { status = true });
+				}
+			}
+			catch (Exception ex)
+			{
+				View(ex);
+			}
+			return View("Index");
+		}
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-            catch (Exception ex)
-            {
-                View(ex);
-            }
-            return View("Index");
-        }
-
-    }
+	}
 }

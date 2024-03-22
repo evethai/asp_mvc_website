@@ -3,6 +3,7 @@
 	ViewData["Title"] = "Profile Page";
 	var isLike = false ;
 	var currentUserId = ViewData["currentUserId"].ToString();
+	var UserIdIndex = Model.UserId;
 }
 <style>
 	/* CSS để ẩn popup ban đầu */
@@ -37,7 +38,12 @@
 			<div class="profile-header">
 				<img src="https://img.freepik.com/free-photo/painting-mountain-lake-with-mountain-background_188544-9126.jpg" alt="Background Image" class="background-image">
 				<img src="~/images/profile.png" alt="Avatar" class="avatar">
-				<h1 class="name">@Model.FirstName @Model.LastName</h1>				
+				<h1 class="name">@Model.FirstName @Model.LastName</h1>
+				@if (Model.poster!=null)
+				{
+					<div style="font-size:15px" class="name"> Quantity can post: @Model.poster.QuantityPost</div>
+				}
+				<div style="text-align:left" data-userId="@UserIdIndex"></div>
 				<div class="profile-details">
 					<div class="additional-info">
 						<p>Birthday: @Model.Birthday</p> <p>Email: @Model.Email</p>
@@ -98,8 +104,6 @@
 										<ul id="commentList">
 											@foreach (var listcmt in @item.commentNumber)
 											{
-
-
 												<li style="color:black ; text-align:left"><img src="~/images/authour.png" width="15px"> - @listcmt.Content</li>
 											}											
 										</ul>
@@ -123,8 +127,7 @@
 											<button class="btn btn-primary btn-sm" onclick="clearInput(@item.artworkId)">
 												Cancel
 											</button>
-											<button type="submit"
-													class="btn btn-primary btn-sm">
+											<button type="submit" class="product-cmt" data-aid="@item.artworkId" data-id="@currentUserId">
 												Submit
 											</button>
 										</div>
@@ -145,10 +148,10 @@
 			sliderContainer.parentNode.removeChild(sliderContainer);
 		}
 	});
-
 	$('.product-like').click(function () {
 		var userId = $(this).data("id");
 		var artworkId = $(this).data("aid");
+		
 		var data = {
 			userId,
 			artworkId,
@@ -160,42 +163,35 @@
 			url: "/Profile/LikeArtwork",
 			data: JSON.stringify(data),
 			success: function (data) {
-				loadPage(userId)
+				window.location.reload();				
 			},
 		});
 	})
-
-	function loadPage(userId) {
-		$.ajax({
-			type: "GET",
-			url: "/Profile/Index",
-			data: {id : userId},
-			success: function (data) {
-				var updateContent = $(data).find('.profile').html();
-				$('.profile').html(updateContent);
-				$('.product-like').click(function () {
-					var userId = $(this).data("id");
-					var artworkId = $(this).data("aid");
-					var data = {
-						userId,
-						artworkId,
-					};
-					$.ajax({
-						dataType: "json",
-						contentType: "application/json; charset=utf-8",
-						type: "POST",
-						url: "/Profile/LikeArtwork",
-						data: JSON.stringify(data),
-						success: function (data) {
-							loadPage(userId)
-						},
-					});
-				})
-			},
-		});
-	}
 	function clearInput(id) {
 		document.getElementById('myTextarea-'+id).value = '';
 	}
+	$('.product-cmt').click(function () {
+		var userId = $(this).data("id");
+		var artworkId = $(this).data("aid");
+		var content = document.getElementById('myTextarea-' + artworkId).value;
+		var data = {
+			content,			
+			artworkId,
+			userId,
+		};
+		console.log(data);
+		$.ajax({
+			dataType: "json",
+			contentType: "application/json; charset=utf-8",
+			type: "POST",
+			url: "/Profile/CommentArt",
+			data: JSON.stringify(data),
+			success: function (data) {
+				$('.modal-backdrop').hide();
+				$('#userRoleModal-' + userId).hide();
+				window.location.reload();
+			},
+		});
+	})
 </script>
 
