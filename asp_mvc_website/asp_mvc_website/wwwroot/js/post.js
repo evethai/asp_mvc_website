@@ -37,7 +37,7 @@ function upload() {
 var modal = document.getElementById("PostModal");
 var p_modal = document.getElementById("P_Modal"); 
 
-var noti = document.getElementById("SuccessNoti");
+
 
 var txtTitle = document.getElementById("title");
 var txtDescription = document.getElementById("description");
@@ -74,7 +74,34 @@ const imageValidationMessage = document.getElementById('imageValidationMessage')
 
 const postBtn = document.getElementById('postBtn');
 
+var aiBtn = document.getElementById("checkAi-btn");
+aiBtn.addEventListener('click', function () {
+    var imageFile = document.querySelector(".file-uploader").files[0];
+    var loadingpage = document.getElementById("loading-load");
+    var isValid = true; 
+    if (!imageFile) {
+        imageValidationMessage.style.display = 'block';
+        isValid = false;
+    } else {
+        imageValidationMessage.style.display = 'none';
+    }
+    loadingpage.style.display = 'block';
+    if (isValid) {
+        var formData = new FormData();
+        formData.append("File", imageFile);
+        fetch("/ImageAI/loadAI", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('description').value = data.answer;
+                loadingpage.style.display = 'none';
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
+});
 
 
 postBtn.addEventListener('click', function () {
@@ -85,6 +112,8 @@ postBtn.addEventListener('click', function () {
     var customItemInput = document.getElementById('categoryCustom').value.trim();
     var categorySelect = document.getElementById('category').value;
     var isValid = true; 
+
+
 
     // Validate title
     if (title ==='') {
@@ -158,12 +187,7 @@ postBtn.addEventListener('click', function () {
         })
             .then(data => {
                 if (data.success) {
-                    modal.style.display = 'none';
-                    
-                    noti.style.display = 'block';
-                    setTimeout(function () {
-                        noti.style.display = 'none';
-                    }, 8000);
+
                     document.getElementById('title').value = '';
                     document.getElementById('description').value = '';
                     document.getElementById('price').value = '';
@@ -171,10 +195,18 @@ postBtn.addEventListener('click', function () {
                     document.getElementById('categoryCustom').value = '';
                     document.querySelector('.file-uploader').value = '';
                     document.querySelector('.profile-picture').style.backgroundImage = '';
-                 
+
+                    var noti = document.getElementById("SuccessNoti");
+                    modal.style.display = 'none';
                     $('body').removeClass('modal-open');
                     $('.modal-backdrop').remove();
-                    window.location.reload();
+
+                    noti.style.display = 'block';
+                    setTimeout(function () {
+                        noti.style.display = 'none';
+                        window.location.reload();
+                    }, 5000);
+
                 }
             })
             .catch(error => {
@@ -195,4 +227,6 @@ document.getElementById('category').addEventListener('change', function () {
         customItemInput.value = '';
     }
 });
+
+
 

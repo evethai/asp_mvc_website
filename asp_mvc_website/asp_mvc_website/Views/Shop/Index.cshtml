@@ -56,6 +56,32 @@
                                 <textarea name="description" id="description" class="form-control" style="height:150px;background:#252525;color:white"></textarea>
                                 <div id="descriptionValidationMessage" style="color: red; display: none;">Please enter a description.</div>
                             </div>
+                            <div id="loading-load" style="display: none">
+                                <div class="spinner-grow text-primary" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-secondary" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-success" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-danger" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-warning" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-info" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-light" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-dark" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
                             <div class="mb-3">
                                 <label for="price" class="col-form-label" style="color: white; font: bold">Price:</label>
                                 <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
@@ -96,6 +122,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" id="CloseModalBtn" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="checkAi-btn">AI Description</button>
                         <button type="button" class="btn btn-primary" id="postBtn">Post</button>
                     </div>
                 </div>
@@ -242,6 +269,8 @@
 </section>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="~/js/post.js"></script>
+
 
 <script>
     var button = document.getElementById("myButton");
@@ -387,5 +416,7 @@
             amountElements[i].textContent = formatCurrency(amount) + " VND";
         }
     }
+
+
 </script>
 
