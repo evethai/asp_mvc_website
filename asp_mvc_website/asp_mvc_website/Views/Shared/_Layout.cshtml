@@ -79,7 +79,7 @@
                                     }
                                     else
                                     {
-                                        <img src="~/images/notification.png" width="50px" alt="Alternate Text" title="You need login!!!!"/>
+                                        <img src="~/images/notification.png" width="50px" alt="Alternate Text" title="You need login!!!!" />
                                     }
                                 </div>
                             </a>
@@ -204,34 +204,38 @@
             url: "/UserNotifcation/GetNotify",
             data: { id: '@userId' },
             success: function (notidata) {
-                console.log(notidata.data)
-                // var userNotifications = JSON.parse(notidata.data)
+                console.log(notidata.data);
                 var notificationContainer = $("#notificationContainer");
                 var unreadCount = 0;
+
                 notidata.data.forEach(function (notification) {
-                    console.log(notification)
+                    console.log(notification);
                     var anchor = $("<a>").attr("href", "#");
                     if (notification.notificationVM.isRead == false) {
                         unreadCount++;
                         var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
                         profileImage.css("margin-left", "15px");
-                        var txtDiv = $("<div>").addClass("txt").text("Artwork Title: " + notification.artWorkVM.title);
+                        var txtDiv = $("<div>").addClass("txt").text(notification.userVM.firstName + " " + notification.userVM.lastName+ " " + notification.notificationVM.title);
                         var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationVM.description);
                         anchor.append(profileImage).append(txtDiv).append(subTxtDiv);
                         var notificationItem = $("<div>").addClass("sec new");
                         notificationItem.append(anchor);
                         notificationContainer.append(notificationItem);
                     }
-
-                    $(".number").text(unreadCount);
-
-                    // if (unreadCount === 0) {
-                    //     $(".number").hide();
-                    // }
                 });
+
+                $(".number").text(unreadCount);
+
+                if (unreadCount === 0) {
+                    $(".number").hide();
+                    notificationContainer.html("<div class='sec new no-notification'>You don't have new notifications</div>");
+                }
             }
         });
     </script>
+
+
+
 </body>
 </html>
 

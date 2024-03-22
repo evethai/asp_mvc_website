@@ -2,30 +2,30 @@
 
 namespace asp_mvc_website.Models
 {
-    public class UserNotificationModel
-    {
-        public int Id { get; set; }
-        public int? NotificationId { get; set; }
-        public int? ArtworkId { get; set; }
-        public string UserId { get; set; }
+	public class UserNotificationModel
+	{
+		public int Id { get; set; }
+		public int? NotificationId { get; set; }
+		public int? ArtworkId { get; set; }
+		public string UserId { get; set; }
 
-        public virtual NotificationModel Notification { get; set; }
-        public virtual ArtworkModel Artwork { get; set; }
-        public virtual ApplicationUserModel User { get; set; }
+		public virtual NotificationModel Notification { get; set; }
+		public virtual ArtworkModel Artwork { get; set; }
+		public virtual ApplicationUserModel User { get; set; }
 
-    }
+	}
 
-    public class GetUsetNotification   
-    {
-        public int id {  get; set; }
-        public string? artworkTitle { get; set;}
-        public string? notificationTitle { get; set; }
-        public  string? notificationDescription {  get; set; }
-        public bool isRead {  get; set; }
-        public DateTime dateTime { get; set; }
-        public NotiStatus notiStatus { get; set; }
-        public string? nameUser { get; set; }
-        public string artwordUrl { get; set; }
+	public class GetUsetNotification
+	{
+		public int id { get; set; }
+		public string? artworkTitle { get; set; }
+		public string? notificationTitle { get; set; }
+		public string? notificationDescription { get; set; }
+		public bool isRead { get; set; }
+		public DateTime dateTime { get; set; }
+		public NotiStatus notiStatus { get; set; }
+		public string? nameUser { get; set; }
+		public string artwordUrl { get; set; }
 		public int artworkId { get; set; }
 		public int notificationId { get; set; }
 	}
@@ -48,6 +48,7 @@ namespace asp_mvc_website.Models
 		public string? userId { get; set; }
 		public int? notificationId { get; set; }
 		public int? artworkId { get; set; }
+		public string? userIdFor { get; set; }
 	}
 
 	public class UserVM
@@ -98,14 +99,26 @@ namespace asp_mvc_website.Models
 	{
 		public int total { get; set; }
 		public int currentPage { get; set; }
-		public List<GetUserNotificationDTO1> data { get; set;}
+		public List<GetUserNotificationDTO1> data { get; set; }
 	}
 
-    public class Result
-    {
-        public int total { get; set; }
-        public List<GetUserNotificationDTO1> data { get; set; }
-        public int page { get; set; }
-    }
+	public class Result
+	{
+		public int total { get; set; }
+		public List<GetUserNotificationDTO1> data { get; set; }
+		public int page { get; set; }
+	}
 
+	public class CheckPost
+	{
+		public int artworkId { get; set; }
+		public bool isAccept { get; set; }
+		public int notiId { get; set; }
+		public string userId { get; set; }
+		public string? reason
+		{
+			get; set;
+		}
+
+	}
 }

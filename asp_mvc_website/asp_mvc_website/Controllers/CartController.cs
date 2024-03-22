@@ -38,8 +38,9 @@ namespace asp_mvc_website.Controllers
 			{
 				return Redirect("/User/Login");
 			}
-
+			var orderItem = GetOrderByUser(userId);
 			var cartItems = GetCartItem();
+			cartItems = RefreshCartItem(cartItems, orderItem);
 
 			cartService = new CartService(cartItems);
 			ViewBag.TotalPrice =  cartService.CalculateTotalPrice();
@@ -164,11 +165,36 @@ namespace asp_mvc_website.Controllers
                 artworkModel = JsonConvert.DeserializeObject<ArtworkModel>(data);
 				if(artworkModel != null)
 				{
-					if (artworkModel.Status == ArtWorkStatus.SoldPPendingConfirm)
+					if (artworkModel.Status == ArtWorkStatus.SoldPPendingConfirm
+						|| artworkModel.Status == ArtWorkStatus.Sold)
 					{
+						//remove item in cart
+						var cartItems = GetCartItem();
+
+						// Find the index of the item to delete based on its artworkId
+						int indexToDelete = -1;
+						for (int i = 0; i < cartItems.Count; i++)
+						{
+							if (cartItems[i].artworkId == artworkModel.artworkId)
+							{
+								indexToDelete = i;
+								break;
+							}
+						}
+
+						// If the item exists in the cart, remove it
+						if (indexToDelete != -1)
+						{
+							cartItems.RemoveAt(indexToDelete);
+
+							SaveCartToCookie(cartItems);
+						}
+
+						//notification to user that item is sold
+
 						return RedirectToAction("Index");
 					}
-				}
+				}	
 				ArtworkUpdateDTO artworkUpdate = new ArtworkUpdateDTO
 				{
 					ArtworkId = artworkId,
@@ -234,6 +260,26 @@ namespace asp_mvc_website.Controllers
 			return cartItems;
 		}
 
+		private List<CartItemModel> RefreshCartItem(List<CartItemModel> listCartItems, List<OrderModel> listOrderItem)
+		{
+			//If have no item will return
+			if (listCartItems.Count == 0 || listOrderItem.Count == 0)
+			{
+				return listCartItems;
+			}
+
+			//Remove item that have been ordered
+			foreach (var item in listCartItems)
+			{
+				var	removeItem = listOrderItem.Where(a => a.ArtworkId == item.artworkId).FirstOrDefault();
+				if (removeItem != null)
+				{
+					listCartItems.Remove(item);
+				}
+			}
+			return listCartItems;
+		}
+
         private void SaveCartToCookie(List<CartItemModel> cartItems)
         {
             var cartJson = JsonConvert.SerializeObject(cartItems);
@@ -243,6 +289,18 @@ namespace asp_mvc_website.Controllers
             });
         }
 
+		private List<OrderModel> GetOrderByUser(string userId)
+		{
+			List<OrderModel> order = new List<OrderModel>();
+			HttpResponseMessage responseOrder = _client.GetAsync(_client.BaseAddress + "Order/GetOrderByUser/" + userId).Result;
+			if (responseOrder.IsSuccessStatusCode)
+			{
+				string dataOrder = responseOrder.Content.ReadAsStringAsync().Result;
+				order = JsonConvert.DeserializeObject<List<OrderModel>>(dataOrder);
+			}
+			return order;
+		}
 
-    }
+
+	}
 }

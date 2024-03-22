@@ -1,7 +1,10 @@
-﻿using asp_mvc_website.Models;
+﻿using asp_mvc_website.Enums;
+using asp_mvc_website.Models;
 using asp_mvc_website.Services;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace asp_mvc_website.Controllers
 {
@@ -26,8 +29,14 @@ namespace asp_mvc_website.Controllers
         }
         public async Task<IActionResult> Index(string id)
         {
+            var user = await _currentUserService.User();
+            if (user == null)
+            {
+                return Redirect("/User/Login");
+            }
+            string userId = user.Id.ToString();
             //id = "a88a4533-52da-4b30-b9c5-b259423f14b2";
-            var response = await _client.GetAsync(_client.BaseAddress + "UserNotifcation/getNotiUser?userId=" + id);
+            var response = await _client.GetAsync(_client.BaseAddress + $"UserNotifcation/getNotiUser?userId={userId}&perPage=10&currentPage=0&isAscending=false");
             if (response.IsSuccessStatusCode)
             {
                 string data = response.Content.ReadAsStringAsync().Result;
@@ -68,6 +77,115 @@ namespace asp_mvc_website.Controllers
 			}
 		}
 
+        private async Task<(bool IsSuccess, HttpResponseMessage Response)> UpdateStatusArtwork(int artworkId)
+        {
+            ArtworkUpdateDTO dto = new ArtworkUpdateDTO
+            {
+                ArtworkId = artworkId,
+                Status = ArtWorkStatus.Sold
+            };
+            var response = await _client.PutAsJsonAsync<ArtworkUpdateDTO>(_client.BaseAddress + "Artwork/UpdateArtwork", dto);
 
-	}
+            return (response.IsSuccessStatusCode, response);
+        }
+
+        private async Task<(bool IsSuccess, HttpResponseMessage Response)> DenyStatusArtwork(int artworkId)
+        {
+            ArtworkUpdateDTO dto = new ArtworkUpdateDTO
+            {
+                ArtworkId = artworkId,
+                Status = ArtWorkStatus.SoldPPendingConfirm
+            };
+            var response = await _client.PutAsJsonAsync<ArtworkUpdateDTO>(_client.BaseAddress + "Artwork/UpdateArtwork", dto);
+
+            return (response.IsSuccessStatusCode, response);
+        }
+
+        private async Task<(bool IsSuccess, HttpResponseMessage Response)> UpdateStatusNoti(int notiId, bool isAccept)
+        {
+            var status = isAccept ? NotiStatus.AcceptOrder : NotiStatus.DenyOrder;
+
+            UpdateNotiStatusDTO dto = new UpdateNotiStatusDTO
+            {
+                Id = notiId,
+                notiStatus = status
+            };
+            var response = await _client.PutAsJsonAsync<UpdateNotiStatusDTO>(_client.BaseAddress + "Notification/UpdateStatusNoti", dto);
+
+            return (response.IsSuccessStatusCode, response);
+        }
+
+        private async Task<(bool IsSuccess, int NotificationID)> PostNotification(bool IsAccept, string reason)
+        {
+            string description = IsAccept ? "Your Order has been accepted" : reason;
+            string title = IsAccept ? "Accept order artwork" : "Deny order artwork";
+
+            createNotificationModel model = new createNotificationModel
+            {
+                Title = title,
+                Description = description,
+                notiStatus = NotiStatus.Normal
+            };
+            var response = await _client.PostAsync(
+               _client.BaseAddress + "Notification/CreateNotification",
+               new StringContent(
+                   JsonConvert.SerializeObject(model),
+                   Encoding.UTF8,
+                   "application/json"));
+            if (!response.IsSuccessStatusCode)
+                return (false, 0);
+            var data = response.Content.ReadAsStringAsync().Result;
+            var dto = JsonConvert.DeserializeObject<ResponseNotificationDTO>(data);
+            return (true, dto.Data.Id);
+        }
+
+        private async Task<(bool IsSuccess, HttpResponseMessage Response)> PostUserNotification(int artworkId, int notiId, string userIdFor)
+        {
+
+            var dto = new CreateUserNotificationDTO
+            {
+                userId = userIdFor,
+                notificationId = notiId,
+                artworkId = artworkId,
+                userIdFor = null
+            };
+            var response = await _client.PostAsync(
+               _client.BaseAddress + "UserNotifcation/CreateNotification",
+               new StringContent(
+                   JsonConvert.SerializeObject(dto),
+                   Encoding.UTF8,
+                   "application/json"));
+
+            if (!response.IsSuccessStatusCode)
+                return (false, response);
+            return (response.IsSuccessStatusCode, response);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CheckPost([FromBody] CheckPost checkPost)
+        {
+            if (checkPost.isAccept)
+            {
+                var updateStatusArtworkResult = await UpdateStatusArtwork(checkPost.artworkId);
+                if (!updateStatusArtworkResult.IsSuccess)
+                    return BadRequest("Update status artwork failed");
+            }
+            else
+            {
+                var denyArtwork = await DenyStatusArtwork(checkPost.artworkId);
+                if (!denyArtwork.IsSuccess)
+                    return BadRequest("Update status artwork failed");
+            }
+            var updateStatusNotiResult = await UpdateStatusNoti(checkPost.notiId, checkPost.isAccept);
+            if (!updateStatusNotiResult.IsSuccess)
+                return BadRequest("Post notification failed");
+            var postNotificationResult = await PostNotification(checkPost.isAccept, checkPost.reason);
+            if (!postNotificationResult.IsSuccess)
+                return BadRequest("Post notification failed");
+            var postUserNotificationResult = await PostUserNotification(checkPost.artworkId, postNotificationResult.NotificationID, checkPost.userId);
+            if (!postUserNotificationResult.IsSuccess)
+                return BadRequest("Post user notification failed");
+            var markRead = await MarkReadNoti(checkPost.notiId);
+            return Json("true");
+        }
+    }
 }
