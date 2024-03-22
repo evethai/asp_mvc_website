@@ -203,9 +203,9 @@ namespace asp_mvc_website.Controllers
                 var responseUpdateArtwork = await _client.PutAsJsonAsync<ArtworkUpdateDTO>(_client.BaseAddress + "Artwork/UpdateArtwork", artworkUpdate);
                 if (responseUpdateArtwork.IsSuccessStatusCode)
                 {
-                        //Create notify to artist
-                        string description = "You have one order";
-                        string title = "Buy artwork";
+                        //Create notify to artist                       
+                        string description = "Your artwork is being purchased by Customer!!!";
+                        string title = "You have a order";
 
                         createNotificationModel model = new createNotificationModel
                         {
