@@ -108,14 +108,15 @@ namespace asp_mvc_website.Controllers
 
 		private async Task<(bool IsSuccess, int NotificationID)> PostNotification(bool IsAccept, string reason)
 		{
-			string description = IsAccept ? "Your Order has been accepted" : reason;
-			string title = IsAccept ? "Accept order artwork" : "Deny order artwork";
+			string description = IsAccept ? "Your order has been accepted by the Artist!!" : reason;
+			string title = IsAccept ? "Your order has been accepted" : "Your order has been denited";
+			NotiStatus noti = IsAccept ? NotiStatus.AcceptOrder : NotiStatus.DenyOrder;
 
 			createNotificationModel model = new createNotificationModel
 			{
 				Title = title,
 				Description = description,
-				notiStatus = NotiStatus.Normal
+				notiStatus = noti
 			};
 			var response = await _client.PostAsync(
 			   _client.BaseAddress + "Notification/CreateNotification",
