@@ -16,11 +16,15 @@
 		<div class="user-summary">
 			<div class="account-links">
 				<a href="#">My Account</a>
-				<a href="#">Checkout</a>
 			</div>
 			<div class="cart-count">
-				<a href="#">Shopping Bag: 0 items</a>
-				<a href="#">($0.00)</a>
+				@if (Model != null)
+				{
+					<a href="#">Shopping Bag: @Model.total items</a>
+				} else
+				{
+					<a href="#">Shopping Bag: 0 items</a>
+				}
 			</div>
 		</div>
 	</div>
@@ -127,7 +131,7 @@
 											}
 											else
 											{
-												<a href="#" class="remove" title="Remove this item" id="removeButton" onclick="deleteProduct(@item.ArtWork.Status)">&times;</a>
+												<a href="/Cart/DeleteArtwork?Id=@item.Id" class="remove" title="Remove this item" id="removeButton">&times;</a>
 											}
 										</td>
 									</tr>
@@ -143,16 +147,12 @@
 			}
 			<div class="cart-collaterals">
 				<div class="cart_totals">
-					<h3>Cart Totals</h3>
+					<h3>Cart description</h3>
 					<table>
 						<tbody>
 							<tr class="shipping">
 								<th>Shipping</th>
 								<td>Free Shipping<input type="hidden" name="shipping_method" id="shipping_method" value="free_shipping" /></td>
-							</tr>
-							<tr class="total">
-								<th>Order Price Total</th>
-								<td><strong><span class="amount"><i class="fa fa-gbp"></i>@ViewBag.TotalPrice</span></strong></td>
 							</tr>
 						</tbody>
 					</table>
@@ -164,34 +164,34 @@
 </section>
 
 <script>
-	function deleteProduct(artworkId) {
-		console.log(artworkId)
-		// Send an AJAX request to delete the product from the cart
-		fetch('/Cart/DeleteArtwork/' + artworkId, {
-			method: 'DELETE'
-		})
-			.then(response => {
-				// Check if the request was successful
-				if (response.ok) {
-					// Remove the product from the cart display
-					var productElement = document.getElementById('artwork_' + artworkId);
-					if (productElement) {
-						productElement.remove();
-					}
+	// function deleteProduct(Id) {
+	// 	console.log(Id)
+	// 	// Send an AJAX request to delete the product from the cart
+	// 	fetch('/Cart/DeleteArtwork/' + Id, {
+	// 		method: 'DELETE'
+	// 	})
+	// 		.then(response => {
+	// 			// Check if the request was successful
+	// 			if (response.ok) {
+	// 				// Remove the product from the cart display
+	// 				var productElement = document.getElementById('artwork_' + Id);
+	// 				if (productElement) {
+	// 					productElement.remove();
+	// 				}
 
-					// Set focus to the cart container element
-					var cartContainer = document.getElementById('cartContainer');
-					if (cartContainer) {
-						cartContainer.focus();
-					}
-				} else {
-					console.error('Failed to delete product');
-				}
-			})
-			.catch(error => {
-				console.error('Error:', error);
-			});
-	}
+	// 				// Set focus to the cart container element
+	// 				var cartContainer = document.getElementById('cartContainer');
+	// 				if (cartContainer) {
+	// 					cartContainer.focus();
+	// 				}
+	// 			} else {
+	// 				console.error('Failed to delete product');
+	// 			}
+	// 		})
+	// 		.catch(error => {
+	// 			console.error('Error:', error);
+	// 		});
+	// }
 
 	// function updateProduct(artworkIdInput) {
 	// 	console.log(artworkIdInput);
