@@ -143,7 +143,7 @@ namespace asp_mvc_website.Controllers
 			if (!postUserNotificationResult.IsSuccess)
 				return BadRequest("Post user notification failed");
 
-            return Ok("true");
+            return Ok(new { success = true });
         }
 
         private async Task<(bool IsSuccess, HttpResponseMessage Response)> UpdateStatusArtwork(int artworkId)

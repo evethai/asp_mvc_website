@@ -156,6 +156,9 @@
 	}
 	else
 	{
+		<div class="alert alert-success" id="ok-ok" style="display: none">
+			<strong>Success!</strong> Confirmed
+		</div>
 		<div class="dropdown">
 			<select id="status">
 				<option value="5">Confirm</option>
@@ -208,8 +211,8 @@
 													@if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.ConfirmPost)
 													{
 														<input id="userID-@item.ArtWorkVM.ArtworkId" value="@item.ArtWorkVM.UserId" type="hidden" />
-														<a href="" class="Accept" title="Accept artwork" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</a>
-														<a href="" data-bs-toggle="modal" data-bs-target="#reason-@item.ArtWorkVM.ArtworkId" class="Reject" title="Reject artwork">Reject</a>
+														<button class="Accept" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</button>
+														<button data-bs-toggle="modal" data-bs-target="#reason-@item.ArtWorkVM.ArtworkId" class="Reject" title="Reject artwork">Reject</button>
 													}
 													else if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptPost)
 													{
@@ -250,10 +253,11 @@
 														<div class="modal-body">
 															<label for="reason">Reason</label>
 															<textarea id="text-reason-@item.ArtWorkVM.ArtworkId" name="reason" rows="4" cols="50"></textarea>
+															<div id="reasonValidationMessage" style="color: red; display: none;">Please enter a reason.</div>
 														</div>
 														<div class="modal-footer">
 															<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
-															<button type="button" action="" class="Reject" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,false,@item.NotificationVM.Id)">Reject</button>
+															<button type="button" class="Reject" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,false,@item.NotificationVM.Id)">Reject</button>
 														</div>
 													</div>
 												</div>
@@ -293,17 +297,40 @@
 	function acceptArtwork(artworkId, isAccept, notiId) {
 		var userId = document.getElementById("userID-"+artworkId).value;
 		var reason = document.getElementById("text-reason-"+artworkId).value;
-		$.ajax({
-			url: "/CheckArtwork/CheckPost",
-			type: "POST",
-			data: { artworkId: artworkId, isAccept: isAccept, notiId: notiId, userId: userId, reason: reason },
-			success: function (data) {
-				window.location.reload();
-			},
-			error: function (xhr, status, error) {
-				console.error('Đã có lỗi xảy ra: ' + error);
-			}
-		});
+		var reasonValidationMessage = document.getElementById("reasonValidationMessage");
+		var isValid = true;
+
+		if(isAccept === false && reason ===''){
+			reasonValidationMessage.style.display = "block";
+			isValid = false;
+		}else{
+            reasonValidationMessage.style.display = "none";
+			isValid = true;
+		}
+
+		if (isValid) {
+			$.ajax({
+				url: "/CheckArtwork/CheckPost",
+				type: "POST",
+				data: { artworkId: artworkId, isAccept: isAccept, notiId: notiId, userId: userId, reason: reason },
+				success: function (data) {
+					if (data.success) {
+						$('.modal-backdrop').remove();
+						$('#reason-' + artworkId).remove();
+
+						var message = document.getElementById("ok-ok");
+						message.style.display = "block";
+						setTimeout(function () {
+							message.style.display = "none";
+							window.location.reload();
+						}, 2000);
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error('Đã có lỗi xảy ra: ' + error);
+				}
+			});
+		}
 	}
 
 	var _status = $("#status").val();

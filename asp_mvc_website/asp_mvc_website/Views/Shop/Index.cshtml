@@ -56,6 +56,32 @@
                                 <textarea name="description" id="description" class="form-control" style="height:150px;background:#252525;color:white"></textarea>
                                 <div id="descriptionValidationMessage" style="color: red; display: none;">Please enter a description.</div>
                             </div>
+                            <div id="loading-load" style="display: none">
+                                <div class="spinner-grow text-primary" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-secondary" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-success" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-danger" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-warning" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-info" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-light" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <div class="spinner-grow text-dark" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
                             <div class="mb-3">
                                 <label for="price" class="col-form-label" style="color: white; font: bold">Price:</label>
                                 <input type="text" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode === 46"
@@ -96,6 +122,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" id="CloseModalBtn" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="checkAi-btn">AI Description</button>
                         <button type="button" class="btn btn-primary" id="postBtn">Post</button>
                     </div>
                 </div>
@@ -177,7 +204,7 @@
                 </div>
             }
         </div>
-        @if (ViewBag.DupplicateId != null)
+      @*   @if (ViewBag.DupplicateId != null)
         {
             <div id="popupMessage" onclick="hidePopup()">
                 <div class="popup-content">
@@ -195,7 +222,7 @@
                     </div>
                 </div>
             </div>
-        }
+        } *@
 
 
         <div id="listIndex">
@@ -209,7 +236,10 @@
                                 @* <a href="#" class="type1 dt-sc-button addToCartLink" data-artwork-id="@item.artworkId">
                             <span class="fa fa-shopping-cart"></span> Add to Cart
                             </a> *@
-                                <a href="/Cart/AddToCart?id=@item.artworkId" class="type1 dt-sc-button ">
+                                @* <a href="/Cart/AddToCart?id=@item.artworkId" class="type1 dt-sc-button ">
+                                    <span class="fa fa-shopping-cart"></span> Add to Cart
+                                </a> *@
+                                <a class="type1 dt-sc-button add-to-cart" data-aid="@item.artworkId">
                                     <span class="fa fa-shopping-cart"></span> Add to Cart
                                 </a>
                                 @*  <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a> *@
@@ -242,8 +272,51 @@
 </section>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
+    $('.add-to-cart').click(function () {
+        var artworkId = $(this).data("aid")
+        var data = {
+            artworkId,
+            userId: "",
+        };
+        console.log(data);
+        console.log("aid", artworkId);
+        $.ajax({
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            type: "POST",
+            url: "/Cart/addToCart",
+            data: JSON.stringify(data),
+            success: function (data) {
+                console.log(data);
+                if (data.isSuccessStatusCode) {
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "success",
+                        title: "Add To Cart Successfully",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "warning",
+                        title: "This product was in cart",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+               
+            },
+            error: function () {
+                window.location.href = "/User/Login"
+            }
+        });
+    });
+
+
     var button = document.getElementById("myButton");
     button.addEventListener("click", function () {
         $.ajax({
@@ -387,5 +460,7 @@
             amountElements[i].textContent = formatCurrency(amount) + " VND";
         }
     }
+
+
 </script>
 
