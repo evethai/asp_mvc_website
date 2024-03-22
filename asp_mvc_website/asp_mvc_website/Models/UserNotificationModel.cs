@@ -119,6 +119,5 @@ namespace asp_mvc_website.Models
 		{
 			get; set;
 		}
-
 	}
 }

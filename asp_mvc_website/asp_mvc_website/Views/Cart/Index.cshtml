@@ -1,5 +1,8 @@
-﻿@model List<CartItemModel>
+﻿@model CartResponseVM
 
+@{
+	var errorMsg = ViewData["ErrorMsg"] != null ? ViewData["ErrorMsg"].ToString() : "";
+}
 	<style>
 	#checkoutButtonDisable.disabled {
 		pointer-events: none; /* Disable pointer events */
@@ -27,7 +30,7 @@
 		<div class="woocommerce">
 			@if(Model != null)
 			{
-				@if (Model.Count == 0)
+				@if (Model.total == 0)
 				{
 					<h2>No item in cart!</h2>
 				}
@@ -46,18 +49,23 @@
 								</tr>
 							</thead>
 							<tbody>
-								@foreach (var item in Model)
+								@if (!string.IsNullOrEmpty(errorMsg))
 								{
-									<tr class="cart_table_item" id="artwork_@item.artworkId">
+									
+								}
+								@foreach (var item in Model.data)
+								{
+								
+									<tr class="cart_table_item" id="artwork_@item.ArtWorkId">
 
 										<td class="product-thumbnail" style="padding:5px;">
-											<a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})">
-												<img src="@item.Image" style="width:100%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" />
+											<a href="@Url.Action("Index", "ShopDetail",new{id = item.ArtWorkId})">
+												<img src="@item.ArtWorkImage" style="width:100%;" class="attachment-shop_thumbnail wp-post-image" alt="T_7_front" />
 											</a>
 										</td>
 
 										<td class="product-name">
-											<h6><a href="@Url.Action("Index", "ShopDetail",new{id = item.artworkId})">@item.Title</a></h6>
+											<h6><a href="@Url.Action("Index", "ShopDetail",new{id = item.ArtWorkId})">@item.Title</a></h6>
 										</td>
 
 										<td class="product-subtotal">
@@ -65,7 +73,7 @@
 										</td>
 
 										<td class="product-status">
-											@switch (item.Status)
+											@switch (item.ArtWork.Status)
 											{
 												case ArtWorkStatus.PendingConfirmation:
 													{
@@ -98,7 +106,7 @@
 										</td>
 
 										<td class="product-status" style="padding:0px;">
-											@if (item.Status == ArtWorkStatus.SoldPPendingConfirm || item.Status == ArtWorkStatus.Sold)
+											@if (item.ArtWork.Status == ArtWorkStatus.SoldPPendingConfirm || item.ArtWork.Status == ArtWorkStatus.Sold)
 											{
 												<a id="checkoutButtonDisable" class="dt-sc-button medium type2 with-icon" href="#">
 													<i class="fa fa-shopping-cart"></i> <span>Pending Confirm</span>
@@ -106,20 +114,20 @@
 											}
 											else
 											{
-												<a id="checkoutButton" class="dt-sc-button medium type2 with-icon" href="/Cart/CheckOut?artworkId=@item.artworkId">
+												<a id="checkoutButton" class="dt-sc-button medium type2 with-icon" href="/Cart/CheckOut?artworkId=@item.ArtWorkId">
 													<i class="fa fa-shopping-cart"></i> <span>Proceed to Checkout</span>
 												</a>
 											}
 										</td>
 
 										<td class="product-remove">
-											@if (item.Status == ArtWorkStatus.SoldPPendingConfirm || item.Status == ArtWorkStatus.Sold)
+											@if (item.ArtWork.Status == ArtWorkStatus.SoldPPendingConfirm || item.ArtWork.Status == ArtWorkStatus.Sold)
 											{
 												<a href="#" class="remove" title=""></a>
 											}
 											else
 											{
-												<a href="#" class="remove" title="Remove this item" id="removeButton" onclick="deleteProduct(@item.artworkId)">&times;</a>
+												<a href="#" class="remove" title="Remove this item" id="removeButton" onclick="deleteProduct(@item.ArtWork.Status)">&times;</a>
 											}
 										</td>
 									</tr>
