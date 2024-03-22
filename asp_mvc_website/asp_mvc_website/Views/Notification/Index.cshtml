@@ -79,6 +79,7 @@
 
 		.notification-list .notification-list_content .notification-list_img img {
 			width: 110px;
+			height: 70px;
 			margin-right: 20px;
 		}
 
@@ -95,7 +96,7 @@
 	}
 
 	.abutton {
-		background-color: cyan;
+		background-color: #6bfc03;
 		padding: 5px;
 		margin: 0 0 4px 0px;
 		width: 100px;
@@ -109,7 +110,7 @@
 	}
 
 	.dbutton {
-		background-color: red;
+		background-color: #f74358;
 		padding: 5px;
 		width: 100px;
 		text-align: center;
@@ -126,7 +127,7 @@
 			{
 				if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.Order && item.NotificationVM.IsRead == false)
 				{
-					<div class="notification-list notification-list--unread">
+					<div class="notification-list notification-list--unread" data-id="@item.NotificationVM.Id" data-bs-toggle="modal" data-bs-target="#exampleModal-@item.NotificationVM.Id">
 						<div class="notification-list_content">
 							<div class="notification-list_img">
 								<img src="@item.ArtWorkImageVM.Image" alt="user">
@@ -138,12 +139,58 @@
 							</div>
 						</div>
 						<div class="notification-list_feature-img">
-							<a class="abutton" id="accept">Accept</a>
-							<a class="dbutton" id="deny">Deny</a>
+							<input id="userID" value="@item.UserIdFor" type="hidden" />
+							<a class="abutton" id="accept" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,true,@item.NotificationVM.Id)">Accept</a>
+							<a data-bs-toggle="modal" data-bs-target="#reason-@item.ArtWorkVM.ArtworkId" class="dbutton" id="deny">Deny</a>
 						</div>
 					</div>
 
+					<div class="modal fade" tabindex="-1" id="reason-@item.ArtWorkVM.ArtworkId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="staticBackdropLabel" style="color:black;">Order Reject</h5>
+								</div>
+								<div class="modal-body" style="align-items:normal">									
+									<div>
+										<label for="reason" class="col-form-label" style="color:black;">Reason deny:</label>
+										<textarea id="reason" name="reason" class="form-control"></textarea>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closePackage">Close</button>
+									<button type="button" class="btn btn-danger" onclick="acceptArtwork(@item.ArtWorkVM.ArtworkId,false,@item.NotificationVM.Id)">Deny</button>
+								</div>
+							</div>
+						</div>
+					</div>
 
+					// modal2
+					<div class="modal fade" data-bs-backdrop="static" id="exampleModal-@item.NotificationVM.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered modal-lg">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;"><strong>@item.UserVM.FirstName @item.UserVM.LastName</strong> @item.NotificationVM.Title</h1>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-6">
+											<img class="anhmodal" src="@item.ArtWorkImageVM.Image" alt="Anh san pham" />
+										</div>
+										<div class="col-6 align-items-center justify-content-end notiInfo">
+											<p style="color:black;"><strong>Arkwork Title:</strong> <br /> @item.NotificationVM.Title</p>
+											<p style="color:black;"><strong>Notification Description: </strong><br /> @item.NotificationVM.Description</p>
+											<p style="color:black;"><strong>Date:</strong><br /> @item.NotificationVM.Date</p>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary close-modal" data-bs-dismiss="modal">Close</button>
+								</div>
+							</div>
+						</div>
+					</div>
 				}
 			}
 
@@ -171,11 +218,11 @@
 
 					<!-- Button trigger modal -->
 					<!-- Modal -->
-					<div class="modal fade" id="exampleModal-@item.NotificationVM.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal fade" data-bs-backdrop="static" id="exampleModal-@item.NotificationVM.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered modal-lg">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;">@item.UserVM.FirstName @item.UserVM.LastName @item.NotificationVM.Title</h1>
+									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;"><strong>@item.UserVM.FirstName @item.UserVM.LastName</strong> @item.NotificationVM.Title</h1>
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
@@ -184,9 +231,9 @@
 											<img class="anhmodal" src="@item.ArtWorkImageVM.Image" alt="Anh san pham" />
 										</div>
 										<div class="col-6 align-items-center justify-content-end notiInfo">
-											<p style="color:black;">Arkwork Title: <br /> @item.NotificationVM.Title</p>
-											<p style="color:black;">Notification Description: <br /> @item.NotificationVM.Description</p>
-											<p style="color:black;">Date:<br /> @item.NotificationVM.Date</p>
+											<p style="color:black;"><strong>Arkwork Title:</strong> <br /> @item.NotificationVM.Title</p>
+											<p style="color:black;"><strong>Notification Description: </strong><br /> @item.NotificationVM.Description</p>
+											<p style="color:black;"><strong>Date:</strong><br /> @item.NotificationVM.Date</p>
 										</div>
 									</div>
 								</div>
@@ -216,21 +263,21 @@
 						@if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.AcceptOrder)
 						{
 							<div class="notification-list_feature-img">
-								<div class="abutton" style="color:black">has been approved</div>
+								<div class="abutton" style="color:black">Approved</div>
 							</div>
 						}
 						@if (item.NotificationVM.notiStatus == asp_mvc_website.Enums.NotiStatus.DenyOrder)
 						{
 							<div class="notification-list_feature-img">
-								<div class="dbutton" style="color:black">has been denied</div>
+								<div class="dbutton" style="color:black">Denied</div>
 							</div>
 						}
 					</div>
-					<div class="modal fade" id="exampleModal-@item.NotificationVM.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+					<div class="modal fade" data-bs-backdrop="static" id="exampleModal-@item.NotificationVM.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-dialog-centered modal-lg">
 							<div class="modal-content">
 								<div class="modal-header">
-									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;">@item.UserVM.FirstName @item.UserVM.LastName @item.NotificationVM.Title</h1>
+									<h1 class="modal-title fs-5" id="exampleModalLabel" style="color:black;"><strong>@item.UserVM.FirstName @item.UserVM.LastName</strong> @item.NotificationVM.Title</h1>
 									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 								</div>
 								<div class="modal-body">
@@ -239,9 +286,9 @@
 											<img class="anhmodal" src="@item.ArtWorkImageVM.Image" alt="Anh san pham" />
 										</div>
 										<div class="col-6 align-items-center justify-content-end notiInfo">
-											<p style="color:black;">Arkwork Title: <br /> @item.NotificationVM.Title</p>
-											<p style="color:black;">Notification Description: <br /> @item.NotificationVM.Description</p>
-											<p style="color:black;">Date:<br /> @item.NotificationVM.Date</p>
+											<p style="color:black;"><strong>Arkwork Title:</strong> <br /> @item.NotificationVM.Title</p>
+											<p style="color:black;"><strong>Notification Description: </strong><br /> @item.NotificationVM.Description</p>
+											<p style="color:black;"><strong>Date:</strong><br /> @item.NotificationVM.Date</p>
 										</div>
 									</div>
 								</div>
@@ -278,4 +325,28 @@
 			});
 		});
 	});
+
+	function acceptArtwork(artworkId, isAccept, notiId) {
+		var userId = document.getElementById("userID").value;
+		var reason = document.getElementById("reason").value;
+
+		var data = {
+			artworkId, isAccept, notiId, userId, reason
+		}
+		console.log(data);
+		$.ajax({
+			dataType: "json",
+			data: JSON.stringify(data),
+			url: "/Notification/CheckPost",
+			contentType: "application/json; charset=utf-8",
+			type: "POST",
+
+			success: function (data) {
+				window.location.reload(true);
+			},
+			error: function (xhr, status, error) {
+				console.error('Đã có lỗi xảy ra: ' + error);
+			}
+		});
+	}
 </script>
