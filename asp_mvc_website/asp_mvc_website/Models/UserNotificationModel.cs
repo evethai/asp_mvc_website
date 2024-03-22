@@ -87,6 +87,7 @@ namespace asp_mvc_website.Models
 	public class GetUserNotificationDTO1
 	{
 		public DateTime Date { get; set; }
+		public string? UserIdFor { get; set; }
 		public UserVM UserVM { get; set; }
 		public ArtWorkVM ArtWorkVM { get; set; }
 		public ArtWorkImageVM ArtWorkImageVM { get; set; }

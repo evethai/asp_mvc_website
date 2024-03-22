@@ -3,6 +3,7 @@ using asp_mvc_website.Models;
 using asp_mvc_website.Services;
 using Firebase.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.Text;
@@ -28,6 +29,7 @@ namespace asp_mvc_website.Controllers
 		[HttpGet]
 		public async Task<IActionResult> Index()
         {
+			int itemsPerPage = 10;
 			var user = await _currentUserService.User();
 			if (user == null)
 			{
@@ -45,19 +47,38 @@ namespace asp_mvc_website.Controllers
                 var data = response.Content.ReadAsStringAsync().Result;
                 result = JsonConvert.DeserializeObject<Result>(data);
             }
+
 			foreach(var item in result.data)
 			{
 				if (item.NotificationVM.notiStatus == NotiStatus.ConfirmPost)
 				{
 					dto.Add(item);
+
 				}
 			}
 
-			return View(dto);
+			int total = dto.Count;
+			int totalPage = (int)Math.Ceiling((double)total / itemsPerPage);
+
+			int page = 1;
+
+			page = Math.Max(1, Math.Min(page, totalPage));
+
+
+			int startIndex = (page - 1) * itemsPerPage;
+			int endIndex = Math.Min(startIndex + itemsPerPage - 1, total - 1);
+
+			List<GetUserNotificationDTO1> paginatedDto = dto.GetRange(startIndex, endIndex - startIndex + 1);
+
+			ViewData["totalPage"] = totalPage;
+			ViewData["currentPage"] = page;
+
+			return View(paginatedDto);
         }
 		[HttpGet]
-		public async Task<IActionResult> Select (NotiStatus status)
+		public async Task<IActionResult> Select (NotiStatus status, int page)
 		{
+			int itemsPerPage = 10;
 			var user = await _currentUserService.User();
 			string userId = user.Id.ToString();
 			Result result = new Result();
@@ -75,10 +96,24 @@ namespace asp_mvc_website.Controllers
 				if (item.NotificationVM.notiStatus == status)
 				{
 					dto.Add(item);
+
 				}
 			}
 
-			return View(dto);
+			int total = dto.Count;
+			int totalPage = (int)Math.Ceiling((double)total / itemsPerPage);
+
+			page = Math.Max(1, Math.Min(page, totalPage));
+
+			int startIndex = (page - 1) * itemsPerPage;
+			int endIndex = Math.Min(startIndex + itemsPerPage - 1, total - 1);
+
+			List<GetUserNotificationDTO1> paginatedDto = dto.GetRange(startIndex, endIndex - startIndex + 1);
+
+			ViewData["totalPage"] = totalPage;
+			ViewData["currentPage"] = page;
+
+			return View(paginatedDto);
 		}
 
 
