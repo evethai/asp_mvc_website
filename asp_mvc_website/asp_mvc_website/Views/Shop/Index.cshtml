@@ -177,7 +177,7 @@
                 </div>
             }
         </div>
-        @if (ViewBag.DupplicateId != null)
+      @*   @if (ViewBag.DupplicateId != null)
         {
             <div id="popupMessage" onclick="hidePopup()">
                 <div class="popup-content">
@@ -195,7 +195,7 @@
                     </div>
                 </div>
             </div>
-        }
+        } *@
 
 
         <div id="listIndex">
@@ -209,7 +209,10 @@
                                 @* <a href="#" class="type1 dt-sc-button addToCartLink" data-artwork-id="@item.artworkId">
                             <span class="fa fa-shopping-cart"></span> Add to Cart
                             </a> *@
-                                <a href="/Cart/AddToCart?id=@item.artworkId" class="type1 dt-sc-button ">
+                                @* <a href="/Cart/AddToCart?id=@item.artworkId" class="type1 dt-sc-button ">
+                                    <span class="fa fa-shopping-cart"></span> Add to Cart
+                                </a> *@
+                                <a class="type1 dt-sc-button add-to-cart" data-aid="@item.artworkId">
                                     <span class="fa fa-shopping-cart"></span> Add to Cart
                                 </a>
                                 @*  <a href="#" class="type1 dt-sc-button"> <span class="fa fa-unlink"></span> Options </a> *@
@@ -242,8 +245,51 @@
 </section>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
+    $('.add-to-cart').click(function () {
+        var artworkId = $(this).data("aid")
+        var data = {
+            artworkId,
+            userId: "",
+        };
+        console.log(data);
+        console.log("aid", artworkId);
+        $.ajax({
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            type: "POST",
+            url: "/Cart/addToCart",
+            data: JSON.stringify(data),
+            success: function (data) {
+                console.log(data);
+                if (data.isSuccessStatusCode) {
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "success",
+                        title: "Add To Cart Successfully",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                } else {
+                    Swal.fire({
+                        position: "top-center",
+                        icon: "warning",
+                        title: "This product was in cart",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+               
+            },
+            error: function () {
+                window.location.href = "/User/Login"
+            }
+        });
+    });
+
+
     var button = document.getElementById("myButton");
     button.addEventListener("click", function () {
         $.ajax({
