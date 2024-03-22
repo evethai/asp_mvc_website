@@ -126,39 +126,19 @@ namespace asp_mvc_website.Controllers
             return false;
         }
 
-        [Route("Cart/DeleteArtwork/{artworkId}")]
-        [HttpDelete]
-        public IActionResult DeleteArtwork(int artworkId)
+        [HttpGet]
+        public async Task<IActionResult> DeleteArtwork(string Id)
         {
             var userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
             {
                 return Redirect("/User/Login");
             }
-            var cartItems = GetCartItem();
+            
+            var responseDelete = await _client.DeleteAsync(_client.BaseAddress + $"Cart/removeCartItem?artworkId={Id}");
 
-            // Find the index of the item to delete based on its artworkId
-            int indexToDelete = -1;
-            for (int i = 0; i < cartItems.Count; i++)
-            {
-                if (cartItems[i].artworkId == artworkId)
-                {
-                    indexToDelete = i;
-                    break;
-                }
-            }
-
-            // If the item exists in the cart, remove it
-            if (indexToDelete != -1)
-            {
-                cartItems.RemoveAt(indexToDelete);
-
-                SaveCartToCookie(cartItems);
-            }
-
-            // Return true to indicate success or failure
-            return Ok();
-        }
+			return RedirectToAction("Index");
+		}
 
         [HttpGet]
         public async Task<IActionResult> CheckOut(int artworkId)
@@ -203,9 +183,9 @@ namespace asp_mvc_website.Controllers
                 var responseUpdateArtwork = await _client.PutAsJsonAsync<ArtworkUpdateDTO>(_client.BaseAddress + "Artwork/UpdateArtwork", artworkUpdate);
                 if (responseUpdateArtwork.IsSuccessStatusCode)
                 {
-                        //Create notify to artist
-                        string description = "You have one order";
-                        string title = "Buy artwork";
+                        //Create notify to artist                       
+                        string description = "Your artwork is being purchased by Customer!!!";
+                        string title = "You have a order";
 
                         createNotificationModel model = new createNotificationModel
                         {

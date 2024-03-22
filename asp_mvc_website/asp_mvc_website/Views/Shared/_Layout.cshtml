@@ -214,7 +214,7 @@
                         unreadCount++;
                         var profileImage = $("<img>").addClass("profilenoti").attr("src", notification.artWorkImageVM.image);
                         profileImage.css("margin-left", "15px");
-                        var txtDiv = $("<div>").addClass("txt").text(notification.userVM.firstName + " " + notification.userVM.lastName+ " " + notification.notificationVM.title);
+                        var txtDiv = $("<div>").addClass("txt").text(notification.notificationVM.title);
                         var subTxtDiv = $("<div>").addClass("txt sub").text("Notification Title: " + notification.notificationVM.description);
                         anchor.append(profileImage).append(txtDiv).append(subTxtDiv);
                         var notificationItem = $("<div>").addClass("sec new");
