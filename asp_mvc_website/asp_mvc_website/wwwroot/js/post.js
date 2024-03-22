@@ -205,7 +205,7 @@ postBtn.addEventListener('click', function () {
                     setTimeout(function () {
                         noti.style.display = 'none';
                         window.location.reload();
-                    }, 5000);
+                    }, 3000);
 
                 }
             })
