@@ -127,7 +127,7 @@ namespace asp_mvc_website.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DeleteArtwork(int Id)
+        public async Task<IActionResult> DeleteArtwork(string Id)
         {
             var userId = HttpContext.Session.GetString("UserId");
             if (userId == null)
