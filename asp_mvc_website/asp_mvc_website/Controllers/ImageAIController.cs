@@ -48,7 +48,7 @@ namespace asp_mvc_website.Controllers
 					]
 				}";
 
-            string apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=AIzaSyArVfvy9rHMaUh7_nOwkruwRTGh8abbQJY";
+           // string apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=";
             using (var httpClient = new HttpClient())
             {
                 try
