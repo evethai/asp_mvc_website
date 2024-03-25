@@ -1200,6 +1200,7 @@ ul.categories-list li {
 	justify-content: center;
 	border-radius: 50%;
 	transition: all .2s;
+    cursor: pointer;
 }
 
 .tags-box .tag-link {
